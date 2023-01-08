@@ -10,12 +10,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member/v1")
+@RequestMapping("/api/v1")
 public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/addMember")
+    @PostMapping("/members")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Long addMember(@Valid @RequestBody MemberCreateRequest memberCreateRequest) {
         Long memberId = memberService.addMember(memberCreateRequest);
