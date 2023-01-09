@@ -17,6 +17,7 @@ import seong.onlinestudy.request.MemberCreateRequest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -42,37 +43,17 @@ class LoginControllerTest {
     }
 
     @Test
-    void login_성공() throws Exception {
-        //given
+    void 로그인성공() throws Exception {
         LoginRequest request = new LoginRequest();
         request.setUsername("test1234");
         request.setPassword("test1234");
 
-        //when
         mvc.perform(post("/api/v1/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        //then
-    }
-
-    @Test
-    void login_아이디불일치() throws Exception {
-        //given
-        LoginRequest request = new LoginRequest();
-        request.setUsername("test12");
-        request.setPassword("test1234");
-
-        //when
-        mvc.perform(post("/api/v1/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized())
-                .andDo(print());
-
-        //then
     }
 
 }

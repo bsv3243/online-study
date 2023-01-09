@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.Arrays;
 
 @Slf4j
+@RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final String SECRET = "0e5e67e9-a609-4cf1-9d96-529c1bf883a5";

@@ -10,8 +10,10 @@ import seong.onlinestudy.exception.MemberNotFoundException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.LoginRequest;
 
+import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +43,19 @@ public class LoginService {
                 .compact();
 
         return token;
+    }
+
+    public Member login(LoginRequest request) {
+
+        String username = request.getUsername();
+        String password = request.getPassword();
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
+
+        if(!member.getPassword().equals(password)) {
+            throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return member;
     }
 }
