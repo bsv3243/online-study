@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.request.LoginRequest;
 import seong.onlinestudy.service.LoginService;
@@ -41,7 +42,7 @@ public class LoginController {
         Member loginMember = loginService.login(loginRequest);
         HttpSession session = request.getSession();
 
-        session.setAttribute("LOGIN_MEMBER", loginMember);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
         return "ok";
     }
