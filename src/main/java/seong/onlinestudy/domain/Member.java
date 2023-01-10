@@ -4,6 +4,8 @@ import lombok.Getter;
 import seong.onlinestudy.request.MemberCreateRequest;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,6 +18,9 @@ public class Member {
     private String username;
     private String password;
     private String nickname;
+
+    @OneToMany(mappedBy = "member")
+    private List<GroupMember> groupMembers = new ArrayList<>();
 
     public static Member createMember(MemberCreateRequest request) {
         Member member = new Member();

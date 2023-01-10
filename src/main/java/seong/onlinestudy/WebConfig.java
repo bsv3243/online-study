@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import seong.onlinestudy.interceptor.AuthenticationInterceptor;
 import seong.onlinestudy.interceptor.LoginInterceptor;
 
-@Configuration
+//@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     /* jwt 검증 인터셉터
