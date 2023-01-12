@@ -79,6 +79,24 @@ class GroupRepositoryTest {
     }
 
     @Test
+    @DisplayName("그룹 생성")
+    void createGroup() {
+        //given
+        Member member = createMember("memberTest", "test1234");
+        GroupMember groupMember = GroupMember.createGroupMember(member, MASTER);
+        Group group = createGroup("groupTest", 20, groupMember);
+
+        //when
+        groupRepository.save(group);
+
+        //then
+        Group findGroup = groupRepository.findById(group.getId()).get();
+        assertThat(findGroup.getName()).isEqualTo("groupTest");
+        assertThat(findGroup.getRooms().size()).isEqualTo(1);
+        assertThat(findGroup.getGroupMembers().size()).isEqualTo(1);
+    }
+
+    @Test
     void 그룹가입() {
         //given
         Member memberA = createMember("memberA", "test1234");

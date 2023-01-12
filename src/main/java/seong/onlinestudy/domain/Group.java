@@ -24,6 +24,9 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<GroupMember> groupMembers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<Room> rooms = new ArrayList<>();
+
     public void addGroupMember(GroupMember groupMember) {
         groupMembers.add(groupMember);
         groupMember.setGroup(this);
@@ -34,6 +37,7 @@ public class Group {
         group.name = createRequest.getName();
         group.headcount = createRequest.getHeadcount();
         group.addGroupMember(groupMember);
+        group.rooms.add(Room.createRoom(1));
 
         return group;
     }
