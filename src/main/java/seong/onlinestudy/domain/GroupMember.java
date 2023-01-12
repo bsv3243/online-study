@@ -1,7 +1,6 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
-import seong.onlinestudy.domain.role.GroupRole;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,14 +14,16 @@ public class GroupMember {
     @Column(name = "group_member_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
     private LocalDate joinedAt;
+
+    @Enumerated(EnumType.STRING)
     private GroupRole role;
 
     public void setGroup(Group group) {

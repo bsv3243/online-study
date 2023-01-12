@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupMember;
 import seong.onlinestudy.domain.Member;
-import seong.onlinestudy.domain.role.GroupRole;
+import seong.onlinestudy.domain.GroupRole;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;

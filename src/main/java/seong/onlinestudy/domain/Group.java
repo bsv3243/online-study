@@ -18,6 +18,9 @@ public class Group {
     private String name;
     private int headcount;
 
+    @Enumerated(EnumType.STRING)
+    private GroupCategory category;
+
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<GroupMember> groupMembers = new ArrayList<>();
 
