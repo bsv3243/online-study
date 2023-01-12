@@ -1,6 +1,7 @@
 package seong.onlinestudy.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -48,6 +49,19 @@ class GroupServiceTest {
         Group findGroup = groupRepository.findById(1L).get();
         assertThat(findGroup).isEqualTo(group);
         assertThat(findGroup.getGroupMembers().size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("그룹 생성")
+    void createGroup() {
+        //given
+        Member member = createMember("memberA", "test1234");
+        GroupCreateRequest request = getGroupCreateRequest("groupA", 30);
+
+        //when
+        groupService.createGroup(request, member);
+
+        //then
     }
 
     private Group createGroup(String name, int count, GroupMember groupMember) {
