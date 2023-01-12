@@ -8,26 +8,34 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import seong.onlinestudy.SessionConst;
+import seong.onlinestudy.domain.Group;
+import seong.onlinestudy.domain.GroupCategory;
+import seong.onlinestudy.domain.GroupMember;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
 import seong.onlinestudy.service.GroupService;
 
 import java.net.BindException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static seong.onlinestudy.SessionConst.*;
 
 @WebMvcTest(GroupController.class)
@@ -105,5 +113,31 @@ class GroupControllerTest {
                 .andExpect(rs -> assertThat(rs.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class));
     }
 
+    @Test
+    void getGroups() throws Exception {
+        //given
+        GroupDto groupDto = new GroupDto();
+        groupDto.setGroupId(1L); groupDto.setName("groupA");
+        groupDto.setHeadcount(30); groupDto.setMemberCount(5L);
+        groupDto.setCategory(GroupCategory.JOB);
+
+        int page = 0; int size=10;
+        GroupCategory category = GroupCategory.ALL;
+        String search = null;
+
+        PageImpl<GroupDto> groupDtos = new PageImpl<>(List.of(groupDto), PageRequest.of(page, size), 1);
+        given(groupService.getGroups(page, size, category, search)).willReturn(groupDtos);
+
+        //when
+        ResultActions actions = mvc.perform(get("/api/v1/groups"));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.data.size()").value(1))
+                .andDo(print());
+    }
 
 }
