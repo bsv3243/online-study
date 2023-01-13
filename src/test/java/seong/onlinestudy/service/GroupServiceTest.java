@@ -4,12 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupMember;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.GroupRole;
+import seong.onlinestudy.exception.InvalidAuthorizationException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
@@ -27,7 +30,7 @@ class GroupServiceTest {
     @Mock
     GroupRepository groupRepository;
 
-    @Mock
+    @InjectMocks
     GroupService groupService;
 
 
@@ -62,6 +65,56 @@ class GroupServiceTest {
         groupService.createGroup(request, member);
 
         //then
+    }
+
+    @Test
+    @DisplayName("그룹 삭제")
+    void deleteGroup() {
+        //given
+        Member master = createMember("memberA", "test1234");
+        Member memberA = createMember("memberB", "test1234");
+
+        GroupMember groupMember = GroupMember.createGroupMember(master, GroupRole.MASTER);
+        GroupMember groupMember2 = GroupMember.createGroupMember(memberA, GroupRole.USER);
+
+        Group group = createGroup("test", 30, groupMember);
+        group.addGroupMember(groupMember2);
+        ReflectionTestUtils.setField(master, "id", 1L);
+        ReflectionTestUtils.setField(memberA, "id", 2L);
+
+
+        given(groupRepository.findById(1L)).willReturn(Optional.of(group));
+
+        //when
+        Long groupId = 1L;
+        groupService.deleteGroup(groupId, master);
+
+        //then
+    }
+
+    @Test
+    @DisplayName("그룹 삭제_권한 없음")
+    void deleteGroup_권한없음() {
+        //given
+        Member master = createMember("memberA", "test1234");
+        Member memberA = createMember("memberB", "test1234");
+
+        GroupMember groupMember = GroupMember.createGroupMember(master, GroupRole.MASTER);
+        GroupMember groupMember2 = GroupMember.createGroupMember(memberA, GroupRole.USER);
+
+        Group group = createGroup("test", 30, groupMember);
+        group.addGroupMember(groupMember2);
+        ReflectionTestUtils.setField(master, "id", 1L);
+        ReflectionTestUtils.setField(memberA, "id", 2L);
+
+        given(groupRepository.findById(1L)).willReturn(Optional.of(group));
+
+        //when
+        Long groupId = 1L;
+
+        //then
+        assertThatThrownBy(() -> groupService.deleteGroup(groupId, memberA))
+                .isInstanceOf(InvalidAuthorizationException.class);
     }
 
     private Group createGroup(String name, int count, GroupMember groupMember) {
