@@ -53,4 +53,21 @@ public class GroupController {
 
         return result;
     }
+
+    @GetMapping("/groups/{id}")
+    public GroupDto getGroup(@PathVariable Long id) {
+        GroupDto group = groupService.getGroup(id);
+
+        return group;
+    }
+
+    @DeleteMapping("/groups/{id}")
+    public String deleteGroup(@PathVariable Long id, @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
+        if(loginMember == null) {
+            throw new RuntimeException();
+        }
+        groupService.deleteGroup(id, loginMember);
+
+        return "ok";
+    }
 }

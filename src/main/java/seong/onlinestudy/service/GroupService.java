@@ -11,12 +11,14 @@ import seong.onlinestudy.domain.GroupCategory;
 import seong.onlinestudy.domain.GroupMember;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
+import seong.onlinestudy.exception.InvalidAuthorizationException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.GroupRepositoryImpl;
 import seong.onlinestudy.request.GroupCreateRequest;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static seong.onlinestudy.domain.GroupRole.*;
 
@@ -58,5 +60,27 @@ public class GroupService {
         Page<GroupDto> groups = groupRepository.getGroups(PageRequest.of(page, size), category, search);
 
         return groups;
+    }
+
+    public GroupDto getGroup(Long id) {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
+
+        GroupDto groupDto = GroupDto.from(group);
+
+        return groupDto;
+    }
+
+    public void deleteGroup(Long id, Member loginMember) {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
+
+        GroupMember master = group.getGroupMembers().stream().filter(groupMember ->
+                groupMember.getRole().equals(MASTER)).findFirst().get();
+        if(!master.getMember().getId().equals(loginMember.getId())) {
+            throw new InvalidAuthorizationException("권한이 없습니다.");
+        }
+
+        groupRepository.delete(group);
     }
 }
