@@ -7,6 +7,7 @@ import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Room;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.domain.Ticket;
+import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidAuthorizationException;
 import seong.onlinestudy.repository.RoomRepository;
 import seong.onlinestudy.repository.StudyRepository;
@@ -50,5 +51,14 @@ public class TicketService {
         findTicket.updateStatus(updateTicketRequest);
 
         return findTicket.getId();
+    }
+
+    public TicketDto getTicket(Long ticketId) {
+        Ticket findTicket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 티켓입니다."));
+
+        TicketDto ticketDto = TicketDto.from(findTicket);
+
+        return ticketDto;
     }
 }
