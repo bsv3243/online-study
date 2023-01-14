@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.request.TicketUpdateRequest;
@@ -41,5 +42,12 @@ public class TicketController {
         Long updateTicketId = ticketService.updateTicket(ticketId, updateTicketRequest, loginMember);
 
         return updateTicketId;
+    }
+
+    @GetMapping("/tickets/{id}")
+    public TicketDto getTicket(@PathVariable("id") Long ticketId) {
+        TicketDto ticket = ticketService.getTicket(ticketId);
+
+        return ticket;
     }
 }
