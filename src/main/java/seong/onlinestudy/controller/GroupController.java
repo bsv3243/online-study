@@ -8,6 +8,7 @@ import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupCategory;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
+import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.service.GroupService;
 
@@ -64,7 +65,7 @@ public class GroupController {
     @DeleteMapping("/groups/{id}")
     public String deleteGroup(@PathVariable Long id, @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
         if(loginMember == null) {
-            throw new RuntimeException();
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
         groupService.deleteGroup(id, loginMember);
 
