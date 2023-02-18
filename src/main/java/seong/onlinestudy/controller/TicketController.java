@@ -20,7 +20,7 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping("/tickets")
-    public Long createTicket(@RequestBody @Valid TicketCreateRequest createTicketRequest,
+    public Result<Long> createTicket(@RequestBody @Valid TicketCreateRequest createTicketRequest,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
 
         if(loginMember == null) {
@@ -29,11 +29,11 @@ public class TicketController {
 
         Long ticketId = ticketService.createTicket(createTicketRequest, loginMember);
 
-        return ticketId;
+        return new Result<>("201", ticketId);
     }
 
     @PostMapping("/tickets/{id}")
-    public Long updateTicket(@PathVariable("id") Long ticketId, TicketUpdateRequest updateTicketRequest,
+    public Result<Long> updateTicket(@PathVariable("id") Long ticketId, TicketUpdateRequest updateTicketRequest,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
@@ -41,13 +41,13 @@ public class TicketController {
 
         Long updateTicketId = ticketService.updateTicket(ticketId, updateTicketRequest, loginMember);
 
-        return updateTicketId;
+        return new Result<>("201", updateTicketId);
     }
 
     @GetMapping("/tickets/{id}")
-    public TicketDto getTicket(@PathVariable("id") Long ticketId) {
+    public Result<TicketDto> getTicket(@PathVariable("id") Long ticketId) {
         TicketDto ticket = ticketService.getTicket(ticketId);
 
-        return ticket;
+        return new Result<>("200", ticket);
     }
 }

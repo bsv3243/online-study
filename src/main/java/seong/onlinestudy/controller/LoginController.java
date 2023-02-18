@@ -27,7 +27,7 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public String login(@RequestBody @Valid LoginRequest loginRequest,
+    public Result<String> login(@RequestBody @Valid LoginRequest loginRequest,
                         HttpServletRequest request, HttpServletResponse response) {
 
         /* JWT 사용 로그인
@@ -44,17 +44,17 @@ public class LoginController {
 
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        return "ok";
+        return new Result<>("200", "ok");
     }
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
-    public String logout(HttpServletRequest request) {
+    public Result<String> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if(session != null) {
             session.invalidate();
         }
 
-        return "ok";
+        return new Result<>("200", "ok");
     }
 }

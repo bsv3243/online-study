@@ -27,7 +27,7 @@ public class StudyController {
     @GetMapping("/studies")
     public Result<List<StudyDto>> getStudies(StudySearchCond searchCond) {
         Page<StudyDto> studies = studyService.getStudies(searchCond);
-        Result<List<StudyDto>> result = new Result<>(studies.getContent());
+        Result<List<StudyDto>> result = new Result<>("200", studies.getContent());
         result.setPageInfo(studies);
 
         return result;

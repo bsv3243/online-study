@@ -30,21 +30,21 @@ public class GroupController {
 
     @Operation(summary = "그룹 생성(인증)")
     @PostMapping("/groups")
-    public Long createGroup(@RequestBody @Valid GroupCreateRequest createRequest,
+    public Result<Long> createGroup(@RequestBody @Valid GroupCreateRequest createRequest,
                             @SessionAttribute(name = LOGIN_MEMBER)Member loginMember) {
 
         Long groupId = groupService.createGroup(createRequest, loginMember);
 
-        return groupId;
+        return new Result<>("201", groupId);
     }
 
     @Operation(summary = "그룹 가입(인증)")
     @PostMapping("/groups/{groupId}")
-    public Long joinGroup(@PathVariable Long groupId,
+    public Result<Long> joinGroup(@PathVariable Long groupId,
                           @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
         Long joinedGroupId = groupService.joinGroup(groupId, loginMember);
 
-        return joinedGroupId;
+        return new Result<>("201", groupId);
     }
 
     @Operation(summary = "그룹 리스트 반환")
@@ -55,7 +55,7 @@ public class GroupController {
                                          @RequestParam(required = false) String search) {
         Page<GroupDto> groups = groupService.getGroups(page, size, category, search);
 
-        Result<List<GroupDto>> result = new Result<>(groups.getContent());
+        Result<List<GroupDto>> result = new Result<>("200", groups.getContent());
         result.setPageInfo(groups);
 
         return result;
@@ -63,20 +63,20 @@ public class GroupController {
 
     @Operation(summary = "그룹 1개 반환")
     @GetMapping("/groups/{id}")
-    public GroupDto getGroup(@PathVariable Long id) {
+    public Result<GroupDto> getGroup(@PathVariable Long id) {
         GroupDto group = groupService.getGroup(id);
 
-        return group;
+        return new Result<>("200", group);
     }
 
     @Operation(summary = "그룹 삭제(인증)")
     @DeleteMapping("/groups/{id}")
-    public String deleteGroup(@PathVariable Long id, @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
+    public Result<String> deleteGroup(@PathVariable Long id, @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
         groupService.deleteGroup(id, loginMember);
 
-        return "ok";
+        return new Result<>("200", "deleted");
     }
 }

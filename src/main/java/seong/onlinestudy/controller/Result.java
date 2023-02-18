@@ -10,12 +10,14 @@ import seong.onlinestudy.dto.GroupDto;
 @NoArgsConstructor
 public class Result<T> {
 
-    T data;
-    int number;
-    int size;
-    int totalPages;
-    boolean hasNext;
-    boolean hasPrevious;
+    private String code;
+    private T data;
+
+    private int number;
+    private int size;
+    private int totalPages;
+    private boolean hasNext;
+    private boolean hasPrevious;
 
     public void setPageInfo(Page page) {
         this.number = page.getNumber();
@@ -25,7 +27,8 @@ public class Result<T> {
         this.hasPrevious = page.hasPrevious();
     }
 
-    public Result(T data) {
+    public Result(String code, T data) {
+        this.code = code;
         this.data = data;
     }
 }
