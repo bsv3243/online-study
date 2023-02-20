@@ -1,5 +1,5 @@
 package seong.onlinestudy.domain;
 
 public enum GroupCategory {
-    ALL, JOB, GOV, UNIV, HIGH, ETC
+    JOB, GOV, UNIV, HIGH, BOOK, LANG, CERT, IT,  ETC
 }

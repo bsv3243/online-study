@@ -4,6 +4,7 @@ import lombok.Getter;
 import seong.onlinestudy.request.GroupCreateRequest;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +18,22 @@ public class Group {
     private Long id;
     private String name;
     private int headcount;
+    private LocalDate createdAt;
+
+    @Lob
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private GroupCategory category;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
+    List<Ticket> tickets = new ArrayList<>();
+
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<GroupMember> groupMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private List<Room> rooms = new ArrayList<>();
+    @OneToMany(mappedBy = "group")
+    private List<Post> posts = new ArrayList<>();
 
     public void addGroupMember(GroupMember groupMember) {
         groupMembers.add(groupMember);
@@ -36,8 +44,8 @@ public class Group {
         Group group = new Group();
         group.name = createRequest.getName();
         group.headcount = createRequest.getHeadcount();
+        group.createdAt = LocalDate.now();
         group.addGroupMember(groupMember);
-        group.rooms.add(Room.createRoom(1));
 
         return group;
     }
