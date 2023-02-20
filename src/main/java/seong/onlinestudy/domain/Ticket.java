@@ -24,21 +24,27 @@ public class Ticket {
     @JoinColumn(name = "member_id")
     Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
     Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    Room room;
+    @JoinColumn(name = "group_id")
+    private Group group;
 
-    public static Ticket createTicket(Study study, Room room, Member member) {
+    public static Ticket createTicket(Member member, Study study, Group group) {
         Ticket ticket = new Ticket();
         ticket.startTime = LocalDateTime.now();
         ticket.memberStatus = MemberStatus.STUDY;
+
+        member.getTickets().add(ticket);
         ticket.member = member;
+
+        study.tickets.add(ticket);
         ticket.study = study;
-        ticket.room = room;
+
+        group.getTickets().add(ticket);
+        ticket.group = group;
 
         return ticket;
     }

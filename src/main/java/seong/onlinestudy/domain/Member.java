@@ -4,6 +4,7 @@ import lombok.Getter;
 import seong.onlinestudy.request.MemberCreateRequest;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,19 @@ public class Member {
     private String username;
     private String password;
     private String nickname;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "member")
     private List<GroupMember> groupMembers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Ticket> tickets = new ArrayList<>();
 
     public static Member createMember(MemberCreateRequest request) {
         Member member = new Member();
