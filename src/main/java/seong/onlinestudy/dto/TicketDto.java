@@ -15,7 +15,6 @@ public class TicketDto {
 
     private MemberDto member;
     private StudyDto study;
-    private RoomDto room;
 
     public static TicketDto from(Ticket ticket) {
         TicketDto ticketDto = new TicketDto();
@@ -26,7 +25,6 @@ public class TicketDto {
 
         ticketDto.member = MemberDto.from(ticket.getMember());
         ticketDto.study = StudyDto.from(ticket.getStudy());
-        ticketDto.room = RoomDto.from(ticket.getRoom());
 
         return ticketDto;
     }

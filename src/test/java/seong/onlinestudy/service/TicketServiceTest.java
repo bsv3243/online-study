@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.exception.InvalidAuthorizationException;
-import seong.onlinestudy.repository.RoomRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.TicketCreateRequest;
@@ -30,8 +29,6 @@ class TicketServiceTest {
     @InjectMocks
     TicketService ticketService;
 
-    @Mock
-    RoomRepository roomRepository;
 
     @Mock
     TicketRepository ticketRepository;
@@ -42,14 +39,12 @@ class TicketServiceTest {
     @Test
     void createTicket() {
         //given
-        Room room = createRoom();
         Study study = createStudy();
         Member member = createMember(1L);
 
         given(studyRepository.findById(any())).willReturn(Optional.of(study));
-        given(roomRepository.findById(any())).willReturn(Optional.of(room));
 
-        TicketCreateRequest ticketRequest = createTicketRequest(room.getId(), study.getId());
+        TicketCreateRequest ticketRequest = createTicketRequest(study.getId());
 
         //when
         Long ticketId = ticketService.createTicket(ticketRequest, member);
@@ -95,11 +90,9 @@ class TicketServiceTest {
                 .isInstanceOf(InvalidAuthorizationException.class);
     }
 
-    private TicketCreateRequest createTicketRequest(Long roomId, Long studyId) {
+    private TicketCreateRequest createTicketRequest(Long studyId) {
         TicketCreateRequest request = new TicketCreateRequest();
-        request.setRoomId(roomId);
         request.setStudyId(studyId);
-
         return request;
     }
 
@@ -114,15 +107,6 @@ class TicketServiceTest {
         return ticket;
     }
 
-    private Room createRoom() {
-        Room room = new Room();
-
-        ReflectionTestUtils.setField(room, "id", 1L);
-        ReflectionTestUtils.setField(room, "number", 1);
-        ReflectionTestUtils.setField(room, "group", new Group());
-
-        return room;
-    }
 
     private Study createStudy() {
         Study study = new Study();

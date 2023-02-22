@@ -11,5 +11,5 @@ public class TicketCreateRequest {
     private Long studyId;
 
     @NotNull
-    private Long roomId;
+    private Long groupId;
 }
