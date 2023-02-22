@@ -44,16 +44,17 @@ public class GroupController {
                           @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
         Long joinedGroupId = groupService.joinGroup(groupId, loginMember);
 
-        return new Result<>("201", groupId);
+        return new Result<>("201", joinedGroupId);
     }
 
     @Operation(summary = "그룹 리스트 반환")
     @GetMapping("/groups")
     public Result<List<GroupDto>> getGroups(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "10") int size,
-                                         @RequestParam(defaultValue = "ALL") GroupCategory category,
-                                         @RequestParam(required = false) String search) {
-        Page<GroupDto> groups = groupService.getGroups(page, size, category, search);
+                                         @RequestParam(required = false) GroupCategory category,
+                                         @RequestParam(required = false) String search,
+                                            @RequestParam(required = false) List<Long> studyIds) {
+        Page<GroupDto> groups = groupService.getGroups(page, size, category, search, studyIds);
 
         Result<List<GroupDto>> result = new Result<>("200", groups.getContent());
         result.setPageInfo(groups);

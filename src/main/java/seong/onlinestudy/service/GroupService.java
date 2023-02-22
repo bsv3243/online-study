@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
+import seong.onlinestudy.dto.GroupStudyDto;
 import seong.onlinestudy.exception.InvalidAuthorizationException;
 import seong.onlinestudy.repository.GroupRepository;
-import seong.onlinestudy.repository.GroupRepositoryImpl;
+import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 import static seong.onlinestudy.domain.GroupRole.*;
 
@@ -25,6 +24,7 @@ import static seong.onlinestudy.domain.GroupRole.*;
 public class GroupService {
 
     private final GroupRepository groupRepository;
+    private final StudyRepository studyRepository;
 
     @Transactional
     public Long createGroup(GroupCreateRequest createRequest, Member member) {
@@ -49,14 +49,23 @@ public class GroupService {
         return group.getId();
     }
 
-    public Page<GroupDto> getGroups(int page, int size, GroupCategory category, String search) {
-        if(category.equals(GroupCategory.ALL)) {
-            category = null;
-        }
+    public Page<GroupDto> getGroups(int page, int size, GroupCategory category, String search, List<Long> studyIds) {
+        Page<Group> groups = groupRepository.findGroups(PageRequest.of(page, size), category, search, studyIds);
 
-        Page<GroupDto> groups = groupRepository.getGroups(PageRequest.of(page, size), category, search);
+        List<GroupStudyDto> groupStudies = studyRepository.findStudiesInGroups(groups.getContent());
 
-        return groups;
+        Page<GroupDto> groupDtos = groups.map(group -> {
+            GroupDto groupDto = GroupDto.from(group);
+            groupDto.setMemberSize(group.getGroupMembers().size());
+            groupStudies.forEach(study -> {
+                if (study.getGroupId().equals(group.getId()))
+                    groupDto.getStudies().add(study);
+            });
+
+            return groupDto;
+        });
+
+        return groupDtos;
     }
 
     public GroupDto getGroup(Long id) {
@@ -80,4 +89,5 @@ public class GroupService {
 
         groupRepository.delete(group);
     }
+
 }
