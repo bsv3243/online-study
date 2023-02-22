@@ -118,15 +118,16 @@ class GroupControllerTest {
         //given
         GroupDto groupDto = new GroupDto();
         groupDto.setGroupId(1L); groupDto.setName("groupA");
-        groupDto.setHeadcount(30); groupDto.setMemberCount(5L);
+        groupDto.setHeadcount(30);
         groupDto.setCategory(GroupCategory.JOB);
 
         int page = 0; int size=10;
-        GroupCategory category = GroupCategory.ALL;
+        GroupCategory category = GroupCategory.ETC;
         String search = null;
+        List<Long> studyIds = null;
 
         PageImpl<GroupDto> groupDtos = new PageImpl<>(List.of(groupDto), PageRequest.of(page, size), 1);
-        given(groupService.getGroups(page, size, category, search)).willReturn(groupDtos);
+        given(groupService.getGroups(page, size, category, search, studyIds)).willReturn(groupDtos);
 
         //when
         ResultActions actions = mvc.perform(get("/api/v1/groups"));
