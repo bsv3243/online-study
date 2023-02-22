@@ -5,6 +5,7 @@ import seong.onlinestudy.request.TicketUpdateRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Entity
 @Getter
@@ -14,19 +15,21 @@ public class Ticket {
     @Column(name = "ticket_id")
     private Long id;
 
-    LocalDateTime startTime;
-    LocalDateTime endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+
+    private long activeTime;
 
     @Enumerated(EnumType.STRING)
-    MemberStatus memberStatus;
+    private MemberStatus memberStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    Member member;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
-    Study study;
+    private Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -36,6 +39,7 @@ public class Ticket {
         Ticket ticket = new Ticket();
         ticket.startTime = LocalDateTime.now();
         ticket.memberStatus = MemberStatus.STUDY;
+        ticket.activeTime = 0;
 
         member.getTickets().add(ticket);
         ticket.member = member;
@@ -51,5 +55,11 @@ public class Ticket {
 
     public void updateStatus(TicketUpdateRequest updateRequest) {
         this.memberStatus = updateRequest.getMemberStatus();
+
+        ZoneOffset offset = ZoneOffset.of("+09:00");
+        if(updateRequest.getMemberStatus() == MemberStatus.END) {
+            this.endTime = LocalDateTime.now();
+            this.activeTime = this.endTime.toEpochSecond(offset) - this.startTime.toEpochSecond(offset);
+        }
     }
 }

@@ -3,13 +3,13 @@ package seong.onlinestudy.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.Member;
-import seong.onlinestudy.domain.Room;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.domain.Ticket;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidAuthorizationException;
-import seong.onlinestudy.repository.RoomRepository;
+import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.TicketCreateRequest;
@@ -24,16 +24,16 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final StudyRepository studyRepository;
-    private final RoomRepository roomRepository;
+    private final GroupRepository groupRepository;
 
     public Long createTicket(TicketCreateRequest createTicketRequest, Member loginMember) {
         Study findStudy = studyRepository.findById(createTicketRequest.getStudyId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 스터디입니다."));
 
-        Room findRoom = roomRepository.findById(createTicketRequest.getRoomId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 방입니다."));
+        Group findGroup = groupRepository.findById(createTicketRequest.getGroupId())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        Ticket ticket = Ticket.createTicket(findStudy, findRoom, loginMember);
+        Ticket ticket = Ticket.createTicket(loginMember, findStudy, findGroup);
         ticketRepository.save(ticket);
 
         return ticket.getId();
