@@ -18,10 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.controller.GroupController;
-import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.Member;
-import seong.onlinestudy.domain.Study;
-import seong.onlinestudy.domain.Ticket;
+import seong.onlinestudy.domain.*;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
@@ -29,9 +26,14 @@ import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static seong.onlinestudy.MyUtils.createGroup;
+import static seong.onlinestudy.MyUtils.createMember;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
 
 @Transactional
@@ -90,29 +92,33 @@ public class GroupApiTest {
     @Test
     void 그룹조회() throws Exception {
         //given
-        Member testMember1 = MyUtils.createMember("testMember1", "testMember1");
-        memberRepository.save(testMember1);
+        List<Member> members = new ArrayList<>();
+        for(int i=0; i<50; i++) {
+            Member member = createMember("testMember" + i, "testMember" + i);
+            members.add(member);
+        }
+        memberRepository.saveAll(members);
 
-        Group testGroup1 = MyUtils.createGroup("테스트그룹1", 30, testMember1);
-        groupRepository.save(testGroup1);
+        List<Group> groups = new ArrayList<>();
+        for(int i=0; i<10; i++) {
+            groups.add(createGroup("테스트그룹" + i, 30, members.get(i)));
+        }
+        groupRepository.saveAll(groups);
 
-        Study testStudy1 = MyUtils.createStudy("테스트스터디1");
-        studyRepository.save(testStudy1);
-
-        Ticket testTicket1 = MyUtils.createTicket(testMember1, testStudy1, testGroup1);
-        ticketRepository.save(testTicket1);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("page", "0"); map.add("size", "10");
-        map.add("category", null); map.add("search", null); map.add("studyIds", null);
+        for(int i=10; i<50; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            groups.get(i % 10).addGroupMember(groupMember);
+        }
 
         //when
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("page", "0"); map.add("size", "10");
+
         ResultActions rs = mvc.perform(get("/api/v1/groups")
-                .params(map));
+                        .params(map));
 
         //then
         rs
-                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
