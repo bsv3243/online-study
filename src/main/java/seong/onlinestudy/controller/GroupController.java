@@ -12,6 +12,7 @@ import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.GroupCreateRequest;
+import seong.onlinestudy.request.OrderBy;
 import seong.onlinestudy.service.GroupService;
 
 import javax.validation.Valid;
@@ -50,16 +51,24 @@ public class GroupController {
     @Operation(summary = "그룹 리스트 반환")
     @GetMapping("/groups")
     public Result<List<GroupDto>> getGroups(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size,
-                                         @RequestParam(required = false) GroupCategory category,
-                                         @RequestParam(required = false) String search,
-                                            @RequestParam(required = false) List<Long> studyIds) {
-        Page<GroupDto> groups = groupService.getGroups(page, size, category, search, studyIds);
+                                            @RequestParam(defaultValue = "10") int size,
+                                            @RequestParam(required = false) GroupCategory category,
+                                            @RequestParam(required = false) String search,
+                                            @RequestParam(required = false) List<Long> studyIds,
+                                            @RequestParam(defaultValue = "CREATEDAT")OrderBy orderBy) {
+        Page<GroupDto> groups = groupService.getGroups(page, size, category, search, studyIds, orderBy);
 
         Result<List<GroupDto>> result = new Result<>("200", groups.getContent());
         result.setPageInfo(groups);
 
         return result;
+    }
+
+    @GetMapping("/test")
+    public Result<List<Group>> test() {
+        List<Group> allGroups = groupService.findAllGroups();
+
+        return new Result<>("200", allGroups);
     }
 
     @Operation(summary = "그룹 1개 반환")

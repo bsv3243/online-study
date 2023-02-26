@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
@@ -21,6 +20,7 @@ import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.OrderBy;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +28,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -133,6 +132,7 @@ class GroupServiceTest {
         GroupCategory category = null;
         String search = null;
         List<Long> studyIds = null;
+        OrderBy orderBy = null;
 
         Member member = MyUtils.createMember("testMember", "testMember");
         Group group1 = MyUtils.createGroup("테스트그룹", 30, member);
@@ -145,13 +145,13 @@ class GroupServiceTest {
 
         PageImpl<Group> testGroups = new PageImpl<>(List.of(group1, group2), PageRequest.of(page, size), 2);
 
-        given(groupRepository.findGroups(PageRequest.of(page, size), category, search, studyIds))
+        given(groupRepository.findGroups(PageRequest.of(page, size), category, search, studyIds, orderBy))
                 .willReturn(testGroups);
         given(studyRepository.findStudiesInGroups(testGroups.getContent()))
                 .willReturn(List.of(groupStudyDto1, groupStudyDto2));
 
         //when
-        Page<GroupDto> groups = groupService.getGroups(page, size, category, search, studyIds);
+        Page<GroupDto> groups = groupService.getGroups(page, size, category, search, studyIds, orderBy);
 
         //then
         List<GroupDto> groupDtos = groups.getContent();
