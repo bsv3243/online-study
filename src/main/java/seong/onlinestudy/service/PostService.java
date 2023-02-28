@@ -2,6 +2,7 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.*;
@@ -29,8 +30,26 @@ public class PostService {
     private final StudyRepository studyRepository;
     private final PostStudyRepository postStudyRepository;
 
-    public Page<Post> getPosts(int page, int size, String search, PostCategory category, List<Long> studyIds) {
-        return null;
+    public Page<PostDto> getPosts(int page, int size, Long groupId, String search, PostCategory category, List<Long> studyIds) {
+        Page<Post> postsWithComments
+                = postRepository.findPostsWithComments(PageRequest.of(page, size), groupId, search, category, studyIds);
+
+        List<PostStudy> postStudies = postStudyRepository.findStudiesWhereInPosts(postsWithComments.getContent());
+
+        Page<PostDto> posts = postsWithComments.map(post -> {
+            PostDto postDto = PostDto.from(post);
+
+            //postStudy 의 post.id와 post 의 id가 일치하는 것끼리 새로운 리스트 반환, 이후 dto 로 변환
+            List<PostStudy> filtered = postStudies.stream()
+                    .filter(postStudy -> postStudy.getPost().getId().equals(post.getId())).collect(Collectors.toList());
+            List<PostStudyDto> postStudyDtos = filtered.stream().map(PostStudyDto::from).collect(Collectors.toList());
+
+            postDto.setPostStudies(postStudyDtos);
+
+            return postDto;
+        });
+
+        return posts;
     }
 
     @Transactional
