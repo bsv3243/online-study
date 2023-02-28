@@ -1,14 +1,14 @@
 package seong.onlinestudy.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.PostDto;
@@ -17,7 +17,6 @@ import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.repository.PostStudyRepository;
 import seong.onlinestudy.repository.StudyRepository;
-import seong.onlinestudy.request.MemberCreateRequest;
 import seong.onlinestudy.request.PostCreateRequest;
 
 import java.util.ArrayList;
@@ -26,12 +25,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.will;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static seong.onlinestudy.MyUtils.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -66,7 +63,7 @@ class PostServiceTest {
         setField(group, "id", 1L);
         request.setGroupId(group.getId());
 
-        List<Study> studies = MyUtils.createStudies(5);
+        List<Study> studies = MyUtils.createStudies(5, false);
         List<PostStudy> postStudies = new ArrayList<>();
         for(int i=0; i<=5; i++) {
             setField(studies.get(i), "id", (long) i);
@@ -101,7 +98,7 @@ class PostServiceTest {
 
         given(postRepository.findByIdWithMemberAndGroup(any())).willReturn(Optional.of(post));
 
-        List<Study> studies = MyUtils.createStudies(5);
+        List<Study> studies = MyUtils.createStudies(5, false);
         List<PostStudy> postStudies = new ArrayList<>();
         for(int i=0; i<=5; i++) {
             setField(studies.get(i), "id", (long)i);
@@ -126,4 +123,65 @@ class PostServiceTest {
                 .map(PostStudyDto::from).collect(Collectors.toList());
         assertThat(postDto.getPostStudies()).containsAll(postStudyDtos);
     }
+
+    @Test
+    void getPosts() {
+        //given
+        List<Member> members = createMembers(5, false);
+        List<Group> groups = createGroups(members, 5, true);
+        List<Post> posts = createPosts(members, groups, 30, true);
+
+        int page = 0;
+        int size = 10;
+        Long groupId = null;
+        String search = null;
+        PostCategory category = null;
+        List<Long> studyIds = null;
+
+        List<Post> subList = posts.subList(0, 10);
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any()))
+                .willReturn(new PageImpl<>(subList, PageRequest.of(page, size), posts.size()));
+
+        //when
+        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds);
+
+        //then
+        List<PostDto> postDtoList = subList.stream().map(PostDto::from).collect(Collectors.toList());
+
+        List<PostDto> content = postDtos.getContent();
+        assertThat(content).containsExactlyInAnyOrderElementsOf(postDtoList);
+    }
+
+    @Test
+    void getPosts_withStudies() {
+        //given
+        List<Member> members = createMembers(5, false);
+        List<Group> groups = createGroups(members, 5, true);
+        List<Post> posts = createPosts(members, groups, 5, true);
+        List<Study> studies = createStudies(30, true);
+        for(int i=0; i<30; i++) {
+            PostStudy postStudy = PostStudy.create(posts.get(i%5), studies.get(i));
+            setField(postStudy, "id", (long) i);
+        }
+
+        int page = 0;
+        int size = 10;
+        Long groupId = null;
+        String search = null;
+        PostCategory category = null;
+        List<Long> studyIds = null;
+
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any()))
+                .willReturn(new PageImpl<>(posts, PageRequest.of(page, size), posts.size()));
+
+        //when
+        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds);
+
+        //then
+        List<PostDto> postDtoList = posts.stream().map(PostDto::from).collect(Collectors.toList());
+
+        List<PostDto> content = postDtos.getContent();
+        assertThat(content).containsExactlyInAnyOrderElementsOf(postDtoList);
+    }
+
 }

@@ -7,7 +7,7 @@ import seong.onlinestudy.domain.Post;
 
 import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 
     /**
      * Post 로부터 Member, Group 엔티티를 페치 조인하고 postId와 일치하는 게시글을 조회한다.

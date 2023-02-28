@@ -1,6 +1,5 @@
 package seong.onlinestudy.repository;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +29,17 @@ public class PostRepositoryTest {
     List<Member> members;
     List<Group> groups;
     List<Study> studies;
+    List<Post> posts;
 
     @BeforeEach
     void init() {
-        members = createMembers(50);
+        members = createMembers(50, false);
         memberRepository.saveAll(members);
 
-        groups = createGroups(members, 20);
+        groups = createGroups(members, 20, false);
         groupRepository.saveAll(groups);
 
-        List<Post> posts = createPosts(members, groups, 20);
+        posts = createPosts(members, groups, 20, false);
         postRepository.saveAll(posts);
     }
 

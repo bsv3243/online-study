@@ -1,6 +1,7 @@
 package seong.onlinestudy.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.domain.Member;
@@ -22,14 +23,18 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public Result<List<Post>> getPosts(@RequestParam(defaultValue = "0") int page,
+    public Result<List<PostDto>> getPosts(@RequestParam(defaultValue = "0") int page,
                                        @RequestParam(defaultValue = "10") int size,
+                                       @RequestParam(required = false) Long groupId,
                                        @RequestParam(required = false) String search,
                                        @RequestParam(required = false) PostCategory category,
                                        @RequestParam(required = false) List<Long> studyIds) {
-        postService.getPosts(page, size, search, category, studyIds);
+        Page<PostDto> posts = postService.getPosts(page, size, groupId, search, category, studyIds);
 
-        return null;
+        Result<List<PostDto>> result = new Result<>("200", posts.getContent());
+        result.setPageInfo(posts);
+
+        return result;
     }
 
     @PostMapping("/posts")
