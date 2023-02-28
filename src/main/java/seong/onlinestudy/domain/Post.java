@@ -4,6 +4,7 @@ import lombok.Getter;
 import seong.onlinestudy.request.PostCreateRequest;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class Post {
 
     @Enumerated(EnumType.STRING)
     private PostCategory category;
+    private int viewCount;
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -47,6 +50,8 @@ public class Post {
         post.title = request.getTitle();
         post.content = request.getContent();
         post.category = request.getCategory();
+        post.viewCount = 0;
+        post.createdAt = LocalDateTime.now();
 
         post.member = member;
         member.getPosts().add(post);
