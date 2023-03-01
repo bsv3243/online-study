@@ -39,7 +39,7 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     List<PostStudy> postStudies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     List<Comment> comments = new ArrayList<>();
 
     public void setGroup(Group group) {

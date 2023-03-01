@@ -1,7 +1,6 @@
 package seong.onlinestudy.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +15,7 @@ import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.request.CommentCreateRequest;
 import seong.onlinestudy.request.CommentUpdateRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,5 +86,34 @@ class CommentServiceTest {
 
         //then
         assertThat(comment.getContent()).isEqualTo(request.getContent());
+    }
+
+    @Test
+    void deleteComment() {
+        //given
+        String content = "content";
+
+        Member member = createMember("memberA", "memberA");
+        setField(member, "id", 1L);
+
+        Post post = createPost("postA", "postA", PostCategory.CHAT, member);
+        setField(post, "id", 1L);
+
+        List<Comment> comments = MyUtils.createComments(List.of(member), List.of(post), true, 10);
+
+        Comment comment = MyUtils.createComment(content);
+        comment.setMemberAndPost(member, post);
+        setField(comment, "id", 10L);
+
+        given(commentRepository.findById(any())).willReturn(Optional.of(comment));
+        assertThat(post.getComments()).contains(comment);
+
+        //when
+        Long commentId = commentService.deleteComment(comment.getId(), member);
+
+        //then
+        assertThat(post.getComments()).containsExactlyInAnyOrderElementsOf(comments);
+        assertThat(post.getComments()).doesNotContain(comment);
+
     }
 }

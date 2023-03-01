@@ -54,4 +54,18 @@ public class CommentService {
 
         return comment.getId();
     }
+
+    @Transactional
+    public Long deleteComment(Long commentId, Member loginMember) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다."));
+
+        if(!comment.getMember().getId().equals(loginMember.getId())) {
+            throw new UnAuthorizationException("댓글 삭제 권한이 없습니다.");
+        }
+
+        comment.delete();
+
+        return comment.getId();
+    }
 }
