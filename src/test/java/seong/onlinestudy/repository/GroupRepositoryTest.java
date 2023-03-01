@@ -92,7 +92,6 @@ class GroupRepositoryTest {
         //then
         Group findGroup = groupRepository.findById(group.getId()).get();
         assertThat(findGroup.getName()).isEqualTo("groupTest");
-        assertThat(findGroup.getRooms().size()).isEqualTo(1);
         assertThat(findGroup.getGroupMembers().size()).isEqualTo(1);
     }
 

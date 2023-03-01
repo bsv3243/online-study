@@ -17,7 +17,6 @@ public class GroupDto {
     private Long memberCount;
     private GroupCategory category;
     private List<GroupMemberDto> groupMembers;
-    private List<RoomDto> rooms;
 
     public static GroupDto from(Group group) {
         GroupDto groupDto = new GroupDto();
@@ -28,8 +27,6 @@ public class GroupDto {
         groupDto.category = group.getCategory();
         groupDto.groupMembers = group.getGroupMembers().stream()
                 .map(GroupMemberDto::from).collect(Collectors.toList());
-        groupDto.rooms = group.getRooms().stream()
-                .map(RoomDto::from).collect(Collectors.toList());
 
         return groupDto;
     }

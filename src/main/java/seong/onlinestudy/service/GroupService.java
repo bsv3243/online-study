@@ -8,14 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
-import seong.onlinestudy.exception.InvalidAuthorizationException;
+import seong.onlinestudy.exception.UnAuthorizationException;
 import seong.onlinestudy.repository.GroupRepository;
-import seong.onlinestudy.repository.GroupRepositoryImpl;
 import seong.onlinestudy.request.GroupCreateRequest;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 import static seong.onlinestudy.domain.GroupRole.*;
 
@@ -50,10 +47,6 @@ public class GroupService {
     }
 
     public Page<GroupDto> getGroups(int page, int size, GroupCategory category, String search) {
-        if(category.equals(GroupCategory.ALL)) {
-            category = null;
-        }
-
         Page<GroupDto> groups = groupRepository.getGroups(PageRequest.of(page, size), category, search);
 
         return groups;
@@ -75,7 +68,7 @@ public class GroupService {
         GroupMember master = group.getGroupMembers().stream().filter(groupMember ->
                 groupMember.getRole().equals(MASTER)).findFirst().get();
         if(!master.getMember().getId().equals(loginMember.getId())) {
-            throw new InvalidAuthorizationException("권한이 없습니다.");
+            throw new UnAuthorizationException("권한이 없습니다.");
         }
 
         groupRepository.delete(group);
