@@ -19,6 +19,7 @@ import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.OrderBy;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static seong.onlinestudy.domain.GroupRole.*;
 
@@ -90,10 +91,13 @@ public class GroupService {
     }
 
     public GroupDto getGroup(Long id) {
-        Group group = groupRepository.findById(id)
+        Group group = groupRepository.findGroupWithMembers(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
         GroupDto groupDto = GroupDto.from(group);
+        List<GroupMemberDto> groupMemberDtos = group.getGroupMembers().stream()
+                .map(GroupMemberDto::from).collect(Collectors.toList());
+        groupDto.setGroupMembers(groupMemberDtos);
 
         return groupDto;
     }
