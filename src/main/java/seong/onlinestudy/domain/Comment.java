@@ -2,6 +2,7 @@ package seong.onlinestudy.domain;
 
 import lombok.Getter;
 import seong.onlinestudy.request.CommentCreateRequest;
+import seong.onlinestudy.request.CommentUpdateRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,6 +35,17 @@ public class Comment {
 
         this.member = member;
         member.getComments().add(this);
+    }
+
+    public void update(CommentUpdateRequest request) {
+        this.content = request.getContent();
+    }
+
+    public void delete() {
+        this.isDeleted = true;
+
+        this.post.getComments().remove(this);
+        this.post = null;
     }
 
     public static Comment create(CommentCreateRequest request) {

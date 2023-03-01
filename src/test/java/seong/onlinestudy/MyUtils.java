@@ -1,6 +1,5 @@
 package seong.onlinestudy;
 
-import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.request.*;
 
@@ -130,5 +129,19 @@ public class MyUtils {
         Comment comment = Comment.create(request);
 
         return comment;
+    }
+
+    public static List<Comment> createComments(List<Member> members, List<Post> posts, boolean setId, int endId) {
+        List<Comment> comments = new ArrayList<>();
+        for(int i=0; i<endId; i++) {
+            Comment comment = createComment("테스트댓글" + i);
+            comment.setMemberAndPost(members.get(i%members.size()), posts.get(i%posts.size()));
+
+            if(setId) {
+                setField(comment, "id", (long) i);
+            }
+            comments.add(comment);
+        }
+        return comments;
     }
 }
