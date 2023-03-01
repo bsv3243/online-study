@@ -1,6 +1,10 @@
 package seong.onlinestudy;
 
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.GroupStudyDto;
+import seong.onlinestudy.request.GroupCreateRequest;
+import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.StudyCreateRequest;
 import seong.onlinestudy.request.*;
 
 import java.util.ArrayList;
@@ -29,6 +33,15 @@ public class MyUtils {
         return Group.createGroup(request, groupMember);
     }
 
+
+    public static List<Group> createGroups(List<Member> members, int endId) {
+        List<Group> groups = new ArrayList<>();
+        for(int i=0; i<endId; i++) {
+            groups.add(createGroup("테스트그룹" + 1, 30, members.get(i)));
+        }
+        return groups;
+    }
+
     public static List<Group> createGroups(List<Member> members, int endId, boolean setId) {
         List<Group> groups = new ArrayList<>();
         for(int i=0; i<endId; i++) {
@@ -37,6 +50,7 @@ public class MyUtils {
             if(setId) {
                 setField(groups.get(i), "id", (long) i);
             }
+
         }
         return groups;
     }
@@ -52,6 +66,15 @@ public class MyUtils {
         return Study.createStudy(request);
     }
 
+
+    public static List<Study> createStudies(int endId) {
+        List<Study> studies = new ArrayList<>();
+        for(int i=0; i<endId; i++) {
+            studies.add(createStudy("테스트스터디"+1));
+        }
+        return studies;
+    }
+
     public static List<Study> createStudies(int endId, boolean setId) {
         List<Study> studies = new ArrayList<>();
         for(int i=0; i<endId; i++) {
@@ -64,6 +87,18 @@ public class MyUtils {
         return studies;
     }
 
+
+    public static GroupStudyDto createGroupStudyDto(Long studyId, Long groupId, String name, long studyTime) {
+        GroupStudyDto groupStudyDto = new GroupStudyDto(studyId, groupId, name, studyTime);
+
+        return groupStudyDto;
+    }
+
+    public static List<Member> createMembers(int endId) {
+        List<Member> members = new ArrayList<>();
+        for(int i=0; i<=endId; i++) {
+            members.add(createMember("testMember" + i, "testMember" + i));
+            
     public static List<Study> createStudies(int beginId, int endId, boolean setId) {
         List<Study> studies = new ArrayList<>();
         for(int i=beginId; i<endId; i++) {

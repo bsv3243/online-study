@@ -1,21 +1,21 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.GroupCategory;
-import seong.onlinestudy.domain.QGroupMember;
-import seong.onlinestudy.dto.GroupDto;
+import seong.onlinestudy.domain.*;
+import seong.onlinestudy.request.OrderBy;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static seong.onlinestudy.domain.QGroup.*;
-import static seong.onlinestudy.domain.QGroupMember.*;
+import static seong.onlinestudy.domain.QGroupMember.groupMember;
+import static seong.onlinestudy.domain.QStudy.study;
+import static seong.onlinestudy.domain.QTicket.ticket;
 
 public class GroupRepositoryImpl implements GroupRepositoryCustom{
 
@@ -26,25 +26,45 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
     }
 
     @Override
-    public Page<GroupDto> getGroups(Pageable pageable, GroupCategory category, String search) {
-        List<GroupDto> content = query
-                .select(Projections.fields(GroupDto.class,
-                        group.id, group.name, group.headcount, groupMember.id.count().as("memberCount"), group.category))
-                .from(group)
+    public Page<Group> findGroups(Pageable pageable, GroupCategory category, String search, List<Long> studyIds, OrderBy orderBy) {
+
+        OrderSpecifier order;
+        switch (orderBy) {
+            case MEMBERS:
+                order = groupMember.count().desc();
+                break;
+            case TIME:
+                order = ticket.activeTime.sum().desc();
+                break;
+            default:
+                order = group.createdAt.desc();
+        }
+
+        List<Group> groups = query
+                .selectFrom(group)
+                .leftJoin(group.tickets, ticket)
+                .leftJoin(ticket.study, study)
                 .join(group.groupMembers, groupMember)
-                .where(categoryEq(category), nameContains(search))
+                .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))
                 .groupBy(group.id)
-                .offset(pageable.getOffset())
+                .orderBy(order)
                 .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
                 .fetch();
 
         Long total = query
                 .select(group.count())
                 .from(group)
-                .where(categoryEq(category), nameContains(search))
+                .leftJoin(group.tickets, ticket)
+                .leftJoin(ticket.study, study)
+                .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))
                 .fetchOne();
 
-        return new PageImpl<>(content, pageable, total);
+        return new PageImpl<>(groups, pageable, total);
+    }
+
+    private BooleanExpression studyIdsIn(List<Long> studyIds) {
+        return studyIds != null ? study.id.in(studyIds) : null;
     }
 
     private BooleanExpression categoryEq(GroupCategory category) {
@@ -54,5 +74,6 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
     private BooleanExpression nameContains(String search) {
         return search != null ? group.name.contains(search) : null;
     }
+
 
 }

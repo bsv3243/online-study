@@ -1,10 +1,8 @@
 package seong.onlinestudy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,22 +13,18 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import seong.onlinestudy.SessionConst;
-import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupCategory;
-import seong.onlinestudy.domain.GroupMember;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.OrderBy;
 import seong.onlinestudy.service.GroupService;
 
-import java.net.BindException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -118,15 +112,17 @@ class GroupControllerTest {
         //given
         GroupDto groupDto = new GroupDto();
         groupDto.setGroupId(1L); groupDto.setName("groupA");
-        groupDto.setHeadcount(30); groupDto.setMemberCount(5L);
+        groupDto.setHeadcount(30);
         groupDto.setCategory(GroupCategory.JOB);
 
         int page = 0; int size=10;
         GroupCategory category = GroupCategory.ETC;
         String search = null;
+        List<Long> studyIds = null;
+        OrderBy orderBy = null;
 
         PageImpl<GroupDto> groupDtos = new PageImpl<>(List.of(groupDto), PageRequest.of(page, size), 1);
-        given(groupService.getGroups(page, size, category, search)).willReturn(groupDtos);
+        given(groupService.getGroups(page, size, category, search, studyIds, orderBy)).willReturn(groupDtos);
 
         //when
         ResultActions actions = mvc.perform(get("/api/v1/groups"));
