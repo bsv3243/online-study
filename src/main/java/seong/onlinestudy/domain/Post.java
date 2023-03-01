@@ -2,6 +2,7 @@ package seong.onlinestudy.domain;
 
 import lombok.Getter;
 import seong.onlinestudy.request.PostCreateRequest;
+import seong.onlinestudy.request.PostUpdateRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class Post {
     private PostCategory category;
     private int viewCount;
     private LocalDateTime createdAt;
+    private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -45,6 +47,20 @@ public class Post {
         group.getPosts().add(this);
     }
 
+    public void update(PostUpdateRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+    }
+
+    /**
+     * 게시글 삭제 상태로 변경,
+     * postStudies 리스트 clear
+     */
+    public void delete() {
+        this.isDeleted = true;
+        this.postStudies.clear();
+    }
+
     public static Post createPost(PostCreateRequest request, Member member) {
         Post post = new Post();
         post.title = request.getTitle();
@@ -52,6 +68,7 @@ public class Post {
         post.category = request.getCategory();
         post.viewCount = 0;
         post.createdAt = LocalDateTime.now();
+        post.isDeleted = false;
 
         post.member = member;
         member.getPosts().add(post);

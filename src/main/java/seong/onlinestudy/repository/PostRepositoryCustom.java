@@ -16,7 +16,9 @@ public interface PostRepositoryCustom {
      * @param search like '%search%' 조건을 위한 문자열
      * @param category category 검색을 위한 PostCategory enum
      * @param studyIds Study 와 연관관계 조건을 위한 id List
+     * @param deleted 삭제된 게시글 검색 조건
      * @return Comment, Member 와 페치 조인한 Post 목록을 반환
      * */
-    Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds);
+    Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds, Boolean deleted);
+
 }

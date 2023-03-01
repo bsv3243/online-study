@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.Post;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
@@ -16,4 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
      */
     @Query("select p from Post p left join fetch p.member m left join fetch p.group g where p.id=:postId")
     Optional<Post> findByIdWithMemberAndGroup(@Param("postId") Long postId);
+
+    @Query("select p from Post p left join fetch p.postStudies ps join fetch ps.study s where p.id=:postId")
+    Optional<Post> findByIdWithStudies(@Param("postId") Long postId);
 }
