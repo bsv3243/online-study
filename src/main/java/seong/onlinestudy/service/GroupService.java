@@ -24,13 +24,13 @@ import static seong.onlinestudy.domain.GroupRole.*;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GroupService {
 
     private final GroupRepository groupRepository;
     private final StudyRepository studyRepository;
     private final MemberRepository memberRepository;
-    private final GroupMemberRepository groupMemberRepository;
 
     @Transactional
     public Long createGroup(GroupCreateRequest createRequest, Member member) {
@@ -55,7 +55,6 @@ public class GroupService {
         return group.getId();
     }
 
-    @Transactional
     public Page<GroupDto> getGroups(int page, int size, GroupCategory category, String search, List<Long> studyIds, OrderBy orderBy) {
         Page<Group> groups = groupRepository.findGroups(PageRequest.of(page, size), category, search, studyIds, orderBy);
 
@@ -99,6 +98,7 @@ public class GroupService {
         return groupDto;
     }
 
+    @Transactional
     public void deleteGroup(Long id, Member loginMember) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
@@ -112,7 +112,4 @@ public class GroupService {
         groupRepository.delete(group);
     }
 
-    public List<Group> findAllGroups() {
-        return groupRepository.findAll();
-    }
 }
