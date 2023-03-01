@@ -81,6 +81,8 @@ public class PostService {
         Post post = postRepository.findByIdWithMemberAndGroup(postId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
+        post.plusViewCount();
+
         PostDto postDto = PostDto.from(post);
 
         //게시글 학습 태그 리스트 조회
