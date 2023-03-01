@@ -14,10 +14,9 @@ import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.repository.PostStudyRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.PostCreateRequest;
+import seong.onlinestudy.request.PostUpdateRequest;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,9 +29,9 @@ public class PostService {
     private final StudyRepository studyRepository;
     private final PostStudyRepository postStudyRepository;
 
-    public Page<PostDto> getPosts(int page, int size, Long groupId, String search, PostCategory category, List<Long> studyIds) {
+    public Page<PostDto> getPosts(int page, int size, Long groupId, String search, PostCategory category, List<Long> studyIds, Boolean deleted) {
         Page<Post> postsWithComments
-                = postRepository.findPostsWithComments(PageRequest.of(page, size), groupId, search, category, studyIds);
+                = postRepository.findPostsWithComments(PageRequest.of(page, size), groupId, search, category, studyIds, deleted);
 
         List<PostStudy> postStudies = postStudyRepository.findStudiesWhereInPosts(postsWithComments.getContent());
 
@@ -92,5 +91,46 @@ public class PostService {
         postDto.setPostStudies(postStudyDtos);
 
         return postDto;
+    }
+
+    @Transactional
+    public Long updatePost(Long postId, PostUpdateRequest request, Member loginMember) {
+        Post post = postRepository.findByIdWithStudies(postId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
+
+        //Post 를 생성한 회원과 로그인한 회원 정보가 일치하지 않으면
+        if(!post.getMember().getId().equals(loginMember.getId())) {
+            throw new UnAuthorizationException("해당 게시글의 수정 권한이 없습니다.");
+        }
+
+        List<Study> newStudies = studyRepository.findAllById(request.getStudyIds());
+
+        //제거된 PostStudy 삭제
+        List<PostStudy> postStudies = post.getPostStudies();
+        postStudies.removeIf(postStudy -> !newStudies.contains(postStudy.getStudy()));
+
+        //새로운 PostStudy 추가
+        List<Study> oldStudies = postStudies.stream().map(PostStudy::getStudy).collect(Collectors.toList());
+        for (Study newStudy : newStudies) {
+            if(!oldStudies.contains(newStudy)) {
+                PostStudy.create(post, newStudy);
+            }
+        }
+
+        post.update(request);
+
+        return post.getId();
+    }
+
+    @Transactional
+    public void deletePost(Long postId, Member loginMember) {
+        Post post = postRepository.findByIdWithStudies(postId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
+
+        if (!post.getMember().getId().equals(loginMember.getId())) {
+            throw new UnAuthorizationException("해당 게시글의 삭제 권한이 없습니다.");
+        }
+
+        post.delete();
     }
 }

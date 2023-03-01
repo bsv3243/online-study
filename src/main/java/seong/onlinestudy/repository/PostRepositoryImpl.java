@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static seong.onlinestudy.domain.QComment.comment;
@@ -26,7 +25,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds) {
+    public Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds, Boolean deleted) {
 
         OrderSpecifier order = post.createdAt.desc();
 
@@ -36,7 +35,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.comments, comment).fetchJoin()
                 .leftJoin(post.member, member).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
-                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds), isDeletedEq(deleted))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order)
@@ -46,11 +45,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .select(post.count())
                 .from(post)
                 .leftJoin(post.postStudies, postStudy)
-                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds), isDeletedEq(deleted))
                 .fetchOne();
 
 
         return new PageImpl<>(posts, pageable, count);
+    }
+
+    private BooleanExpression isDeletedEq(boolean isDelete) {
+        return post.isDeleted.eq(isDelete);
     }
 
     private BooleanExpression studyIdIn(List<Long> studyIds) {

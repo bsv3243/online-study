@@ -18,6 +18,7 @@ import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.repository.PostStudyRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.PostCreateRequest;
+import seong.onlinestudy.request.PostUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,11 +140,11 @@ class PostServiceTest {
         List<Long> studyIds = null;
 
         List<Post> subList = posts.subList(0, 10);
-        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any()))
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), false))
                 .willReturn(new PageImpl<>(subList, PageRequest.of(page, size), posts.size()));
 
         //when
-        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds);
+        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds, false);
 
         //then
         List<PostDto> postDtoList = subList.stream().map(PostDto::from).collect(Collectors.toList());
@@ -171,17 +172,58 @@ class PostServiceTest {
         PostCategory category = null;
         List<Long> studyIds = null;
 
-        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any()))
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), false))
                 .willReturn(new PageImpl<>(posts, PageRequest.of(page, size), posts.size()));
 
         //when
-        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds);
+        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds, false);
 
         //then
         List<PostDto> postDtoList = posts.stream().map(PostDto::from).collect(Collectors.toList());
 
         List<PostDto> content = postDtos.getContent();
         assertThat(content).containsExactlyInAnyOrderElementsOf(postDtoList);
+    }
+
+    @Test
+    void updatePost() {
+        //given
+        Member member = createMember("member", "member");
+        setField(member, "id", 1L);
+
+        Post post = MyUtils.createPost("test", "test", PostCategory.CHAT, member);
+        setField(post, "id", 1L);
+
+        List<Study> studies = createStudies(7, true);
+
+        List<Study> oldStudies = studies.subList(0, 4);
+        List<PostStudy> oldPostStudies = new ArrayList<>();
+        for(int i=0; i<oldStudies.size(); i++) {
+            PostStudy postStudy = PostStudy.create(post, oldStudies.get(i));
+            setField(postStudy, "id", (long) i);
+            oldPostStudies.add(postStudy);
+        }
+
+        List<Study> newStudies = studies.subList(4, 7);
+        Long postId = post.getId();
+        Member loginMember = member;
+        PostUpdateRequest request = new PostUpdateRequest();
+        request.setContent("test1234");request.setTitle("test1234");
+        request.setStudyIds(newStudies.stream()
+                .map(Study::getId).collect(Collectors.toList()));
+
+        given(postRepository.findByIdWithStudies(any())).willReturn(Optional.of(post));
+        given(studyRepository.findAllById(any())).willReturn(newStudies);
+
+        //when
+        Long updatePostId = postService.updatePost(postId, request, loginMember);
+
+        //then
+        assertThat(post.getTitle()).isEqualTo(request.getTitle());
+        assertThat(post.getContent()).isEqualTo(request.getContent());
+        List<Study> result = post.getPostStudies().stream()
+                .map(PostStudy::getStudy).collect(Collectors.toList());
+        assertThat(result).isEqualTo(newStudies);
     }
 
 }
