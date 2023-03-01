@@ -10,16 +10,17 @@ import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.dto.GroupMemberDto;
 import seong.onlinestudy.dto.GroupStudyDto;
-import seong.onlinestudy.exception.InvalidAuthorizationException;
 import seong.onlinestudy.repository.GroupMemberRepository;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
+import seong.onlinestudy.exception.UnAuthorizationException;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.OrderBy;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 import static seong.onlinestudy.domain.GroupRole.*;
 
@@ -110,7 +111,7 @@ public class GroupService {
         GroupMember master = group.getGroupMembers().stream().filter(groupMember ->
                 groupMember.getRole().equals(MASTER)).findFirst().get();
         if(!master.getMember().getId().equals(loginMember.getId())) {
-            throw new InvalidAuthorizationException("권한이 없습니다.");
+            throw new UnAuthorizationException("권한이 없습니다.");
         }
 
         groupRepository.delete(group);
