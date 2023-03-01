@@ -47,6 +47,17 @@ public class Post {
         group.getPosts().add(this);
     }
 
+    /**
+     * 조회수 증가
+     */
+    public void plusViewCount() {
+        this.viewCount++;
+    }
+
+    /**
+     * 제목, 본문 업데이트
+     * @param request title(제목), content(본문)
+     */
     public void update(PostUpdateRequest request) {
         this.title = request.getTitle();
         this.content = request.getContent();
