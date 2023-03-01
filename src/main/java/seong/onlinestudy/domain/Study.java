@@ -20,6 +20,9 @@ public class Study {
     @OneToMany(mappedBy = "study")
     List<Ticket> tickets = new ArrayList<>();
 
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    List<PostStudy> postStudies = new ArrayList<>();
+
     public static Study createStudy(StudyCreateRequest createRequest) {
         Study study = new Study();
         study.name = createRequest.getName();
