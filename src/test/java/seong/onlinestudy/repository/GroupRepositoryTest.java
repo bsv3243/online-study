@@ -1,46 +1,41 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static seong.onlinestudy.domain.GroupRole.*;
 import static seong.onlinestudy.domain.QGroup.group;
-import static seong.onlinestudy.domain.QGroupMember.groupMember;
 
 @Slf4j
 @DataJpaTest
 class GroupRepositoryTest {
 
     @Autowired
-    TestEntityManager testEntityManager;
-
-    @Autowired
     GroupRepository groupRepository;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
     EntityManager em;
 
     @TestConfiguration
@@ -57,24 +52,6 @@ class GroupRepositoryTest {
 
     @BeforeEach
     void init() {
-        em = testEntityManager.getEntityManager();
-
-        Member memberA = createMember("memberA", "test1234");
-        Member memberB = createMember("memberB", "test1234");
-        memberRepository.save(memberA);
-        memberRepository.save(memberB);
-
-        GroupMember groupMemberA = GroupMember.createGroupMember(memberA, MASTER);
-        GroupMember groupMemberB = GroupMember.createGroupMember(memberB, USER);
-        Group groupA = createGroup("test", 30, groupMemberA);
-        groupA.addGroupMember(groupMemberB);
-
-        GroupMember groupMemberC = GroupMember.createGroupMember(memberB, MASTER);
-        Group groupB = createGroup("groupA", 20, groupMemberC);
-
-
-        groupRepository.save(groupA);
-        groupRepository.save(groupB);
 
     }
 
@@ -120,6 +97,7 @@ class GroupRepositoryTest {
     void getGroupMember() {
         //given
 
+
         //when
         Group group = groupRepository.findAll().get(0);
 
@@ -130,111 +108,32 @@ class GroupRepositoryTest {
     }
 
     @Test
-    @DisplayName("그룹 리스트 조회, 인원수를 함께 조회")
     void getGroups() {
-        JPAQueryFactory query = new JPAQueryFactory(em);
-
         //given
-        Pageable pageable = PageRequest.of(0, 5);
-        GroupCategory category = null;
-        String search = null;
+        List<Member> members = MyUtils.createMembers(50);
+        memberRepository.saveAll(members);
+
+        List<Group> groups = new ArrayList<>();
+        for(int i=0; i<20; i++) {
+            groups.add(MyUtils.createGroup("테스트그룹" + 1, 30, members.get(i)));
+        }
+        groupRepository.saveAll(groups);
+
+        PageRequest request = PageRequest.of(0, 10);
 
         //when
-        List<GroupDto> result = query
-                .select(Projections.fields(GroupDto.class,
-                        group.id, group.name, group.headcount, groupMember.id.count().as("memberCount"), group.category))
-                .from(group)
-                .join(group.groupMembers, groupMember)
-                .where(categoryEq(category), nameContains(search))
-                .groupBy(group.id)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long total = query
-                .select(group.count())
-                .from(group)
-                .where(categoryEq(category), nameContains(search))
-                .fetchOne();
-
+        Page<Group> findGroups = groupRepository.findGroups(request, null, null, null, null);
 
         //then
-        GroupDto groupDto = result.get(0);
-        log.info("group={}", groupDto);
-        assertThat(groupDto.getName()).isEqualTo("test");
-        assertThat(groupDto.getMemberCount()).isEqualTo(2);
-        assertThat(total).isEqualTo(2);
+        Group[] groupArr = new Group[10];
+        for(int i=0; i<10; i++) {
+            groupArr[i] = groups.get(i);
+        }
+
+        assertThat(findGroups.getContent()).containsExactly(groupArr);
+        assertThat(findGroups.getSize()).isEqualTo(10);
     }
 
-    @Test
-    @DisplayName("그룹 리스트 조회, 인원수를 함께 조회(데이터 없음)")
-    void getGroups_데이터없음() {
-        JPAQueryFactory query = new JPAQueryFactory(em);
-
-        //given
-        Pageable pageable = PageRequest.of(0, 5);
-        GroupCategory category = null;
-        String search = null;
-        groupRepository.deleteAll();
-
-        //when
-        List<GroupDto> result = query
-                .select(Projections.fields(GroupDto.class,
-                        group.id, group.name, group.headcount, groupMember.id.count().as("memberCount"), group.category))
-                .from(group)
-                .join(group.groupMembers, groupMember)
-                .where(categoryEq(category), nameContains(search))
-                .groupBy(group.id)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long total = query
-                .select(group.count())
-                .from(group)
-                .where(categoryEq(category), nameContains(search))
-                .fetchOne();
-
-
-        //then
-        assertThat(result.size()).isEqualTo(0);
-        assertThat(total).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("그룹 리스트 조회, 인원수를 함께 조회(검색 테스트)")
-    void getGroups_검색() {
-        JPAQueryFactory query = new JPAQueryFactory(em);
-
-        //given
-        Pageable pageable = PageRequest.of(0, 5);
-        GroupCategory category = null;
-        String search = "gr";
-
-        //when
-        List<GroupDto> result = query
-                .select(Projections.fields(GroupDto.class,
-                        group.id, group.name, group.headcount, groupMember.id.count().as("memberCount"), group.category))
-                .from(group)
-                .join(group.groupMembers, groupMember)
-                .where(categoryEq(category), nameContains(search))
-                .groupBy(group.id)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long total = query
-                .select(group.count())
-                .from(group)
-                .where(categoryEq(category), nameContains(search))
-                .fetchOne();
-
-
-        //then
-        GroupDto groupDto = result.get(0);
-        assertThat(groupDto.getName()).isEqualTo("groupA");
-        assertThat(total).isEqualTo(1);
-    }
 
     private BooleanExpression categoryEq(GroupCategory category) {
         return category != null ? group.category.eq(category) : null;

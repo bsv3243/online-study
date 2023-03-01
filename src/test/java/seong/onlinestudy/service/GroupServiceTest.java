@@ -7,16 +7,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
-import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.GroupMember;
-import seong.onlinestudy.domain.Member;
-import seong.onlinestudy.domain.GroupRole;
+import seong.onlinestudy.MyUtils;
+import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.GroupDto;
+import seong.onlinestudy.dto.GroupStudyDto;
 import seong.onlinestudy.exception.UnAuthorizationException;
 import seong.onlinestudy.repository.GroupRepository;
+import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.OrderBy;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -29,6 +35,8 @@ class GroupServiceTest {
 
     @Mock
     GroupRepository groupRepository;
+    @Mock
+    StudyRepository studyRepository;
 
     @InjectMocks
     GroupService groupService;
@@ -115,6 +123,45 @@ class GroupServiceTest {
         //then
         assertThatThrownBy(() -> groupService.deleteGroup(groupId, memberA))
                 .isInstanceOf(UnAuthorizationException.class);
+    }
+
+    @Test
+    void 그룹조회() {
+        //given
+        int page = 0;  int size = 10;
+        GroupCategory category = null;
+        String search = null;
+        List<Long> studyIds = null;
+        OrderBy orderBy = null;
+
+        Member member = MyUtils.createMember("testMember", "testMember");
+        Group group1 = MyUtils.createGroup("테스트그룹", 30, member);
+        Group group2 = MyUtils.createGroup("테스트그룹2", 30, member);
+        ReflectionTestUtils.setField(group1, "id", 1L);
+        ReflectionTestUtils.setField(group2, "id", 2L);
+
+        GroupStudyDto groupStudyDto1 = new GroupStudyDto(1L, 1L, "테스트스터디", 1000);
+        GroupStudyDto groupStudyDto2 = new GroupStudyDto(2L, 2L, "테스트스터디2", 2000);
+
+        PageImpl<Group> testGroups = new PageImpl<>(List.of(group1, group2), PageRequest.of(page, size), 2);
+
+        given(groupRepository.findGroups(PageRequest.of(page, size), category, search, studyIds, orderBy))
+                .willReturn(testGroups);
+        given(studyRepository.findStudiesInGroups(testGroups.getContent()))
+                .willReturn(List.of(groupStudyDto1, groupStudyDto2));
+
+        //when
+        Page<GroupDto> groups = groupService.getGroups(page, size, category, search, studyIds, orderBy);
+
+        //then
+        List<GroupDto> groupDtos = groups.getContent();
+        assertThat(groupDtos).anySatisfy(group -> {
+            assertThat(group.getName()).isEqualTo("테스트그룹");
+
+            assertThat(group.getStudies()).anySatisfy(study -> {
+                assertThat(study.getName()).isEqualTo("테스트스터디");
+            });
+        });
     }
 
     private Group createGroup(String name, int count, GroupMember groupMember) {
