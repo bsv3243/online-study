@@ -12,7 +12,7 @@ import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupMember;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.GroupRole;
-import seong.onlinestudy.exception.InvalidAuthorizationException;
+import seong.onlinestudy.exception.UnAuthorizationException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
@@ -114,7 +114,7 @@ class GroupServiceTest {
 
         //then
         assertThatThrownBy(() -> groupService.deleteGroup(groupId, memberA))
-                .isInstanceOf(InvalidAuthorizationException.class);
+                .isInstanceOf(UnAuthorizationException.class);
     }
 
     private Group createGroup(String name, int count, GroupMember groupMember) {

@@ -122,7 +122,7 @@ class GroupControllerTest {
         groupDto.setCategory(GroupCategory.JOB);
 
         int page = 0; int size=10;
-        GroupCategory category = GroupCategory.ALL;
+        GroupCategory category = GroupCategory.ETC;
         String search = null;
 
         PageImpl<GroupDto> groupDtos = new PageImpl<>(List.of(groupDto), PageRequest.of(page, size), 1);
