@@ -2,10 +2,7 @@ package seong.onlinestudy;
 
 import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.MemberCreateRequest;
-import seong.onlinestudy.request.PostCreateRequest;
-import seong.onlinestudy.request.StudyCreateRequest;
+import seong.onlinestudy.request.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +65,18 @@ public class MyUtils {
         return studies;
     }
 
+    public static List<Study> createStudies(int beginId, int endId, boolean setId) {
+        List<Study> studies = new ArrayList<>();
+        for(int i=beginId; i<endId; i++) {
+            studies.add(createStudy("테스트스터디"+i));
+
+            if(setId) {
+                setField(studies.get(i), "id", (long) i);
+            }
+        }
+        return studies;
+    }
+
 
     public static List<Member> createMembers(int endId, boolean setId) {
         List<Member> members = new ArrayList<>();
@@ -112,5 +121,14 @@ public class MyUtils {
             }
         }
         return posts;
+    }
+
+    public static Comment createComment(String content) {
+        CommentCreateRequest request = new CommentCreateRequest();
+        request.setContent(content);
+
+        Comment comment = Comment.create(request);
+
+        return comment;
     }
 }

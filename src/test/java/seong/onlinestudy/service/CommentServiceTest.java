@@ -14,6 +14,7 @@ import seong.onlinestudy.domain.Post;
 import seong.onlinestudy.domain.PostCategory;
 import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.request.CommentCreateRequest;
+import seong.onlinestudy.request.CommentUpdateRequest;
 
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ class CommentServiceTest {
     CommentService commentService;
     @Mock
     PostRepository postRepository;
+    @Mock
+    CommentRepository commentRepository;
 
     @Test
     void createComment() {
@@ -56,5 +59,32 @@ class CommentServiceTest {
         //then
         assertThat(post.getComments().size()).isEqualTo(1);
         assertThat(post.getComments().get(0).getContent()).isEqualTo(request.getContent());
+    }
+
+    @Test
+    void updateComment() {
+        String content = "content";
+
+        Member member = createMember("memberA", "memberA");
+        setField(member, "id", 1L);
+
+        Post post = createPost("postA", "postA", PostCategory.CHAT, member);
+        setField(post, "id", 1L);
+
+        Comment comment = MyUtils.createComment(content);
+        comment.setMemberAndPost(member, post);
+        setField(comment, "id", 1L);
+
+        String newContent = "newContent";
+        CommentUpdateRequest request = new CommentUpdateRequest();
+        request.setContent(newContent);
+
+        given(commentRepository.findById(any())).willReturn(Optional.of(comment));
+
+        //when
+        Long updateCommentId = commentService.updateComment(comment.getId(), request, member);
+
+        //then
+        assertThat(comment.getContent()).isEqualTo(request.getContent());
     }
 }
