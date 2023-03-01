@@ -64,13 +64,6 @@ public class GroupController {
         return result;
     }
 
-    @GetMapping("/test")
-    public Result<List<Group>> test() {
-        List<Group> allGroups = groupService.findAllGroups();
-
-        return new Result<>("200", allGroups);
-    }
-
     @Operation(summary = "그룹 1개 반환")
     @GetMapping("/groups/{id}")
     public Result<GroupDto> getGroup(@PathVariable Long id) {
