@@ -13,13 +13,13 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
+import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.repository.MemberRepository;
@@ -30,7 +30,6 @@ import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.websocket.Message;
 
 import java.lang.reflect.Type;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -89,7 +88,7 @@ class RoomControllerTest {
 
         Group group = createGroup("테스트그룹", 30, member);
 
-        Ticket ticket = Ticket.createTicket(member, study, group);
+        Ticket ticket = MyUtils.createTicket(TicketStatus.STUDY, member, study, group);
         ticketRepository.save(ticket);
 
         Message message = new Message();

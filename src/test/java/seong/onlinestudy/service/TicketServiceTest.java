@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static seong.onlinestudy.domain.MemberStatus.REST;
+import static seong.onlinestudy.domain.TicketStatus.REST;
 
 @ExtendWith(MockitoExtension.class)
 class TicketServiceTest {
@@ -59,7 +59,7 @@ class TicketServiceTest {
         Ticket testTicket = getTestTicket(member);
 
         TicketUpdateRequest updateRequest = new TicketUpdateRequest();
-        updateRequest.setMemberStatus(REST);
+        updateRequest.setTicketStatus(REST);
 
         given(ticketRepository.findById(1L)).willReturn(Optional.of(testTicket));
 
@@ -67,7 +67,7 @@ class TicketServiceTest {
         Long ticketId = ticketService.updateTicket(testTicket.getId(), updateRequest, member);
 
         //then
-        assertThat(testTicket.getMemberStatus()).isEqualTo(REST);
+        assertThat(testTicket.getTicketStatus()).isEqualTo(REST);
     }
 
     @Test
@@ -79,7 +79,7 @@ class TicketServiceTest {
         Ticket testTicket = getTestTicket(memberA);
 
         TicketUpdateRequest updateRequest = new TicketUpdateRequest();
-        updateRequest.setMemberStatus(REST);
+        updateRequest.setTicketStatus(REST);
 
         given(ticketRepository.findById(1L)).willReturn(Optional.of(testTicket));
 
@@ -101,7 +101,7 @@ class TicketServiceTest {
 
         ReflectionTestUtils.setField(ticket, "id", 1L);
         ReflectionTestUtils.setField(ticket, "startTime", LocalDateTime.now());
-        ReflectionTestUtils.setField(ticket, "memberStatus", MemberStatus.STUDY);
+        ReflectionTestUtils.setField(ticket, "memberStatus", TicketStatus.STUDY);
         ReflectionTestUtils.setField(ticket, "member", member);
 
         return ticket;
