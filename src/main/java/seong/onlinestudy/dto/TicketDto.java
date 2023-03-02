@@ -1,7 +1,7 @@
 package seong.onlinestudy.dto;
 
 import lombok.Data;
-import seong.onlinestudy.domain.MemberStatus;
+import seong.onlinestudy.domain.TicketStatus;
 import seong.onlinestudy.domain.Ticket;
 
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ public class TicketDto {
     private Long ticketId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private MemberStatus status;
+    private TicketStatus status;
 
     private MemberDto member;
     private StudyDto study;
@@ -21,7 +21,7 @@ public class TicketDto {
         ticketDto.ticketId = ticket.getId();
         ticketDto.startTime = ticket.getStartTime();
         ticketDto.endTime = ticket.getEndTime();
-        ticketDto.status = ticket.getMemberStatus();
+        ticketDto.status = ticket.getTicketStatus();
 
         ticketDto.member = MemberDto.from(ticket.getMember());
         ticketDto.study = StudyDto.from(ticket.getStudy());

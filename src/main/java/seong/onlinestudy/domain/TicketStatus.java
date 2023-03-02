@@ -1,5 +1,5 @@
 package seong.onlinestudy.domain;
 
-public enum MemberStatus {
+public enum TicketStatus {
     STUDY, REST, END
 }
