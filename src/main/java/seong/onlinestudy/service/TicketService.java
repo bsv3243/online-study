@@ -2,8 +2,12 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import seong.onlinestudy.controller.TicketGetRequest;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.exception.UnAuthorizationException;
@@ -13,11 +17,12 @@ import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.request.TicketUpdateRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
-import static seong.onlinestudy.domain.TicketStatus.REST;
-import static seong.onlinestudy.domain.TicketStatus.STUDY;
+import static seong.onlinestudy.domain.TicketStatus.*;
 
 @Slf4j
 @Service
@@ -39,6 +44,10 @@ public class TicketService {
                 .ifPresent(ticket -> {
                     throw new DuplicateElementException("이전에 발급받은 티켓이 존재합니다.");
                 });
+
+        if (request.getStatus().equals(END)) {
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
 
         Ticket ticket = Ticket.createTicket(request, loginMember, findStudy, findGroup);
         ticketRepository.save(ticket);
@@ -67,5 +76,15 @@ public class TicketService {
         TicketDto ticketDto = TicketDto.from(findTicket);
 
         return ticketDto;
+    }
+
+    public List<MemberTicketDto> getTickets(TicketGetRequest request) {
+        //하루의 시작을 05시로 한다.
+        LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(5);
+
+        List<Member> membersWithTickets
+                = ticketRepository.findMembersWithTickets(startTime, startTime.plusDays(request.getDays()), request.getGroupId());
+
+        return membersWithTickets.stream().map(MemberTicketDto::from).collect(Collectors.toList());
     }
 }

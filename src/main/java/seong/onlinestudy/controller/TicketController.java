@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.TicketCreateRequest;
@@ -11,6 +12,7 @@ import seong.onlinestudy.request.TicketUpdateRequest;
 import seong.onlinestudy.service.TicketService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +20,13 @@ import javax.validation.Valid;
 public class TicketController {
 
     private final TicketService ticketService;
+
+    @GetMapping("/tickets")
+    public Result<List<MemberTicketDto>> getTickets(@RequestBody @Valid TicketGetRequest ticketGetRequest) {
+        List<MemberTicketDto> memberTickets = ticketService.getTickets(ticketGetRequest);
+
+        return new Result<>("200", memberTickets);
+    }
 
     @PostMapping("/tickets")
     public Result<Long> createTicket(@RequestBody @Valid TicketCreateRequest createTicketRequest,
@@ -32,7 +41,7 @@ public class TicketController {
         return new Result<>("201", ticketId);
     }
 
-    @PostMapping("/tickets/{id}")
+    @PostMapping("/ticket/{id}")
     public Result<Long> updateTicket(@PathVariable("id") Long ticketId, TicketUpdateRequest updateTicketRequest,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
         if(loginMember == null) {
@@ -44,7 +53,7 @@ public class TicketController {
         return new Result<>("201", updateTicketId);
     }
 
-    @GetMapping("/tickets/{id}")
+    @GetMapping("/ticket/{id}")
     public Result<TicketDto> getTicket(@PathVariable("id") Long ticketId) {
         TicketDto ticket = ticketService.getTicket(ticketId);
 
