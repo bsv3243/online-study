@@ -45,7 +45,7 @@ public class Ticket {
         member.getTickets().add(ticket);
         ticket.member = member;
 
-        study.tickets.add(ticket);
+        study.getTickets().add(ticket);
         ticket.study = study;
 
         group.getTickets().add(ticket);

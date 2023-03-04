@@ -98,7 +98,16 @@ public class MyUtils {
 
     public static List<Member> createMembers(int endId) {
         List<Member> members = new ArrayList<>();
-        for (int i = 0; i <= endId; i++) {
+        for (int i = 0; i < endId; i++) {
+            members.add(createMember("testMember" + i, "testMember" + i));
+        }
+
+        return members;
+    }
+
+    public static List<Member> createMembers(int beginId, int endId) {
+        List<Member> members = new ArrayList<>();
+        for (int i = beginId; i < endId; i++) {
             members.add(createMember("testMember" + i, "testMember" + i));
         }
 
