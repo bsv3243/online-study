@@ -3,6 +3,8 @@ package seong.onlinestudy.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
@@ -24,21 +26,27 @@ import static seong.onlinestudy.domain.TicketStatus.*;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final StudyRepository studyRepository;
     private final GroupRepository groupRepository;
+    private final MemberRepository memberRepository;
 
+    @Transactional
     public Long createTicket(TicketCreateRequest request, Member loginMember) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
         Study findStudy = studyRepository.findById(request.getStudyId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 스터디입니다."));
 
         Group findGroup = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        ticketRepository.findByMemberAndTicketStatusIn(loginMember, List.of(STUDY, REST))
+        ticketRepository.findByMemberAndTicketStatusIn(member, List.of(STUDY, REST))
                 .ifPresent(ticket -> {
                     throw new DuplicateElementException("이전에 발급받은 티켓이 존재합니다.");
                 });
@@ -47,12 +55,13 @@ public class TicketService {
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
 
-        Ticket ticket = Ticket.createTicket(request, loginMember, findStudy, findGroup);
+        Ticket ticket = Ticket.createTicket(request, member, findStudy, findGroup);
         ticketRepository.save(ticket);
 
         return ticket.getId();
     }
 
+    @Transactional
     public Long updateTicket(Long ticketId, TicketUpdateRequest updateTicketRequest, Member loginMember) {
         Ticket findTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 티켓입니다."));
