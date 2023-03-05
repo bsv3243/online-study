@@ -16,7 +16,7 @@ public class TicketScheduler {
 
     private final TicketRepository ticketRepository;
 
-    @Scheduled(cron = "50 59 4 * * * *")
+    @Scheduled(cron = "50 59 4 * * *")
     public void updateTicketStatus() {
         LocalDateTime endTime = LocalDateTime.now();
         ZoneOffset offset = ZoneOffset.of("+00:00");
