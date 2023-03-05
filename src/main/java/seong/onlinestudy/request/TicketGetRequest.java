@@ -1,4 +1,4 @@
-package seong.onlinestudy.controller;
+package seong.onlinestudy.request;
 
 import lombok.Data;
 

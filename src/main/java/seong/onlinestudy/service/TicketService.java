@@ -2,10 +2,8 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import seong.onlinestudy.controller.TicketGetRequest;
+import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;

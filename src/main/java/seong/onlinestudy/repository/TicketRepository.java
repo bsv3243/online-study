@@ -1,8 +1,7 @@
 package seong.onlinestudy.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.Member;
@@ -33,6 +32,21 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
                                         @Param("endTime") LocalDateTime endTime,
                                         @Param("groupId") Long groupId);
 
-    @Query("select m from Member m join m.groupMembers gm join gm.group g on g.id=:groupId")
-    List<Member> findMembersWithTickets(@Param("groupId") Long groupId);
+    /**
+     * 업데이트 대상은 Ticket 의 ticketStatus 가 END 가 아닌 Ticket 들로 한다.
+     * Ticket 의 ticketStatus 를 END 로, endTime 을 주어진 endTime 으로,
+     * activeTime 을 endTime 과 startTime 의 유닉스 타임을 뺀 값으로 업데이트 한다.
+     * 본 메서드는 H2 데이터베이스에 의존한다.
+     * @param endTime Ticket 만료 시간
+     * @param endTimeToSecond Ticket 만료 시간의 유닉스 타임(+09:00)
+     * @return 업데이트 한 목록의 갯수를 반환
+     */
+    @Modifying
+    @Query(value = "update Ticket t" +
+            " set t.ticket_status='END'," +
+            " t.end_time=:endTime," +
+            " t.active_time=:endTimeToSecond-datediff('second', '1970-01-01 09:00:00', t.start_time)" +
+            " where t.ticket_status != 'END'", nativeQuery = true)
+    int updateTicketStatusToEnd(@Param("endTime") LocalDateTime endTime,
+                                @Param("endTimeToSecond") long endTimeToSecond);
 }
