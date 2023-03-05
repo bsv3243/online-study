@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class TicketDto {
     private Long ticketId;
     private TicketStatus status;
+    private Long activeTime;
 
     private String startTime;
     private String endTime;
@@ -23,6 +24,7 @@ public class TicketDto {
         TicketDto ticketDto = new TicketDto();
         ticketDto.ticketId = ticket.getId();
         ticketDto.status = ticket.getTicketStatus();
+        ticketDto.activeTime = ticket.getActiveTime();
 
         ticketDto.startTime = ticket.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME);
         if(ticket.getTicketStatus() == TicketStatus.END) {

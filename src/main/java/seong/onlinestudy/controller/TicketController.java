@@ -8,6 +8,7 @@ import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.TicketCreateRequest;
+import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.request.TicketUpdateRequest;
 import seong.onlinestudy.service.TicketService;
 
