@@ -4,7 +4,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Data;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import javax.persistence.EntityManager;
 
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -54,7 +52,7 @@ public class StudyRepositoryCustomTest {
         Study study = createStudy("테스트스터디");
         studyRepository.save(study);
 
-        Ticket ticket = createTicket(member, study, group);
+        Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
         ticketRepository.save(ticket);
     }
 
@@ -136,12 +134,12 @@ public class StudyRepositoryCustomTest {
     }
 
     private Ticket getEndTicket(Member member, Group group, Study study, long hours) {
-        Ticket ticket = createTicket(member, study, group);
+        Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
         setField(ticket, "endTime", ticket.getStartTime().plusHours(hours));
         ZoneOffset offset = ZoneOffset.of("+09:00");
         setField(ticket, "activeTime",
                 ticket.getEndTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
-        setField(ticket, "memberStatus", MemberStatus.END);
+        setField(ticket, "memberStatus", TicketStatus.END);
 
         return ticket;
     }

@@ -1,9 +1,7 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.request.*;
@@ -73,7 +69,7 @@ class GroupRepositoryCustomTest {
 
         tickets = new ArrayList<>();
         for(int i=0; i<30; i++) {
-            Ticket ticket = createTicket(members.get(i), studies.get(i % 25), groups.get(i % 10));
+            Ticket ticket = createTicket(TicketStatus.STUDY, members.get(i), studies.get(i % 25), groups.get(i % 10));
             tickets.add(ticket);
 
             if(i < 20) {
@@ -81,7 +77,7 @@ class GroupRepositoryCustomTest {
                 setField(ticket, "endTime", ticket.getStartTime().plusHours(2));
                 setField(ticket, "activeTime",
                         ticket.getEndTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
-                setField(ticket, "memberStatus", MemberStatus.END);
+                setField(ticket, "memberStatus", TicketStatus.END);
             }
         }
         ticketRepository.saveAll(tickets);
@@ -110,10 +106,10 @@ class GroupRepositoryCustomTest {
 
         List<Ticket> tickets = new ArrayList<>();
         for(int i=0; i<50; i++) {
-            tickets.add(createTicket(members.get(i), studies.get(i % 25), groups.get(i % 20)));
+            tickets.add(createTicket(TicketStatus.STUDY, members.get(i), studies.get(i % 25), groups.get(i % 20)));
             if(i<25) {
                 TicketUpdateRequest request = new TicketUpdateRequest();
-                request.setMemberStatus(MemberStatus.END);
+                request.setTicketStatus(TicketStatus.END);
 
                 tickets.get(i).updateStatus(request);
             }

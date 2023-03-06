@@ -55,8 +55,10 @@ public class MyUtils {
         return groups;
     }
 
-    public static Ticket createTicket(Member member, Study study, Group group) {
-        return Ticket.createTicket(member, study, group);
+    public static Ticket createTicket(TicketStatus status, Member member, Study study, Group group) {
+        TicketCreateRequest request = new TicketCreateRequest();
+        request.setStatus(status);
+        return Ticket.createTicket(request, member, study, group);
     }
 
     public static Study createStudy(String name) {
@@ -96,8 +98,21 @@ public class MyUtils {
 
     public static List<Member> createMembers(int endId) {
         List<Member> members = new ArrayList<>();
-        for(int i=0; i<=endId; i++) {
+        for (int i = 0; i < endId; i++) {
             members.add(createMember("testMember" + i, "testMember" + i));
+        }
+
+        return members;
+    }
+
+    public static List<Member> createMembers(int beginId, int endId) {
+        List<Member> members = new ArrayList<>();
+        for (int i = beginId; i < endId; i++) {
+            members.add(createMember("testMember" + i, "testMember" + i));
+        }
+
+        return members;
+    }
             
     public static List<Study> createStudies(int beginId, int endId, boolean setId) {
         List<Study> studies = new ArrayList<>();

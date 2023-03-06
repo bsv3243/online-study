@@ -1,6 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.request.TicketUpdateRequest;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ public class Ticket {
     private long activeTime;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus;
+    private TicketStatus ticketStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -35,16 +36,16 @@ public class Ticket {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    public static Ticket createTicket(Member member, Study study, Group group) {
+    public static Ticket createTicket(TicketCreateRequest request, Member member, Study study, Group group) {
         Ticket ticket = new Ticket();
         ticket.startTime = LocalDateTime.now();
-        ticket.memberStatus = MemberStatus.STUDY;
+        ticket.ticketStatus = request.getStatus();
         ticket.activeTime = 0;
 
         member.getTickets().add(ticket);
         ticket.member = member;
 
-        study.tickets.add(ticket);
+        study.getTickets().add(ticket);
         ticket.study = study;
 
         group.getTickets().add(ticket);
@@ -54,10 +55,10 @@ public class Ticket {
     }
 
     public void updateStatus(TicketUpdateRequest updateRequest) {
-        this.memberStatus = updateRequest.getMemberStatus();
+        this.ticketStatus = updateRequest.getTicketStatus();
 
         ZoneOffset offset = ZoneOffset.of("+09:00");
-        if(updateRequest.getMemberStatus() == MemberStatus.END) {
+        if(updateRequest.getTicketStatus() == TicketStatus.END) {
             this.endTime = LocalDateTime.now();
             this.activeTime = this.endTime.toEpochSecond(offset) - this.startTime.toEpochSecond(offset);
         }
