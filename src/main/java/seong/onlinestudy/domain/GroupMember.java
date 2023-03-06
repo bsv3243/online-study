@@ -3,7 +3,7 @@ package seong.onlinestudy.domain;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,7 +21,7 @@ public class GroupMember {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    private LocalDate joinedAt;
+    private LocalDateTime joinedAt;
 
     @Enumerated(EnumType.STRING)
     private GroupRole role;
