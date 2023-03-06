@@ -1,5 +1,6 @@
 package seong.onlinestudy.controller;
 
+import lombok.Getter;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,13 +23,15 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.TicketDto;
+import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.TicketCreateRequest;
-import seong.onlinestudy.websocket.Message;
+import seong.onlinestudy.websocket.TicketMessage;
 
+import javax.persistence.EntityManager;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,27 +40,34 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static seong.onlinestudy.MyUtils.*;
 
+@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RoomControllerTest {
+class TicketMessageControllerTest {
 
     @LocalServerPort
     int port;
 
+    @Autowired
+    EntityManager em;
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
     StudyRepository studyRepository;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    GroupRepository groupRepository;
 
     StompSession stompSession;
     CompletableFuture<TicketDto> completableFuture;
 
     private final WebSocketStompClient client;
 
-    public RoomControllerTest() {
+    public TicketMessageControllerTest() {
         this.client = new WebSocketStompClient(new SockJsClient(createTransport()));
         this.client.setMessageConverter(new MappingJackson2MessageConverter());
     }
@@ -70,37 +80,6 @@ class RoomControllerTest {
                 .get(3, TimeUnit.SECONDS);
     }
 
-    @Test
-    @DisplayName("웹소켓 정상 연결 테스트")
-    public void initTest() {
-
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("메시지 전송 테스트")
-    public void sendTicket() throws ExecutionException, InterruptedException, TimeoutException {
-        Study study = createStudy();
-        studyRepository.save(study);
-
-        Member member = createMember();
-        memberRepository.save(member);
-
-        Group group = createGroup("테스트그룹", 30, member);
-
-        Ticket ticket = MyUtils.createTicket(TicketStatus.STUDY, member, study, group);
-        ticketRepository.save(ticket);
-
-        Message message = new Message();
-        message.setTicketId(ticket.getId());
-
-        stompSession.subscribe("/topic/room/1", new CustomStompFrameHandler());
-        stompSession.send("/app/room/1", message);
-        TicketDto ticketDto = completableFuture.get(5, TimeUnit.SECONDS);
-
-        Assertions.assertThat(ticketDto).isNotNull();
-    }
-
     @AfterEach
     public void disconnect() {
         if(this.stompSession.isConnected()) {
@@ -108,16 +87,59 @@ class RoomControllerTest {
         }
     }
 
-    private class CustomStompFrameHandler implements StompFrameHandler {
+    @Test
+    @DisplayName("웹소켓 정상 연결 테스트")
+    public void initTest() {
+
+    }
+
+    @Test
+    @DisplayName("메시지 전송 테스트") //메시지 전송은 되나 Ticket 을 조회하지 못하고 있음
+    void sendTicket() throws ExecutionException, InterruptedException, TimeoutException {
+        //given
+        Member member = createMember("member", "member");
+        memberRepository.save(member);
+        Group group = createGroup("group", 30, member);
+        groupRepository.save(group);
+        Study study = createStudy("study");
+        studyRepository.save(study);
+        Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
+        ticketRepository.save(ticket);
+        em.flush();
+        em.clear();
+
+        CustomStompFrameHandler<TicketDto> handler = new CustomStompFrameHandler<>(TicketDto.class);
+        this.stompSession.subscribe("/sub/group/" + group.getId(), handler);
+
+        //when
+        Ticket findTicket = ticketRepository.findById(ticket.getId()).get();
+        assertThat(findTicket).isNotNull();
+        this.stompSession.send("/pub/groups", new TicketMessage(ticket.getId(), group.getId()));
+
+        //then
+        TicketDto ticketDto = handler.getCompletableFuture().get(3, TimeUnit.SECONDS);
+
+    }
+
+    static class CustomStompFrameHandler<T> implements StompFrameHandler {
+
+        @Getter
+        private final CompletableFuture<T> completableFuture = new CompletableFuture<>();
+
+        private final Class<T> tClass;
+
+        public CustomStompFrameHandler(Class<T> tClass) {
+            this.tClass = tClass;
+        }
 
         @Override
         public Type getPayloadType(StompHeaders headers) {
-            return TicketDto.class;
+            return this.tClass;
         }
 
         @Override
         public void handleFrame(StompHeaders headers, Object payload) {
-            completableFuture.complete((TicketDto) payload);
+            completableFuture.complete((T) payload);
         }
 
     }
@@ -127,40 +149,5 @@ class RoomControllerTest {
         List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         return transports;
-    }
-
-    private TicketCreateRequest createTicketRequest(Long groupId, Long studyId) {
-        TicketCreateRequest request = new TicketCreateRequest();
-        request.setGroupId(groupId);
-        request.setStudyId(studyId);
-
-        return request;
-    }
-
-    private Group createGroup(String name, int headcount, Member member) {
-        GroupCreateRequest request = new GroupCreateRequest();
-        request.setName(name);
-        request.setHeadcount(headcount);
-
-        GroupMember groupMember = GroupMember.createGroupMember(member, GroupRole.MASTER);
-
-        return Group.createGroup(request, groupMember);
-    }
-
-    private Study createStudy() {
-        Study study = new Study();
-
-        setField(study, "name", "테스트");
-
-        return study;
-    }
-
-    private Member createMember() {
-        Member member = new Member();
-
-        setField(member, "username", "test1234");
-        setField(member, "password", "test1234");
-
-        return member;
     }
 }
