@@ -33,10 +33,14 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final StudyRepository studyRepository;
     private final MemberRepository memberRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     @Transactional
     public Long createGroup(GroupCreateRequest createRequest, Member member) {
-        GroupMember groupMember = GroupMember.createGroupMember(member, MASTER);
+        Member findMember = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
+        GroupMember groupMember = GroupMember.createGroupMember(findMember, MASTER);
         Group group = Group.createGroup(createRequest, groupMember);
 
         groupRepository.save(group);
@@ -47,12 +51,15 @@ public class GroupService {
 
     @Transactional
     public Long joinGroup(Long groupId, Member member) {
+        Member findMember = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        GroupMember groupMember = GroupMember.createGroupMember(member, USER);
+        GroupMember groupMember = GroupMember.createGroupMember(findMember, USER);
         group.addGroupMember(groupMember);
-        log.info("멤버 {}가 그룹 {}에 가입하였습니다.", member, group);
+        log.info("멤버 {}가 그룹 {}에 가입하였습니다.", findMember, group);
 
         return group.getId();
     }
@@ -61,7 +68,10 @@ public class GroupService {
         Page<Group> groups = groupRepository.findGroups(PageRequest.of(page, size), category, search, studyIds, orderBy);
 
         List<GroupStudyDto> groupStudies = studyRepository.findStudiesInGroups(groups.getContent());
-        List<GroupMemberDto> groupMasters = memberRepository.findGroupMasters(groups.getContent());
+
+        List<GroupMember> groupMasters = groupMemberRepository.findGroupMasters(groups.getContent());
+        List<GroupMemberDto> groupMemberDtos = groupMasters.stream()
+                .map(GroupMemberDto::from).collect(Collectors.toList());
 
         Page<GroupDto> groupDtos = groups.map(group -> {
             GroupDto groupDto = GroupDto.from(group);
@@ -76,7 +86,7 @@ public class GroupService {
                 studyIter.remove();
             }
 
-            Iterator<GroupMemberDto> memberIter = groupMasters.iterator();
+            Iterator<GroupMemberDto> memberIter = groupMemberDtos.iterator();
             while(memberIter.hasNext()) {
                 GroupMemberDto member = memberIter.next();
                 if (member.getGroupId().equals(group.getId())) {

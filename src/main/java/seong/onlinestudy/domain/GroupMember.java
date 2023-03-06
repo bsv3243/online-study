@@ -32,8 +32,10 @@ public class GroupMember {
 
     public static GroupMember createGroupMember(Member member, GroupRole role) {
         GroupMember groupMember = new GroupMember();
-        groupMember.member = member;
         groupMember.role = role;
+
+        groupMember.member = member;
+        member.getGroupMembers().add(groupMember);
 
         return groupMember;
     }
