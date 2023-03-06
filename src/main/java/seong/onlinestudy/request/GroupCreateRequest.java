@@ -2,7 +2,9 @@ package seong.onlinestudy.request;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import seong.onlinestudy.domain.GroupCategory;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -13,4 +15,7 @@ public class GroupCreateRequest {
 
     @Range(min = 1, max = 30)
     private int headcount;
+
+    @NotNull
+    private GroupCategory category;
 }
