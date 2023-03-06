@@ -1,7 +1,7 @@
 package seong.onlinestudy.request;
 
 import lombok.Data;
-import seong.onlinestudy.domain.MemberStatus;
+import seong.onlinestudy.domain.TicketStatus;
 
 import javax.validation.constraints.NotNull;
 
@@ -9,5 +9,5 @@ import javax.validation.constraints.NotNull;
 public class TicketUpdateRequest {
 
     @NotNull
-    private MemberStatus memberStatus;
+    private TicketStatus ticketStatus;
 }

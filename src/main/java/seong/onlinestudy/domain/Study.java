@@ -18,10 +18,10 @@ public class Study {
     private String name;
 
     @OneToMany(mappedBy = "study")
-    List<Ticket> tickets = new ArrayList<>();
+    private List<Ticket> tickets = new ArrayList<>();
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
-    List<PostStudy> postStudies = new ArrayList<>();
+    private List<PostStudy> postStudies = new ArrayList<>();
 
     public static Study createStudy(StudyCreateRequest createRequest) {
         Study study = new Study();
