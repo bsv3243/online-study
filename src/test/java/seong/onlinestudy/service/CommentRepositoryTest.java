@@ -1,14 +1,13 @@
 package seong.onlinestudy.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Comment;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Post;
 import seong.onlinestudy.domain.PostCategory;
+import seong.onlinestudy.repository.CommentRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;
 
@@ -16,7 +15,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static seong.onlinestudy.MyUtils.*;
 
 @DataJpaTest
