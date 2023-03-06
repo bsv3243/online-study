@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.dto.StudyDto;
 import seong.onlinestudy.exception.DuplicateStudyException;
@@ -12,11 +13,13 @@ import seong.onlinestudy.request.StudyCreateRequest;
 import seong.onlinestudy.request.StudySearchCond;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StudyService {
 
     private final StudyRepository studyRepository;
 
+    @Transactional
     public Long createStudy(StudyCreateRequest createStudyRequest) {
         studyRepository.findByName(createStudyRequest.getName())
                 .ifPresent(study -> {
