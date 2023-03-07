@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.MemberDuplicateCheckRequest;
 
 @Service
 @Transactional(readOnly = true)
@@ -16,9 +18,20 @@ public class MemberService {
 
     @Transactional
     public Long addMember(MemberCreateRequest memberCreateRequest) {
+        memberRepository.findByUsername(memberCreateRequest.getUsername())
+                .ifPresent(member -> {
+                    throw new DuplicateElementException("이미 존재하는 아이디입니다.");
+                });
         Member member = Member.createMember(memberCreateRequest);
         memberRepository.save(member);
 
         return member.getId();
+    }
+
+    public void duplicateCheck(MemberDuplicateCheckRequest request) {
+        memberRepository.findByUsername(request.getUsername())
+                .ifPresent(member -> {
+                    throw new DuplicateElementException("이미 존재하는 아이디입니다.");
+                });
     }
 }
