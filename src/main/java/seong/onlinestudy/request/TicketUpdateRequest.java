@@ -8,6 +8,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class TicketUpdateRequest {
 
-    @NotNull
+    @NotNull(message = "티켓 업데이트 상태가 지정되지 않았습니다.")
     private TicketStatus ticketStatus;
 }
