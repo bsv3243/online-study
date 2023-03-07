@@ -20,7 +20,6 @@ import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.MemberCreateRequest;
 import seong.onlinestudy.request.OrderBy;
 import seong.onlinestudy.service.GroupService;
 
@@ -147,7 +146,7 @@ class GroupControllerTest {
         OrderBy orderBy = null;
 
         PageImpl<GroupDto> groupDtos = new PageImpl<>(List.of(groupDto), PageRequest.of(page, size), 1);
-        given(groupService.getGroups(page, size, category, search, studyIds, orderBy)).willReturn(groupDtos);
+        given(groupService.getGroups(any())).willReturn(groupDtos);
 
         //when
         ResultActions actions = mvc.perform(get("/api/v1/groups"));
