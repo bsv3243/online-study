@@ -1,5 +1,6 @@
 package seong.onlinestudy.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
@@ -31,10 +32,12 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.MyUtils.createGroup;
 import static seong.onlinestudy.MyUtils.createMember;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.domain.GroupCategory.ETC;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -78,15 +81,37 @@ public class GroupApiTest {
         GroupCreateRequest request = new GroupCreateRequest();
         request.setName("테스트그룹");
         request.setHeadcount(30);
+        request.setCategory(ETC);
 
         //when
-        mvc.perform(post("/api/v1/groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request))
-                .session(session))
-                .andDo(print());
+        ResultActions rs = mvc.perform(post("/api/v1/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request))
+                        .session(session));
 
         //then
+        rs
+                .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @Test
+    public void 그룹생성_미인증() throws Exception {
+        //given
+        GroupCreateRequest request = new GroupCreateRequest();
+        request.setName("테스트그룹");
+        request.setHeadcount(30);
+        request.setCategory(ETC);
+
+        //when
+        ResultActions rs = mvc.perform(post("/api/v1/groups")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)));
+
+        //then
+        rs
+                .andExpect(status().isCreated())
+                .andDo(print());
     }
 
     @Test
