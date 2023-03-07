@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.dto.StudyDto;
-import seong.onlinestudy.exception.DuplicateStudyException;
+import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.StudyCreateRequest;
 import seong.onlinestudy.request.StudySearchCond;
@@ -23,7 +23,7 @@ public class StudyService {
     public Long createStudy(StudyCreateRequest createStudyRequest) {
         studyRepository.findByName(createStudyRequest.getName())
                 .ifPresent(study -> {
-                    throw new DuplicateStudyException("이미 존재하는 스터디입니다.");
+                    throw new DuplicateElementException("이미 존재하는 스터디입니다.");
                 });
 
         Study study = Study.createStudy(createStudyRequest);

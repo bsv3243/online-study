@@ -14,13 +14,6 @@ import static org.springframework.http.HttpStatus.*;
 public class LoginControllerAdvice {
 
     @ResponseStatus(UNAUTHORIZED)
-    @ExceptionHandler(MemberNotFoundException.class)
-    public ErrorResult memberNotFoundExHandle(MemberNotFoundException ex) {
-        log.error("[exception handle] ex", ex);
-        return new ErrorResult("UNAUTHORIZED", ex.getMessage());
-    }
-
-    @ResponseStatus(UNAUTHORIZED)
     @ExceptionHandler(BadPasswordException.class)
     public ErrorResult badPasswordExHandle(BadPasswordException ex) {
         log.error("[exception handle] ex", ex);
