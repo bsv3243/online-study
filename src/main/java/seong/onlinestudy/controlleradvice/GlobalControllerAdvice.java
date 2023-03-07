@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.exception.PermissionControlException;
 
@@ -36,6 +37,13 @@ public class GlobalControllerAdvice {
         return result;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ErrorResult illegalArgumentExHandle(IllegalArgumentException ex) {
+        log.error("[exception handle] ex", ex);
+        return new ErrorResult("BAD_REQUEST", ex.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(PermissionControlException.class)
     public ErrorResult permissionControlExHandle(PermissionControlException ex) {
@@ -50,5 +58,11 @@ public class GlobalControllerAdvice {
         return new ErrorResult("NOT_FOUND", ex.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DuplicateElementException.class)
+    public ErrorResult duplicationElementExHandle(DuplicateElementException ex) {
+        log.error("[exception handle] ex", ex);
+        return new ErrorResult("CONFLICT", ex.getMessage());
+    }
 
 }
