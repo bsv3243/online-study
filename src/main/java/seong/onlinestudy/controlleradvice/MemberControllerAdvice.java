@@ -14,11 +14,4 @@ import seong.onlinestudy.controller.MemberController;
 @RestControllerAdvice(assignableTypes = MemberController.class)
 public class MemberControllerAdvice {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResult requestValidExHandle(MethodArgumentNotValidException ex) {
-        log.error("[exceptionHandle] ex", ex);
-        return new ErrorResult("BAD_REQUEST", ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-    }
-
 }
