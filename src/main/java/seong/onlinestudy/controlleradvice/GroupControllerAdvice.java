@@ -1,4 +1,4 @@
-package seong.onlinestudy.exception;
+package seong.onlinestudy.controlleradvice;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
