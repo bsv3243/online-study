@@ -11,11 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.GroupCategory;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
+import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
 import seong.onlinestudy.request.OrderBy;
@@ -25,6 +28,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,12 +60,9 @@ class GroupControllerTest {
         GroupCreateRequest groupRequest = new GroupCreateRequest();
         groupRequest.setName("그룹이름");
         groupRequest.setHeadcount(30);
+        groupRequest.setCategory(GroupCategory.ETC);
 
-        MemberCreateRequest memberRequest = new MemberCreateRequest();
-        memberRequest.setUsername("test1234");
-        memberRequest.setPassword("test1234");
-        memberRequest.setNickname("test");
-        Member member = Member.createMember(memberRequest);
+        Member member = MyUtils.createMember("member", "member");
 
         session.setAttribute(LOGIN_MEMBER, member);
         given(groupService.createGroup(groupRequest, member)).willReturn(1L);
@@ -80,17 +81,13 @@ class GroupControllerTest {
     }
 
     @Test
-    void 그룹생성_실패() throws Exception {
+    void 그룹생성_바인딩실패() throws Exception {
         //given
         GroupCreateRequest groupRequest = new GroupCreateRequest();
         groupRequest.setName("그룹");
         groupRequest.setHeadcount(50);
 
-        MemberCreateRequest memberRequest = new MemberCreateRequest();
-        memberRequest.setUsername("test1234");
-        memberRequest.setPassword("test1234");
-        memberRequest.setNickname("test");
-        Member member = Member.createMember(memberRequest);
+        Member member = MyUtils.createMember("mebmer", "member");
 
         session.setAttribute(LOGIN_MEMBER, member);
         given(groupService.createGroup(groupRequest, member)).willReturn(1L);
@@ -104,7 +101,35 @@ class GroupControllerTest {
 
         //then
         result
-                .andExpect(rs -> assertThat(rs.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class));
+                .andExpect(rs -> assertThat(rs.getResolvedException())
+                        .isInstanceOf(MethodArgumentNotValidException.class));
+    }
+
+    @Test
+    void 그룹생성_유효하지않은세션() throws Exception {
+        //given
+        GroupCreateRequest groupRequest = new GroupCreateRequest();
+        groupRequest.setName("그룹");
+        groupRequest.setHeadcount(30);
+        groupRequest.setCategory(GroupCategory.ETC);
+
+        session.setAttribute(LOGIN_MEMBER, null);
+
+        given(groupService.createGroup(any(), any())).willReturn(1L);
+
+        //when
+        MvcResult mvcResult = mvc.perform(post("/api/v1/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(groupRequest)))
+                .andExpect(rs -> assertThat(rs.getResolvedException())
+                        .isInstanceOf(InvalidSessionException.class))
+                .andDo(print())
+                .andReturn();
+
+        //then
+//        result
+//                .andExpect(rs -> assertThat(rs.getResolvedException())
+//                        .isInstanceOf(InvalidSessionException.class));
     }
 
     @Test
