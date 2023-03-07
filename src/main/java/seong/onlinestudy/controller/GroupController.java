@@ -32,7 +32,10 @@ public class GroupController {
     @Operation(summary = "그룹 생성(인증)")
     @PostMapping("/groups")
     public Result<Long> createGroup(@RequestBody @Valid GroupCreateRequest createRequest,
-                            @SessionAttribute(name = LOGIN_MEMBER)Member loginMember) {
+                            @SessionAttribute(name = LOGIN_MEMBER, required = false)Member loginMember) {
+        if(loginMember == null) {
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+        }
 
         Long groupId = groupService.createGroup(createRequest, loginMember);
 
@@ -40,9 +43,13 @@ public class GroupController {
     }
 
     @Operation(summary = "그룹 가입(인증)")
-    @PostMapping("/groups/{groupId}")
+    @PostMapping("/group/{groupId}/join")
     public Result<Long> joinGroup(@PathVariable Long groupId,
-                          @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
+                          @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+        if(loginMember == null) {
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+        }
+
         Long joinedGroupId = groupService.joinGroup(groupId, loginMember);
 
         return new Result<>("201", joinedGroupId);
@@ -65,7 +72,7 @@ public class GroupController {
     }
 
     @Operation(summary = "그룹 1개 반환")
-    @GetMapping("/groups/{id}")
+    @GetMapping("/group/{id}")
     public Result<GroupDto> getGroup(@PathVariable Long id) {
         GroupDto group = groupService.getGroup(id);
 
@@ -73,8 +80,9 @@ public class GroupController {
     }
 
     @Operation(summary = "그룹 삭제(인증)")
-    @DeleteMapping("/groups/{id}")
-    public Result<String> deleteGroup(@PathVariable Long id, @SessionAttribute(name = LOGIN_MEMBER) Member loginMember) {
+    @DeleteMapping("/group/{id}")
+    public Result<String> deleteGroup(@PathVariable Long id,
+                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import seong.onlinestudy.domain.GroupMember;
 import seong.onlinestudy.domain.GroupRole;
 
-import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class GroupMemberDto {
 
     private String username;
     private String nickname;
-    private LocalDate joinedAt;
+    private String joinedAt;
     private GroupRole role;
 
     public static GroupMemberDto from(GroupMember groupMember) {
@@ -28,7 +28,7 @@ public class GroupMemberDto {
         groupMemberDto.memberId = groupMember.getMember().getId();
         groupMemberDto.username = groupMember.getMember().getUsername();
         groupMemberDto.nickname = groupMember.getMember().getNickname();
-        groupMemberDto.joinedAt = groupMember.getJoinedAt();
+        groupMemberDto.joinedAt = groupMember.getJoinedAt().format(DateTimeFormatter.ISO_DATE_TIME);
         groupMemberDto.role = groupMember.getRole();
 
         return groupMemberDto;
