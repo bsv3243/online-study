@@ -58,7 +58,8 @@ public class PostController {
     }
 
     @PostMapping("/post/{postId}")
-    public Result<Long> updatePost(@PathVariable("postId") Long postId, PostUpdateRequest request,
+    public Result<Long> updatePost(@PathVariable("postId") Long postId,
+                                   @RequestBody @Valid PostUpdateRequest request,
                                    @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");

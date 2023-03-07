@@ -8,6 +8,7 @@ import seong.onlinestudy.request.StudyCreateRequest;
 import seong.onlinestudy.request.StudySearchCond;
 import seong.onlinestudy.service.StudyService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,14 +19,14 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping("/studies")
-    public Long createStudy(StudyCreateRequest createStudyRequest) {
+    public Long createStudy(@RequestBody @Valid StudyCreateRequest createStudyRequest) {
         Long studyId = studyService.createStudy(createStudyRequest);
 
         return studyId;
     }
 
     @GetMapping("/studies")
-    public Result<List<StudyDto>> getStudies(StudySearchCond searchCond) {
+    public Result<List<StudyDto>> getStudies(@Valid StudySearchCond searchCond) {
         Page<StudyDto> studies = studyService.getStudies(searchCond);
         Result<List<StudyDto>> result = new Result<>("200", studies.getContent());
         result.setPageInfo(studies);

@@ -9,6 +9,8 @@ import seong.onlinestudy.request.CommentCreateRequest;
 import seong.onlinestudy.request.CommentUpdateRequest;
 import seong.onlinestudy.service.CommentService;
 
+import javax.validation.Valid;
+
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
 
 @RestController
@@ -19,7 +21,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comments")
-    public Result<Long> createComment(CommentCreateRequest request,
+    public Result<Long> createComment(@RequestBody @Valid CommentCreateRequest request,
                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
