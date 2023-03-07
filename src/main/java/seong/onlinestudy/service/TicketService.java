@@ -10,7 +10,7 @@ import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.DuplicateElementException;
-import seong.onlinestudy.exception.UnAuthorizationException;
+import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
@@ -68,7 +68,7 @@ public class TicketService {
 
         //티켓의 회원 ID와 일치하지 않으면
         if(!findTicket.getMember().getId().equals(loginMember.getId())) {
-            throw new UnAuthorizationException("권한이 없습니다.");
+            throw new PermissionControlException("권한이 없습니다.");
         }
 
         findTicket.updateStatus(updateTicketRequest);

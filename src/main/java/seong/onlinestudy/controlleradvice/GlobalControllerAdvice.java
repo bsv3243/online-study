@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import seong.onlinestudy.exception.InvalidSessionException;
+import seong.onlinestudy.exception.PermissionControlException;
 
 @Slf4j
 @RestControllerAdvice
@@ -31,5 +32,12 @@ public class GlobalControllerAdvice {
         }
 
         return result;
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(PermissionControlException.class)
+    public ErrorResult permissionControlExHandle(PermissionControlException ex) {
+        log.error("[exception handle] ex", ex);
+        return new ErrorResult("FORBIDDEN", ex.getMessage());
     }
 }
