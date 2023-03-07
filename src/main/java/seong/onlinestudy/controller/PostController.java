@@ -41,7 +41,7 @@ public class PostController {
 
     @PostMapping("/posts")
     public Result<Long> createPost(@RequestBody @Valid PostCreateRequest request,
-                                   @SessionAttribute(value = LOGIN_MEMBER)Member loginMember) {
+                                   @SessionAttribute(value = LOGIN_MEMBER, required = false)Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
@@ -59,7 +59,7 @@ public class PostController {
 
     @PostMapping("/post/{postId}")
     public Result<Long> updatePost(@PathVariable("postId") Long postId, PostUpdateRequest request,
-                                   @SessionAttribute(value = LOGIN_MEMBER) Member loginMember) {
+                                   @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
@@ -70,7 +70,7 @@ public class PostController {
 
     @PatchMapping("/post/{postId}")
     public Result<String> deletePost(@PathVariable("postId") Long postId,
-                                   @SessionAttribute(value = LOGIN_MEMBER) Member loginMember) {
+                                   @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }

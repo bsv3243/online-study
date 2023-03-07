@@ -15,7 +15,7 @@ import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.dto.GroupStudyDto;
-import seong.onlinestudy.exception.UnAuthorizationException;
+import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.GroupCreateRequest;
@@ -122,7 +122,7 @@ class GroupServiceTest {
 
         //then
         assertThatThrownBy(() -> groupService.deleteGroup(groupId, memberA))
-                .isInstanceOf(UnAuthorizationException.class);
+                .isInstanceOf(PermissionControlException.class);
     }
 
     @Test

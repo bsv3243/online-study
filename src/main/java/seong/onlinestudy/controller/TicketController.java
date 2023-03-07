@@ -31,7 +31,7 @@ public class TicketController {
 
     @PostMapping("/tickets")
     public Result<Long> createTicket(@RequestBody @Valid TicketCreateRequest createTicketRequest,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
+                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
 
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
@@ -44,7 +44,7 @@ public class TicketController {
 
     @PostMapping("/ticket/{id}")
     public Result<Long> updateTicket(@PathVariable("id") Long ticketId, TicketUpdateRequest updateTicketRequest,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
+                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }

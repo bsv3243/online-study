@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Data
 public class TicketGetRequest {
 
-    @NotNull
     Long groupId;
-
-    @NotNull
     LocalDate date;
-
-    @NotNull
     int days;
+
+    public TicketGetRequest() {
+        date = LocalDate.now();
+        days = 1;
+    }
 }
