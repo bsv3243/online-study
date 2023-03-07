@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.exception.PermissionControlException;
 
+import java.util.NoSuchElementException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalControllerAdvice {
@@ -40,4 +42,13 @@ public class GlobalControllerAdvice {
         log.error("[exception handle] ex", ex);
         return new ErrorResult("FORBIDDEN", ex.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoSuchElementException.class)
+    public ErrorResult noSuchElementExHandle(NoSuchElementException ex) {
+        log.error("[exception handle] ex", ex);
+        return new ErrorResult("NOT_FOUND", ex.getMessage());
+    }
+
+
 }
