@@ -6,11 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.exception.BadPasswordException;
-import seong.onlinestudy.exception.MemberNotFoundException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.LoginRequest;
 
-import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.NoSuchElementException;
@@ -29,7 +27,7 @@ public class LoginService {
         String password = loginRequest.getPassword();
 
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         if (!member.getPassword().equals(password)) {
             throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
@@ -50,7 +48,7 @@ public class LoginService {
         String username = request.getUsername();
         String password = request.getPassword();
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         if(!member.getPassword().equals(password)) {
             throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
