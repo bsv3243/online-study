@@ -20,7 +20,7 @@ public class CommentController {
 
     @PostMapping("/comments")
     public Result<Long> createComment(CommentCreateRequest request,
-                                      @SessionAttribute(value = LOGIN_MEMBER) Member loginMember) {
+                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
@@ -32,7 +32,7 @@ public class CommentController {
 
     @PostMapping("/comment/{commentId}")
     public Result<Long> updateComment(@PathVariable("commentId") Long commentId, CommentUpdateRequest request,
-                                      @SessionAttribute(value = LOGIN_MEMBER) Member loginMember) {
+                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
@@ -44,7 +44,7 @@ public class CommentController {
 
     @PatchMapping("/comment/{commentId}")
     public Result<Long> deleteComment(@PathVariable("commentId") Long commentId,
-                                        @SessionAttribute(value = LOGIN_MEMBER) Member loginMember) {
+                                        @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }

@@ -14,7 +14,7 @@ import seong.onlinestudy.repository.GroupMemberRepository;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
-import seong.onlinestudy.exception.UnAuthorizationException;
+import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.OrderBy;
 
@@ -121,7 +121,7 @@ public class GroupService {
         GroupMember master = group.getGroupMembers().stream().filter(groupMember ->
                 groupMember.getRole().equals(MASTER)).findFirst().get();
         if(!master.getMember().getId().equals(loginMember.getId())) {
-            throw new UnAuthorizationException("권한이 없습니다.");
+            throw new PermissionControlException("권한이 없습니다.");
         }
 
         groupRepository.delete(group);

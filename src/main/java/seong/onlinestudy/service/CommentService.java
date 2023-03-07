@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.Comment;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Post;
-import seong.onlinestudy.exception.UnAuthorizationException;
+import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.CommentRepository;
 import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.request.CommentCreateRequest;
@@ -44,7 +44,7 @@ public class CommentService {
 
         //작성자 정보가 같지 않으면
         if (!comment.getMember().getId().equals(loginMember.getId())) {
-            throw new UnAuthorizationException("댓글 수정 권한이 없습니다.");
+            throw new PermissionControlException("댓글 수정 권한이 없습니다.");
         }
 
         String oldContent = comment.getContent();
@@ -62,7 +62,7 @@ public class CommentService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다."));
 
         if(!comment.getMember().getId().equals(loginMember.getId())) {
-            throw new UnAuthorizationException("댓글 삭제 권한이 없습니다.");
+            throw new PermissionControlException("댓글 삭제 권한이 없습니다.");
         }
 
         comment.delete();

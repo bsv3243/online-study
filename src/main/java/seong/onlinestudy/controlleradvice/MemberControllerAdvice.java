@@ -1,4 +1,4 @@
-package seong.onlinestudy.exception;
+package seong.onlinestudy.controlleradvice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +13,5 @@ import seong.onlinestudy.controller.MemberController;
 @RequiredArgsConstructor
 @RestControllerAdvice(assignableTypes = MemberController.class)
 public class MemberControllerAdvice {
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResult requestValidExHandle(MethodArgumentNotValidException ex) {
-        log.error("[exceptionHandle] ex", ex);
-        return new ErrorResult("BAD_REQUEST", ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-    }
 
 }

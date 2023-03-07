@@ -11,7 +11,7 @@ import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
-import seong.onlinestudy.exception.UnAuthorizationException;
+import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.TicketCreateRequest;
@@ -98,7 +98,7 @@ class TicketServiceTest {
 
         //then
         assertThatThrownBy(() -> ticketService.updateTicket(testTicket.getId(), updateRequest, memberB))
-                .isInstanceOf(UnAuthorizationException.class);
+                .isInstanceOf(PermissionControlException.class);
     }
 
     @Test

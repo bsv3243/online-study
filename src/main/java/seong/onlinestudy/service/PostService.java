@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.dto.PostStudyDto;
-import seong.onlinestudy.exception.UnAuthorizationException;
+import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.repository.PostStudyRepository;
@@ -61,7 +61,7 @@ public class PostService {
 
             Optional<GroupMember> groupMember = group.getGroupMembers().stream()
                     .filter(gm -> gm.getMember().getId().equals(loginMember.getId())).findFirst();
-            groupMember.orElseThrow(() -> new UnAuthorizationException("접근 권한이 없습니다."));
+            groupMember.orElseThrow(() -> new PermissionControlException("접근 권한이 없습니다."));
 
             post.setGroup(group);
         }
@@ -102,7 +102,7 @@ public class PostService {
 
         //Post 를 생성한 회원과 로그인한 회원 정보가 일치하지 않으면
         if(!post.getMember().getId().equals(loginMember.getId())) {
-            throw new UnAuthorizationException("해당 게시글의 수정 권한이 없습니다.");
+            throw new PermissionControlException("해당 게시글의 수정 권한이 없습니다.");
         }
 
         List<Study> newStudies = studyRepository.findAllById(request.getStudyIds());
@@ -130,7 +130,7 @@ public class PostService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
         if (!post.getMember().getId().equals(loginMember.getId())) {
-            throw new UnAuthorizationException("해당 게시글의 삭제 권한이 없습니다.");
+            throw new PermissionControlException("해당 게시글의 삭제 권한이 없습니다.");
         }
 
         post.delete();
