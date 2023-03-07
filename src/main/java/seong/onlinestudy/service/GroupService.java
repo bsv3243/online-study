@@ -16,7 +16,7 @@ import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.OrderBy;
+import seong.onlinestudy.request.GroupsGetRequest;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,8 +64,9 @@ public class GroupService {
         return group.getId();
     }
 
-    public Page<GroupDto> getGroups(int page, int size, GroupCategory category, String search, List<Long> studyIds, OrderBy orderBy) {
-        Page<Group> groups = groupRepository.findGroups(PageRequest.of(page, size), category, search, studyIds, orderBy);
+    public Page<GroupDto> getGroups(GroupsGetRequest request) {
+        Page<Group> groups = groupRepository.findGroups(PageRequest.of(request.getPage(), request.getSize()),
+                request.getCategory(), request.getSearch(), request.getStudyIds(), request.getOrderBy());
 
         List<GroupStudyDto> groupStudies = studyRepository.findStudiesInGroups(groups.getContent());
 

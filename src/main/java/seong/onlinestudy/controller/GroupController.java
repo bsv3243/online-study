@@ -5,14 +5,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import seong.onlinestudy.SessionConst;
-import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.GroupCategory;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.OrderBy;
+import seong.onlinestudy.request.GroupsGetRequest;
 import seong.onlinestudy.service.GroupService;
 
 import javax.validation.Valid;
@@ -57,13 +54,8 @@ public class GroupController {
 
     @Operation(summary = "그룹 리스트 반환")
     @GetMapping("/groups")
-    public Result<List<GroupDto>> getGroups(@RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "10") int size,
-                                            @RequestParam(required = false) GroupCategory category,
-                                            @RequestParam(required = false) String search,
-                                            @RequestParam(required = false) List<Long> studyIds,
-                                            @RequestParam(defaultValue = "CREATEDAT")OrderBy orderBy) {
-        Page<GroupDto> groups = groupService.getGroups(page, size, category, search, studyIds, orderBy);
+    public Result<List<GroupDto>> getGroups(@Valid GroupsGetRequest request) {
+        Page<GroupDto> groups = groupService.getGroups(request);
 
         Result<List<GroupDto>> result = new Result<>("200", groups.getContent());
         result.setPageInfo(groups);
