@@ -22,10 +22,10 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping("/studies")
-    public Long createStudy(@RequestBody @Valid StudyCreateRequest createStudyRequest) {
+    public Result<Long> createStudy(@RequestBody @Valid StudyCreateRequest createStudyRequest) {
         Long studyId = studyService.createStudy(createStudyRequest);
 
-        return studyId;
+        return new Result<>("201", studyId);
     }
 
     @GetMapping("/studies")
