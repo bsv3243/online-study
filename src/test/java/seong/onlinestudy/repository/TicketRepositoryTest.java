@@ -4,14 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.util.ReflectionTestUtils;
+import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,48 +35,6 @@ class TicketRepositoryTest {
     GroupRepository groupRepository;
     @Autowired
     StudyRepository studyRepository;
-
-    @Test
-    void findMembersWithTickets() {
-        //given
-        List<Member> members = createMembers(50, 70);
-        memberRepository.saveAll(members);
-
-        Group group = createGroup("groupA", 30, members.get(0));
-        groupRepository.save(group);
-
-        for(int i=1; i<20; i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-            group.addGroupMember(groupMember);
-        }
-
-        Study study = createStudy("studyA");
-        studyRepository.save(study);
-
-        List<Ticket> tickets = new ArrayList<>();
-        for (Member member : members) {
-            tickets.add(createTicket(STUDY, member, study, group));
-        }
-        ticketRepository.saveAll(tickets);
-
-        //when
-        List<Member> findMembers = ticketRepository.findMembersWithTickets(LocalDate.now().atStartOfDay(),
-                LocalDate.now().atStartOfDay().plusDays(1), group.getId());
-//        List<Member> findMembers = ticketRepository.findMembersWithTickets(group.getId());
-
-        //then
-        List<String> usernames = members.stream().map(Member::getUsername).collect(Collectors.toList());
-        List<String> findUsernames = findMembers.stream().map(Member::getUsername).collect(Collectors.toList());
-
-        assertThat(usernames).containsExactlyInAnyOrderElementsOf(findUsernames);
-
-        List<Ticket> findTickets = new ArrayList<>();
-        for (Member member : members) {
-            findTickets.addAll(member.getTickets());
-        }
-        assertThat(findTickets).containsExactlyInAnyOrderElementsOf(tickets);
-        assertThat(findTickets.size()).isEqualTo(tickets.size());
-    }
 
     @Test
     void updateTicketStatus_네이티브쿼리테스트() {
@@ -163,5 +122,103 @@ class TicketRepositoryTest {
             assertThat(ticket.getTicketStatus()).isEqualTo(END);
             assertThat(ticket.getActiveTime()).isEqualTo(3600);
         });
+    }
+
+    @Test
+    void findTickets_단일회원() {
+        //given
+        List<Member> members = createMembers(50, 70);
+        memberRepository.saveAll(members);
+
+        Group group = createGroup("groupA", 30, members.get(0));
+        groupRepository.save(group);
+
+        for(int i=1; i<20; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            group.addGroupMember(groupMember);
+        }
+
+        Study study = createStudy("studyA");
+        studyRepository.save(study);
+
+        List<Ticket> tickets = new ArrayList<>();
+        for (int i=0; i<20; i++) {
+            tickets.add(createTicket(STUDY, members.get(i), study, group));
+        }
+        ticketRepository.saveAll(tickets);
+
+        List<Ticket> newTickets = new ArrayList<>();
+        for(int i=0; i<50; i++) {
+            Ticket ticket = createTicket(STUDY, members.get(0), study, group);
+            ReflectionTestUtils.setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
+            newTickets.add(ticket);
+        }
+        ticketRepository.saveAll(newTickets);
+
+        //when
+        List<Ticket> findTickets = em.createQuery("select t from Ticket t" +
+                        " join t.member m on m = :member" +
+                        " where t.startTime >= :startTime and t.startTime < :endTime", Ticket.class)
+                .setParameter("member", members.get(0))
+                .setParameter("startTime", LocalDateTime.now().minusHours(1))
+                .setParameter("endTime", LocalDateTime.now().plusSeconds(1))
+                .getResultList();
+
+        //then
+        assertThat(findTickets.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findTickets_그룹() {
+        //given
+        List<Member> members = createMembers(50, 70);
+        memberRepository.saveAll(members);
+        List<Member> members1 = createMembers(30);
+        memberRepository.saveAll(members1);
+
+        Group group = createGroup("groupA", 30, members.get(0));
+        groupRepository.save(group);
+
+        for(int i=1; i<20; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            group.addGroupMember(groupMember);
+        }
+
+        Study study = createStudy("studyA");
+        studyRepository.save(study);
+
+        List<Ticket> tickets = new ArrayList<>();
+        for (int i=0; i<20; i++) {
+            tickets.add(createTicket(STUDY, members.get(i), study, group));
+        }
+        ticketRepository.saveAll(tickets);
+
+        List<Ticket> newTickets = new ArrayList<>();
+        for(int i=0; i<50; i++) {
+            Ticket ticket = createTicket(STUDY, members.get(0), study, group);
+            ReflectionTestUtils.setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
+            newTickets.add(ticket);
+        }
+        ticketRepository.saveAll(newTickets);
+
+        //when
+        List<Ticket> findTickets = em.createQuery("select t from Ticket t" +
+                        " join fetch t.member m" +
+                        " join m.groupMembers gm on gm.group.id = :groupId" +
+                        " where t.startTime >= :startTime and t.startTime < :endTime" +
+                        " order by t.member.id", Ticket.class)
+                .setParameter("groupId", group.getId())
+                .setParameter("startTime", LocalDateTime.now().minusHours(1))
+                .setParameter("endTime", LocalDateTime.now().plusSeconds(1))
+                .getResultList();
+
+        //then
+        assertThat(findTickets.size()).isEqualTo(20);
+        assertThat(findTickets).containsExactlyInAnyOrderElementsOf(tickets);
+        Set<Member> set = new HashSet<>();
+        for (Ticket findTicket : findTickets) {
+            set.add(findTicket.getMember());
+        }
+        assertThat(set).containsExactlyInAnyOrderElementsOf(members);
     }
 }

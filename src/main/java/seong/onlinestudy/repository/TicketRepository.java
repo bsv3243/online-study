@@ -17,20 +17,34 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Optional<Ticket> findByMemberAndTicketStatusIn(Member member, List<TicketStatus> statuses);
 
     /**
-     * Member 로부터 groupId가 일치하는 Group 을 조인하고 생성 시점이 startTime 이상,
-     * endTime 미만인 Ticket 을 left 조인한 목록을 조회한다.
-     * @param startTime 조회 시작 시점
-     * @param endTime 조회 종료 시점
-     * @param groupId Group 의 id
-     * @return Ticket 을 페치 조인한 Member 리스트를 반환
+     * Ticket 의 생성 시간이 startTime 이상이고, endTime 미만이며 member 가 가진 티켓 목록을 반환한다.
+     * @param member Member
+     * @param startTime 시작시간
+     * @param endTime 종료시간
+     * @return ticket 리스트를 반환
      */
-    @Query("select m from Member m" +
-            " join m.groupMembers gm join gm.group g on g.id = :groupId" +
-            " left join m.tickets t on t.startTime >= :startTime and t.endTime < :endTime" +
-            " order by gm.joinedAt asc, t.startTime asc")
-    List<Member> findMembersWithTickets(@Param("startTime") LocalDateTime startTime,
-                                        @Param("endTime") LocalDateTime endTime,
-                                        @Param("groupId") Long groupId);
+    @Query("select t from Ticket t" +
+            " join t.member m on m = :member" +
+            " where t.startTime >= :startTime and t.startTime < :endTime")
+    List<Ticket> findTickets(@Param("member") Member member,
+                             @Param("startTime") LocalDateTime startTime,
+                             @Param("endTime") LocalDateTime endTime);
+
+    /**
+     * Ticket 의 생성 시간이 startTime 이상, endTime 미만이며 그룹에 속한 member 의 ticket 리스트를 반환한다.
+     * @param groupId Group 의 id
+     * @param startTime 시작시간
+     * @param endTime 종료시간
+     * @return Member 와 페치 조인한 티켓 리스트를 반환
+     */
+    @Query("select t from Ticket t" +
+            " join fetch t.member m" +
+            " join m.groupMembers gm on gm.group.id = :groupId" +
+            " where t.startTime >= :startTime and t.startTime < :endTime" +
+            " order by t.member.id")
+    List<Ticket> findTickets(@Param("groupId") Long groupId,
+                             @Param("startTime") LocalDateTime startTime,
+                             @Param("endTime") LocalDateTime endTime);
 
     /**
      * 업데이트 대상은 Ticket 의 ticketStatus 가 END 가 아닌 Ticket 들로 한다.

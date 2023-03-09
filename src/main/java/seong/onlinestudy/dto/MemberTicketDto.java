@@ -20,11 +20,12 @@ public class MemberTicketDto {
     private TicketDto activeTicket;
     private List<TicketDto> expiredTickets = new ArrayList<>();
 
-    public static MemberTicketDto from(Member member) {
+    public static MemberTicketDto from(Member member, List<Ticket> tickets) {
         MemberTicketDto memberTicket = new MemberTicketDto();
+        memberTicket.memberId = member.getId();
         memberTicket.nickname = member.getNickname();
 
-        for (Ticket ticket : member.getTickets()) {
+        for (Ticket ticket : tickets) {
             TicketDto ticketDto = TicketDto.from(ticket);
             if (ticket.getTicketStatus() == END) {
                 memberTicket.expiredTickets.add(ticketDto);

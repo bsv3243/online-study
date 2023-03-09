@@ -143,10 +143,10 @@ class TicketServiceTest {
             activeTickets.add(ticket);
         }
 
-        given(ticketRepository.findMembersWithTickets(any(), any(), any())).willReturn(members);
+//        given(ticketRepository.findMembersWithTickets(any(), any(), any(Long.class))).willReturn(members);
 
         //when
-        List<MemberTicketDto> memberTickets = ticketService.getTickets(request);
+        List<MemberTicketDto> memberTickets = ticketService.getTickets(request, null);
 
         //then
         assertThat(memberTickets.size()).isEqualTo(members.size());
