@@ -18,8 +18,7 @@ import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.request.TicketUpdateRequest;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static seong.onlinestudy.domain.TicketStatus.*;
@@ -85,13 +84,40 @@ public class TicketService {
         return ticketDto;
     }
 
-    public List<MemberTicketDto> getTickets(TicketGetRequest request) {
+    public List<MemberTicketDto> getTickets(TicketGetRequest request, Member loginMember) {
         //하루의 시작을 05시로 한다.
         LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(5);
 
-        List<Member> membersWithTickets
-                = ticketRepository.findMembersWithTickets(startTime, startTime.plusDays(request.getDays()), request.getGroupId());
+        List<MemberTicketDto> memberTicketDtos = new ArrayList<>();
+        if (request.getGroupId() != null) { //그룹에 속한 모든 멤버와 해당 멤버의 티켓 정보를 반환한다.
+            List<Ticket> tickets = ticketRepository.findTickets(request.getGroupId(), startTime, startTime.plusDays(request.getDays()));
+            List<Member> membersInGroup = memberRepository.findMembersInGroup(request.getGroupId());
 
-        return membersWithTickets.stream().map(MemberTicketDto::from).collect(Collectors.toList());
+            Map<Member, List<Ticket>> map = new HashMap<>();
+            for (Ticket ticket : tickets) {
+                Member member = ticket.getMember();
+
+                List<Ticket> memberTickets = map.getOrDefault(member, new ArrayList<>());
+                memberTickets.add(ticket);
+                map.put(member, memberTickets);
+            }
+
+            for (Member member : membersInGroup) {
+                List<Ticket> memberTickets = map.getOrDefault(member, new ArrayList<>());
+
+                MemberTicketDto memberTicketDto = MemberTicketDto.from(member, memberTickets);
+                memberTicketDtos.add(memberTicketDto);
+            }
+
+        } else { //로그인한 회원의 정보와 티켓 정보를 반환한다.
+            Member member = memberRepository.findById(loginMember.getId())
+                    .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
+            List<Ticket> tickets = ticketRepository.findTickets(member, startTime, startTime.plusDays(request.getDays()));
+
+            memberTicketDtos.add(MemberTicketDto.from(member, tickets));
+        }
+
+        return memberTicketDtos;
     }
 }
