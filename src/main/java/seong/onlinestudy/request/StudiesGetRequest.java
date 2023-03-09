@@ -1,6 +1,7 @@
 package seong.onlinestudy.request;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ public class StudiesGetRequest {
     private int page;
     private int size;
     private String name;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
     private int days;
 
