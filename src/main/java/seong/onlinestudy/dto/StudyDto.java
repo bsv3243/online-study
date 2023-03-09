@@ -2,12 +2,52 @@ package seong.onlinestudy.dto;
 
 import lombok.Data;
 import seong.onlinestudy.domain.Study;
+import seong.onlinestudy.domain.Ticket;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Data
 public class StudyDto {
 
     private Long studyId;
     private String name;
+
+    private long studyTime;
+    private String startTime;
+    private String endTime;
+
+    /**
+     * 연관된 Ticket 리스트의 첫번째 startTime, 마지막 endTime, 활성화된 시간을 합산하여 필드에 지정한다.
+     * @param study Ticket 과 페치 조인한 Study
+     */
+    public void setStudyTime(Study study) {
+        List<Ticket> tickets = study.getTickets();
+
+        long studyTime = 0;
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime startTime = now;
+        LocalDateTime endTime = now;
+
+        for (Ticket ticket : tickets) {
+            studyTime += ticket.getActiveTime();
+            startTime = ticket.getStartTime().isBefore(startTime) ? ticket.getStartTime() : startTime;
+
+            if(ticket.getEndTime() != null) {
+                endTime = ticket.getEndTime().isAfter(endTime) ? ticket.getEndTime() : endTime;
+            }
+        }
+
+        this.studyTime = studyTime;
+        this.startTime = startTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        if(endTime.isEqual(now)) {
+            this.endTime = this.startTime;
+        } else {
+            this.endTime = endTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        }
+    }
 
     public static StudyDto from(Study study) {
         StudyDto studyDto = new StudyDto();

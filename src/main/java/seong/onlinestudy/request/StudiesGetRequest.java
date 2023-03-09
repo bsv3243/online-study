@@ -16,6 +16,7 @@ public class StudiesGetRequest {
     public StudiesGetRequest() {
         page = 0;
         size = 10;
+        name = "";
         date = LocalDate.now().minusDays(7);
         days = 7;
     }
