@@ -9,6 +9,7 @@ import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Post;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.CommentRepository;
+import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.request.CommentCreateRequest;
 import seong.onlinestudy.request.CommentUpdateRequest;
@@ -21,18 +22,22 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class CommentService {
 
+    private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
     @Transactional
     public Long createComment(CommentCreateRequest request, Member loginMember) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
         Comment comment = Comment.create(request);
-        comment.setMemberAndPost(loginMember, post);
+        comment.setMemberAndPost(member, post);
         log.info("댓글이 작성되었습니다. postId={}, commentId={}, memberId={}",
-                post.getId(), comment.getId(), loginMember.getId());
+                post.getId(), comment.getId(), member.getId());
 
         return comment.getId();
     }

@@ -9,10 +9,7 @@ import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.dto.PostStudyDto;
 import seong.onlinestudy.exception.PermissionControlException;
-import seong.onlinestudy.repository.GroupRepository;
-import seong.onlinestudy.repository.PostRepository;
-import seong.onlinestudy.repository.PostStudyRepository;
-import seong.onlinestudy.repository.StudyRepository;
+import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.PostCreateRequest;
 import seong.onlinestudy.request.PostUpdateRequest;
 
@@ -24,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
+    private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final GroupRepository groupRepository;
     private final StudyRepository studyRepository;
@@ -53,14 +51,17 @@ public class PostService {
 
     @Transactional
     public Long createPost(PostCreateRequest request, Member loginMember) {
-        Post post = Post.createPost(request, loginMember);
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
+        Post post = Post.createPost(request, member);
 
         if(request.getGroupId() != null) {
             Group group = groupRepository.findGroupWithMembers(request.getGroupId())
                     .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
             Optional<GroupMember> groupMember = group.getGroupMembers().stream()
-                    .filter(gm -> gm.getMember().getId().equals(loginMember.getId())).findFirst();
+                    .filter(gm -> gm.getMember().getId().equals(member.getId())).findFirst();
             groupMember.orElseThrow(() -> new PermissionControlException("접근 권한이 없습니다."));
 
             post.setGroup(group);
