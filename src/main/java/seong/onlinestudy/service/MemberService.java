@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.MemberCreateRequest;
 import seong.onlinestudy.request.MemberDuplicateCheckRequest;
+
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,5 +36,12 @@ public class MemberService {
                 .ifPresent(member -> {
                     throw new DuplicateElementException("이미 존재하는 아이디입니다.");
                 });
+    }
+
+    public MemberDto getMember(Member loginMember) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
+        return MemberDto.from(member);
     }
 }
