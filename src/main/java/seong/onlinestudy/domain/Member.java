@@ -21,7 +21,7 @@ public class Member {
     private String nickname;
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<GroupMember> groupMembers = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
