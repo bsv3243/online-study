@@ -31,7 +31,8 @@ public class MemberTicketDto {
             TicketDto ticketDto = TicketDto.from(ticket);
             if (ticket.isExpired()) {
                 memberTicket.expiredTickets.add(ticketDto);
-                memberTicket.studyTime += ticket.getActiveTime();
+                if(ticket.getTicketStatus().equals(TicketStatus.STUDY)) //학습 상태의 티켓 시간만 더함
+                    memberTicket.studyTime += ticket.getActiveTime();
             } else {
                 memberTicket.activeTicket = ticketDto;
             }
