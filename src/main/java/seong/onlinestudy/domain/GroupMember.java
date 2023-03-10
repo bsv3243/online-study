@@ -33,6 +33,7 @@ public class GroupMember {
     public static GroupMember createGroupMember(Member member, GroupRole role) {
         GroupMember groupMember = new GroupMember();
         groupMember.role = role;
+        groupMember.joinedAt = LocalDateTime.now();
 
         groupMember.member = member;
         member.getGroupMembers().add(groupMember);
