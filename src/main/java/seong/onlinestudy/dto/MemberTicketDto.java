@@ -19,16 +19,19 @@ public class MemberTicketDto {
 
     private TicketDto activeTicket;
     private List<TicketDto> expiredTickets = new ArrayList<>();
+    private long studyTime;
 
     public static MemberTicketDto from(Member member, List<Ticket> tickets) {
         MemberTicketDto memberTicket = new MemberTicketDto();
         memberTicket.memberId = member.getId();
         memberTicket.nickname = member.getNickname();
+        memberTicket.studyTime = 0;
 
         for (Ticket ticket : tickets) {
             TicketDto ticketDto = TicketDto.from(ticket);
-            if (ticket.getTicketStatus() == END) {
+            if (ticket.isExpired()) {
                 memberTicket.expiredTickets.add(ticketDto);
+                memberTicket.studyTime += ticket.getActiveTime();
             } else {
                 memberTicket.activeTicket = ticketDto;
             }
