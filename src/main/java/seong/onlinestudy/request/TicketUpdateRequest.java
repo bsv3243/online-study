@@ -9,5 +9,5 @@ import javax.validation.constraints.NotNull;
 public class TicketUpdateRequest {
 
     @NotNull(message = "티켓 업데이트 상태가 지정되지 않았습니다.")
-    private TicketStatus ticketStatus;
+    private TicketStatus status;
 }
