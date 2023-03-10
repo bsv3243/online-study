@@ -2,7 +2,6 @@ package seong.onlinestudy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
@@ -15,6 +14,8 @@ import seong.onlinestudy.service.TicketService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -23,15 +24,17 @@ public class TicketController {
     private final TicketService ticketService;
 
     @GetMapping("/tickets")
-    public Result<List<MemberTicketDto>> getTickets(@RequestBody @Valid TicketGetRequest ticketGetRequest) {
-        List<MemberTicketDto> memberTickets = ticketService.getTickets(ticketGetRequest);
+    public Result<List<MemberTicketDto>> getTickets(@Valid TicketGetRequest ticketGetRequest,
+                                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+
+        List<MemberTicketDto> memberTickets = ticketService.getTickets(ticketGetRequest, loginMember);
 
         return new Result<>("200", memberTickets);
     }
 
     @PostMapping("/tickets")
     public Result<Long> createTicket(@RequestBody @Valid TicketCreateRequest createTicketRequest,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                             @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
 
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
@@ -43,13 +46,14 @@ public class TicketController {
     }
 
     @PostMapping("/ticket/{id}")
-    public Result<Long> updateTicket(@PathVariable("id") Long ticketId, TicketUpdateRequest updateTicketRequest,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public Result<Long> updateTicket(@PathVariable("id") Long ticketId,
+                                     @RequestBody @Valid TicketUpdateRequest ticketUpdateRequest,
+                             @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long updateTicketId = ticketService.updateTicket(ticketId, updateTicketRequest, loginMember);
+        Long updateTicketId = ticketService.updateTicket(ticketId, ticketUpdateRequest, loginMember);
 
         return new Result<>("201", updateTicketId);
     }

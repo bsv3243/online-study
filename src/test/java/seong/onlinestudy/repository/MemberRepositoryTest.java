@@ -57,4 +57,25 @@ class MemberRepositoryTest {
 //        assertThat(groupMasters.size()).isEqualTo(10);
     }
 
+    @Test
+    void findMembersInGroup() {
+        //given
+        List<Member> members = createMembers(10);
+        memberRepository.saveAll(members);
+
+        Group group = createGroup("group", 30, members.get(0));
+        groupRepository.save(group);
+
+        for(int i=1; i<5; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            group.addGroupMember(groupMember);
+        }
+
+        //when
+        List<Member> membersInGroup = memberRepository.findMembersInGroup(group.getId());
+
+        //then
+        assertThat(membersInGroup).containsExactlyInAnyOrderElementsOf(members.subList(0, 5));
+    }
+
 }

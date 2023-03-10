@@ -27,7 +27,7 @@ public class TicketDto {
         ticketDto.activeTime = ticket.getActiveTime();
 
         ticketDto.startTime = ticket.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME);
-        if(ticket.getTicketStatus() == TicketStatus.END) {
+        if(ticket.isExpired()) {
             ticketDto.endTime = ticket.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME);
         }
 
