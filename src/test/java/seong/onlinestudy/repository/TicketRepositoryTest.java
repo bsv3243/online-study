@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
 import static seong.onlinestudy.domain.TicketStatus.*;
 
@@ -65,9 +66,9 @@ class TicketRepositoryTest {
         //when
         int count = em
                 .createNativeQuery("update Ticket t" +
-                        " set t.ticket_status='END', t.end_time=:endTime," +
+                        " set t.is_expired = true, t.end_time=:endTime," +
                         " t.active_time=:endTimeSecond-datediff('second', '1970-01-01', t.start_time)" +
-                        " where t.ticket_status != 'END'")
+                        " where t.is_expired = false")
                 .setParameter("endTime", endTime)
                 .setParameter("endTimeSecond", endTime.toEpochSecond(ZoneOffset.of("+00:00")))
                 .executeUpdate();
@@ -77,7 +78,7 @@ class TicketRepositoryTest {
 
         List<Ticket> result = ticketRepository.findAll();
         assertThat(result).allSatisfy(ticket -> {
-            assertThat(ticket.getTicketStatus()).isEqualTo(END);
+            assertThat(ticket.isExpired()).isEqualTo(true);
             assertThat(ticket.getActiveTime()).isEqualTo(3600);
         });
 
@@ -119,7 +120,7 @@ class TicketRepositoryTest {
 
         tickets = ticketRepository.findAll();
         assertThat(tickets).allSatisfy(ticket -> {
-            assertThat(ticket.getTicketStatus()).isEqualTo(END);
+            assertThat(ticket.isExpired()).isEqualTo(true);
             assertThat(ticket.getActiveTime()).isEqualTo(3600);
         });
     }
@@ -150,7 +151,7 @@ class TicketRepositoryTest {
         List<Ticket> newTickets = new ArrayList<>();
         for(int i=0; i<50; i++) {
             Ticket ticket = createTicket(STUDY, members.get(0), study, group);
-            ReflectionTestUtils.setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
+            setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
             newTickets.add(ticket);
         }
         ticketRepository.saveAll(newTickets);
@@ -196,7 +197,7 @@ class TicketRepositoryTest {
         List<Ticket> newTickets = new ArrayList<>();
         for(int i=0; i<50; i++) {
             Ticket ticket = createTicket(STUDY, members.get(0), study, group);
-            ReflectionTestUtils.setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
+            setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
             newTickets.add(ticket);
         }
         ticketRepository.saveAll(newTickets);
@@ -220,5 +221,30 @@ class TicketRepositoryTest {
             set.add(findTicket.getMember());
         }
         assertThat(set).containsExactlyInAnyOrderElementsOf(members);
+    }
+
+    @Test
+    void findByMemberAndExpiredFalse() {
+        Member member = createMember("member", "member");
+        memberRepository.save(member);
+
+        Group group = createGroup("group", 30, member);
+        groupRepository.save(group);
+
+        Study study = createStudy("study");
+        studyRepository.save(study);
+
+        Ticket ticket = createTicket(STUDY, member, study, group);
+        setField(ticket, "isExpired", true);
+        Ticket ticket1 = createTicket(STUDY, member, study, group);
+        ticketRepository.save(ticket);
+        ticketRepository.save(ticket1);
+
+        //when
+        Ticket ticket2 = ticketRepository.findByMemberAndIsExpiredFalse(member).get();
+
+        //then
+        assertThat(ticket2).isEqualTo(ticket1);
+
     }
 }
