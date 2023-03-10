@@ -128,4 +128,14 @@ public class GroupService {
         groupRepository.delete(group);
     }
 
+    @Transactional
+    public void quitGroup(Long groupId, Member loginMember) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
+
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
+        groupMemberRepository.deleteByMember(member);
+    }
 }

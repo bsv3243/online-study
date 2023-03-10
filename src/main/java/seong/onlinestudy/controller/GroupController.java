@@ -52,6 +52,18 @@ public class GroupController {
         return new Result<>("201", joinedGroupId);
     }
 
+    @PostMapping("/group/{groupId}/quit")
+    public Result<String> quitGroup(@PathVariable Long groupId,
+                                  @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+        if(loginMember == null) {
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+        }
+
+        groupService.quitGroup(groupId, loginMember);
+
+        return new Result<>("200", "ok");
+    }
+
     @Operation(summary = "그룹 리스트 반환")
     @GetMapping("/groups")
     public Result<List<GroupDto>> getGroups(@Valid GroupsGetRequest request) {
