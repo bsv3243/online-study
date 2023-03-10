@@ -58,10 +58,8 @@ public class Ticket {
     }
 
     public void updateStatus(TicketUpdateRequest updateRequest) {
-        this.ticketStatus = updateRequest.getTicketStatus();
-
         ZoneOffset offset = ZoneOffset.of("+09:00");
-        if(updateRequest.getTicketStatus() == TicketStatus.END) {
+        if(updateRequest.getStatus() == TicketStatus.END) {
             this.endTime = LocalDateTime.now();
             this.activeTime = this.endTime.toEpochSecond(offset) - this.startTime.toEpochSecond(offset);
             this.isExpired = true;
