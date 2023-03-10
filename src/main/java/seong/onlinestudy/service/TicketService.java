@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.domain.*;
@@ -110,6 +111,9 @@ public class TicketService {
             }
 
         } else { //로그인한 회원의 정보와 티켓 정보를 반환한다.
+            if(loginMember==null) {
+                throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+            }
             Member member = memberRepository.findById(loginMember.getId())
                     .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
