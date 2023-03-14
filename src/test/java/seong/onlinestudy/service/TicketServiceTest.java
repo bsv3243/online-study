@@ -70,7 +70,7 @@ class TicketServiceTest {
         Ticket testTicket = getTestTicket(member);
 
         TicketUpdateRequest updateRequest = new TicketUpdateRequest();
-        updateRequest.setTicketStatus(REST);
+        updateRequest.setStatus(REST);
 
         given(ticketRepository.findById(1L)).willReturn(Optional.of(testTicket));
 
@@ -90,7 +90,7 @@ class TicketServiceTest {
         Ticket testTicket = getTestTicket(memberA);
 
         TicketUpdateRequest updateRequest = new TicketUpdateRequest();
-        updateRequest.setTicketStatus(REST);
+        updateRequest.setStatus(REST);
 
         given(ticketRepository.findById(1L)).willReturn(Optional.of(testTicket));
 

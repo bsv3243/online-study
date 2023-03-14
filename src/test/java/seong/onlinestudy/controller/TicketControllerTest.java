@@ -53,7 +53,7 @@ class TicketControllerTest {
 
         //when
         TicketUpdateRequest request = new TicketUpdateRequest();
-        request.setTicketStatus(TicketStatus.END);
+        request.setStatus(TicketStatus.END);
         mvc.perform(post("/api/v1/ticket/1")
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)

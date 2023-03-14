@@ -109,7 +109,7 @@ class GroupRepositoryCustomTest {
             tickets.add(createTicket(TicketStatus.STUDY, members.get(i), studies.get(i % 25), groups.get(i % 20)));
             if(i<25) {
                 TicketUpdateRequest request = new TicketUpdateRequest();
-                request.setTicketStatus(TicketStatus.END);
+                request.setStatus(TicketStatus.END);
 
                 tickets.get(i).updateStatus(request);
             }
