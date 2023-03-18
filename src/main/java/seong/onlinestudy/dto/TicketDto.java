@@ -1,12 +1,9 @@
 package seong.onlinestudy.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import seong.onlinestudy.domain.TicketStatus;
 import seong.onlinestudy.domain.Ticket;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 @Data
@@ -17,6 +14,7 @@ public class TicketDto {
 
     private String startTime;
     private String endTime;
+    private boolean expired;
 
     private StudyDto study;
 
@@ -25,6 +23,7 @@ public class TicketDto {
         ticketDto.ticketId = ticket.getId();
         ticketDto.status = ticket.getTicketStatus();
         ticketDto.activeTime = ticket.getActiveTime();
+        ticketDto.expired = ticket.isExpired();
 
         ticketDto.startTime = ticket.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME);
         if(ticket.isExpired()) {

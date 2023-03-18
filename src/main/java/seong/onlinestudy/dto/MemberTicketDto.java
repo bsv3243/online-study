@@ -8,9 +8,6 @@ import seong.onlinestudy.domain.TicketStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-import static seong.onlinestudy.domain.TicketStatus.END;
-import static seong.onlinestudy.domain.TicketStatus.REST;
-
 @Data
 public class MemberTicketDto {
 

@@ -24,7 +24,7 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
 
-    private boolean isExpired;
+    private boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -43,7 +43,7 @@ public class Ticket {
         ticket.startTime = LocalDateTime.now();
         ticket.ticketStatus = request.getStatus();
         ticket.activeTime = 0;
-        ticket.isExpired = false;
+        ticket.expired = false;
 
         member.getTickets().add(ticket);
         ticket.member = member;
@@ -62,7 +62,7 @@ public class Ticket {
         if(updateRequest.getStatus() == TicketStatus.END) {
             this.endTime = LocalDateTime.now();
             this.activeTime = this.endTime.toEpochSecond(offset) - this.startTime.toEpochSecond(offset);
-            this.isExpired = true;
+            this.expired = true;
         }
     }
 }
