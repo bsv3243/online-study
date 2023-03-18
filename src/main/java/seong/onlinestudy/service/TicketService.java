@@ -46,7 +46,7 @@ public class TicketService {
         Group findGroup = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        ticketRepository.findByMemberAndIsExpiredFalse(member)
+        ticketRepository.findByMemberAndExpiredFalse(member)
                 .ifPresent(ticket -> {
                     throw new DuplicateElementException("이전에 발급받은 티켓이 존재합니다.");
                 });

@@ -231,13 +231,13 @@ class TicketRepositoryTest {
         studyRepository.save(study);
 
         Ticket ticket = createTicket(STUDY, member, study, group);
-        setField(ticket, "isExpired", true);
+        setField(ticket, "expired", true);
         Ticket ticket1 = createTicket(STUDY, member, study, group);
         ticketRepository.save(ticket);
         ticketRepository.save(ticket1);
 
         //when
-        Ticket ticket2 = ticketRepository.findByMemberAndIsExpiredFalse(member).get();
+        Ticket ticket2 = ticketRepository.findByMemberAndExpiredFalse(member).get();
 
         //then
         assertThat(ticket2).isEqualTo(ticket1);

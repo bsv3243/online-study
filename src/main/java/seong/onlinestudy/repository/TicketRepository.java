@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    Optional<Ticket> findByMemberAndIsExpiredFalse(Member member);
+    Optional<Ticket> findByMemberAndExpiredFalse(Member member);
 
     /**
      * Ticket 의 생성 시간이 startTime 이상이고, endTime 미만이며 member 가 가진 티켓 목록을 반환한다.
