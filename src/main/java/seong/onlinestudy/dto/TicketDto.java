@@ -22,12 +22,12 @@ public class TicketDto {
         TicketDto ticketDto = new TicketDto();
         ticketDto.ticketId = ticket.getId();
         ticketDto.status = ticket.getTicketStatus();
-        ticketDto.activeTime = ticket.getActiveTime();
         ticketDto.expired = ticket.isExpired();
+        ticketDto.activeTime = ticket.getRecord().getActiveTime();
 
         ticketDto.startTime = ticket.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME);
         if(ticket.isExpired()) {
-            ticketDto.endTime = ticket.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME);
+            ticketDto.endTime = ticket.getRecord().getExpiredTime().format(DateTimeFormatter.ISO_DATE_TIME);
         }
 
         if(ticket.getStudy() != null) {

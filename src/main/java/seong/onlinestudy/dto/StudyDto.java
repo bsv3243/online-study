@@ -32,11 +32,11 @@ public class StudyDto {
         LocalDateTime endTime = now;
 
         for (Ticket ticket : tickets) {
-            studyTime += ticket.getActiveTime();
+            studyTime += ticket.getRecord().getActiveTime();
             startTime = ticket.getStartTime().isBefore(startTime) ? ticket.getStartTime() : startTime;
 
-            if(ticket.getEndTime() != null) {
-                endTime = ticket.getEndTime().isAfter(endTime) ? ticket.getEndTime() : endTime;
+            if(ticket.isExpired()) {
+                endTime = ticket.getRecord().getExpiredTime().isAfter(endTime) ? ticket.getRecord().getExpiredTime() : endTime;
             }
         }
 

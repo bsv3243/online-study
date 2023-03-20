@@ -28,14 +28,14 @@ public class RecordDto {
         if(startTime.isAfter(ticket.getStartTime())) {
             startTime = ticket.getStartTime();
         }
-        if(endTime.isBefore(ticket.getEndTime())) {
-            endTime = ticket.getEndTime();
+        if(endTime.isBefore(ticket.getRecord().getExpiredTime())) {
+            endTime = ticket.getRecord().getExpiredTime();
         }
     }
 
     public void setStartAndEndTime(Ticket ticket) {
         startTime = ticket.getStartTime();
-        endTime = ticket.getEndTime();
+        endTime = ticket.getRecord().getExpiredTime();
     }
 
     public void updateMemberCount() {
@@ -48,7 +48,7 @@ public class RecordDto {
         }
 
         members.add(ticket.getMember());
-        studyTime += ticket.getActiveTime();
+        studyTime += ticket.getRecord().getActiveTime();
     }
 
     protected RecordDto() {
@@ -65,7 +65,7 @@ public class RecordDto {
     public static RecordDto from(Ticket ticket) {
         RecordDto recordDto = new RecordDto();
         recordDto.date = ticket.getDateBySetting();
-        recordDto.studyTime = ticket.getActiveTime();
+        recordDto.studyTime = ticket.getRecord().getActiveTime();
         recordDto.memberCount = 1;
 
         recordDto.members.add(ticket.getMember());

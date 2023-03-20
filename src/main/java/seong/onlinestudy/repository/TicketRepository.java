@@ -25,6 +25,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
     @Query("select t from Ticket t" +
             " join t.member m on m = :member" +
             " join fetch t.study s" +
+            " join fetch t.record r" +
             " where t.startTime >= :startTime and t.startTime < :endTime")
     List<Ticket> findTickets(@Param("member") Member member,
                              @Param("startTime") LocalDateTime startTime,
@@ -40,6 +41,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
     @Query("select t from Ticket t" +
             " join fetch t.member m" +
             " join fetch t.study s" +
+            " join fetch t.record r" +
             " join m.groupMembers gm on gm.group.id = :groupId" +
             " where t.startTime >= :startTime and t.startTime < :endTime" +
             " order by t.member.id")
@@ -48,20 +50,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
                                       @Param("endTime") LocalDateTime endTime);
 
     /**
-     * 업데이트 대상은 Ticket 의 ticketStatus 가 END 가 아닌 Ticket 들로 한다.
-     * Ticket 의 ticketStatus 를 END 로, endTime 을 주어진 endTime 으로,
-     * activeTime 을 endTime 과 startTime 의 유닉스 타임을 뺀 값으로 업데이트 한다.
-     * 본 메서드는 H2 데이터베이스에 의존한다.
-     * @param endTime Ticket 만료 시간
-     * @param endTimeToSecond Ticket 만료 시간의 유닉스 타임(+09:00)
+     * 만료되지 않은 티켓들을 만료시킨다.
      * @return 업데이트 한 목록의 갯수를 반환
      */
     @Modifying
-    @Query(value = "update Ticket t" +
-            " set t.is_expired = true," +
-            " t.end_time=:endTime," +
-            " t.active_time=:endTimeToSecond-datediff('second', '1970-01-01 09:00:00', t.start_time)" +
-            " where t.is_expired = false", nativeQuery = true)
-    int updateTicketStatusToEnd(@Param("endTime") LocalDateTime endTime,
-                                @Param("endTimeToSecond") long endTimeToSecond);
+    @Query("update Ticket t set t.expired = true where t.expired = false")
+    int expireTicketsWhereExpiredFalse();
+
+    List<Ticket> findTicketsByExpiredFalse();
 }

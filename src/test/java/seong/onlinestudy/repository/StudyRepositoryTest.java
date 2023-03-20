@@ -2,7 +2,6 @@ package seong.onlinestudy.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -69,8 +68,9 @@ class StudyRepositoryTest {
 
         List<Study> findStudies = em.createQuery("select s from Study s" +
                         " join s.tickets t on t.member = :member and t.startTime >= :startTime and t.startTime < :endTime" +
+                        " join Record r" +
                         " group by s.id" +
-                        " order by sum(t.activeTime) desc", Study.class)
+                        " order by sum(r.activeTime) desc", Study.class)
                 .setParameter("member", members.get(0))
                 .setParameter("startTime", now.minusDays(3))
                 .setParameter("endTime", now.plusDays(3))
@@ -143,7 +143,7 @@ class StudyRepositoryTest {
         //티켓이 만료되어 활성화된 시간이 0보다 큰 경우
         assertThat(studyDtos).anySatisfy(studyDto -> {
             assertThat(studyDto.getStudyTime()).isEqualTo(3600 + 2800);
-            assertThat(studyDto.getEndTime()).isEqualTo(ticket.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME));
+            assertThat(studyDto.getEndTime()).isEqualTo(ticket.getRecord().getExpiredTime().format(DateTimeFormatter.ISO_DATE_TIME));
         });
         //티켓이 만료되지 않아 활성화된 시간이 0인 경우
         assertThat(studyDtos).anySatisfy(studyDto -> {

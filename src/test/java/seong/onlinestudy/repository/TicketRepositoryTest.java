@@ -75,7 +75,7 @@ class TicketRepositoryTest {
         List<Ticket> result = ticketRepository.findAll();
         assertThat(result).allSatisfy(ticket -> {
             assertThat(ticket.isExpired()).isEqualTo(true);
-            assertThat(ticket.getActiveTime()).isEqualTo(3600);
+            assertThat(ticket.getRecord().getActiveTime()).isEqualTo(3600);
         });
 
         log.info("time={}", result.get(0).getStartTime());
@@ -107,8 +107,7 @@ class TicketRepositoryTest {
 
         //when
         LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        int updateCount = ticketRepository.updateTicketStatusToEnd(
-                endTime, endTime.toEpochSecond(ZoneOffset.of("+09:00")));
+        int updateCount = ticketRepository.expireTicketsWhereExpiredFalse();
         em.clear(); //벌크 연산 수행 후 영속성 컨텍스트 초기화
 
         //then
@@ -117,7 +116,7 @@ class TicketRepositoryTest {
         tickets = ticketRepository.findAll();
         assertThat(tickets).allSatisfy(ticket -> {
             assertThat(ticket.isExpired()).isEqualTo(true);
-            assertThat(ticket.getActiveTime()).isEqualTo(3600);
+            assertThat(ticket.getRecord().getActiveTime()).isEqualTo(3600);
         });
     }
 

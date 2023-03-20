@@ -138,7 +138,7 @@ public class StudyRepositoryCustomTest {
         setField(ticket, "endTime", ticket.getStartTime().plusHours(hours));
         ZoneOffset offset = ZoneOffset.of("+09:00");
         setField(ticket, "activeTime",
-                ticket.getEndTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
+                ticket.getRecord().getExpiredTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
         setField(ticket, "memberStatus", TicketStatus.END);
 
         return ticket;
