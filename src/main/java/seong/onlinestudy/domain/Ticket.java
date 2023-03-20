@@ -1,10 +1,12 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import seong.onlinestudy.TimeConst;
 import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.request.TicketUpdateRequest;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -38,6 +40,23 @@ public class Ticket {
     @JoinColumn(name = "group_id")
     private Group group;
 
+    public void updateStatus(TicketUpdateRequest updateRequest) {
+        ZoneOffset offset = ZoneOffset.of("+09:00");
+        if(updateRequest.getStatus() == TicketStatus.END) {
+            this.endTime = LocalDateTime.now();
+            this.activeTime = this.endTime.toEpochSecond(offset) - this.startTime.toEpochSecond(offset);
+            this.expired = true;
+        }
+    }
+
+    public LocalDate getDateBySetting() {
+        if(startTime.getHour() < TimeConst.DAY_START) {
+            return startTime.toLocalDate().minusDays(1);
+        } else {
+            return startTime.toLocalDate();
+        }
+    }
+
     public static Ticket createTicket(TicketCreateRequest request, Member member, Study study, Group group) {
         Ticket ticket = new Ticket();
         ticket.startTime = LocalDateTime.now();
@@ -48,21 +67,14 @@ public class Ticket {
         member.getTickets().add(ticket);
         ticket.member = member;
 
-        study.getTickets().add(ticket);
-        ticket.study = study;
+        if(request.getStatus() == TicketStatus.STUDY) {
+            study.getTickets().add(ticket);
+            ticket.study = study;
+        }
 
         group.getTickets().add(ticket);
         ticket.group = group;
 
         return ticket;
-    }
-
-    public void updateStatus(TicketUpdateRequest updateRequest) {
-        ZoneOffset offset = ZoneOffset.of("+09:00");
-        if(updateRequest.getStatus() == TicketStatus.END) {
-            this.endTime = LocalDateTime.now();
-            this.activeTime = this.endTime.toEpochSecond(offset) - this.startTime.toEpochSecond(offset);
-            this.expired = true;
-        }
     }
 }

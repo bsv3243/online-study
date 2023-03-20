@@ -30,7 +30,9 @@ public class TicketDto {
             ticketDto.endTime = ticket.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME);
         }
 
-        ticketDto.study = StudyDto.from(ticket.getStudy());
+        if(ticket.getStudy() != null) {
+            ticketDto.study = StudyDto.from(ticket.getStudy());
+        }
 
         return ticketDto;
     }

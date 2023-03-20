@@ -6,13 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Ticket;
-import seong.onlinestudy.domain.TicketStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRepositoryCustom {
 
     Optional<Ticket> findByMemberAndExpiredFalse(Member member);
 
@@ -44,9 +43,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             " join m.groupMembers gm on gm.group.id = :groupId" +
             " where t.startTime >= :startTime and t.startTime < :endTime" +
             " order by t.member.id")
-    List<Ticket> findTickets(@Param("groupId") Long groupId,
-                             @Param("startTime") LocalDateTime startTime,
-                             @Param("endTime") LocalDateTime endTime);
+    List<Ticket> findTicketsByGroupId(@Param("groupId") Long groupId,
+                                      @Param("startTime") LocalDateTime startTime,
+                                      @Param("endTime") LocalDateTime endTime);
 
     /**
      * 업데이트 대상은 Ticket 의 ticketStatus 가 END 가 아닌 Ticket 들로 한다.
