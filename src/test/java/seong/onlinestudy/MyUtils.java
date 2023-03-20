@@ -59,7 +59,7 @@ public class MyUtils {
     public static Ticket createTicket(TicketStatus status, Member member, Study study, Group group) {
         TicketCreateRequest request = new TicketCreateRequest();
         request.setStatus(status);
-        return Ticket.createTicket(request, member, study, group);
+        return Ticket.createWithRecord(request, member, study, group);
     }
 
     public static void setTicketEnd(Ticket ticket, long seconds) {

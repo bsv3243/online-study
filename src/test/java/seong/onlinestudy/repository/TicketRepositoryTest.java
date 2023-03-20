@@ -4,16 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.util.ReflectionTestUtils;
-import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -79,7 +75,7 @@ class TicketRepositoryTest {
         List<Ticket> result = ticketRepository.findAll();
         assertThat(result).allSatisfy(ticket -> {
             assertThat(ticket.isExpired()).isEqualTo(true);
-            assertThat(ticket.getActiveTime()).isEqualTo(3600);
+            assertThat(ticket.getRecord().getActiveTime()).isEqualTo(3600);
         });
 
         log.info("time={}", result.get(0).getStartTime());
@@ -111,8 +107,7 @@ class TicketRepositoryTest {
 
         //when
         LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        int updateCount = ticketRepository.updateTicketStatusToEnd(
-                endTime, endTime.toEpochSecond(ZoneOffset.of("+09:00")));
+        int updateCount = ticketRepository.expireTicketsWhereExpiredFalse();
         em.clear(); //벌크 연산 수행 후 영속성 컨텍스트 초기화
 
         //then
@@ -121,7 +116,7 @@ class TicketRepositoryTest {
         tickets = ticketRepository.findAll();
         assertThat(tickets).allSatisfy(ticket -> {
             assertThat(ticket.isExpired()).isEqualTo(true);
-            assertThat(ticket.getActiveTime()).isEqualTo(3600);
+            assertThat(ticket.getRecord().getActiveTime()).isEqualTo(3600);
         });
     }
 
@@ -235,13 +230,13 @@ class TicketRepositoryTest {
         studyRepository.save(study);
 
         Ticket ticket = createTicket(STUDY, member, study, group);
-        setField(ticket, "isExpired", true);
+        setField(ticket, "expired", true);
         Ticket ticket1 = createTicket(STUDY, member, study, group);
         ticketRepository.save(ticket);
         ticketRepository.save(ticket1);
 
         //when
-        Ticket ticket2 = ticketRepository.findByMemberAndIsExpiredFalse(member).get();
+        Ticket ticket2 = ticketRepository.findByMemberAndExpiredFalse(member).get();
 
         //then
         assertThat(ticket2).isEqualTo(ticket1);

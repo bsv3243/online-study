@@ -1,6 +1,5 @@
 package seong.onlinestudy.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.SessionConst;
@@ -16,7 +14,6 @@ import seong.onlinestudy.domain.*;
 import seong.onlinestudy.request.TicketUpdateRequest;
 import seong.onlinestudy.service.TicketService;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,7 +46,7 @@ class TicketControllerTest {
         Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
 
         session.setAttribute(SessionConst.LOGIN_MEMBER, member);
-        given(ticketService.updateTicket(any(), any(), any())).willReturn(1L);
+        given(ticketService.expireTicket(any(), any(), any())).willReturn(1L);
 
         //when
         TicketUpdateRequest request = new TicketUpdateRequest();

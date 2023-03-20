@@ -25,8 +25,9 @@ public interface StudyRepository extends JpaRepository<Study, Long>, StudyReposi
      */
     @Query("select s from Study s" +
             " join s.tickets t on t.member.id = :memberId and t.startTime >= :startTime and t.startTime < :endTime" +
+            " join t.record r" +
             " group by s.id" +
-            " order by sum(t.activeTime) desc")
+            " order by sum(r.activeTime) desc")
     Page<Study> findStudiesByMember(@Param("memberId") Long memberId, @Param("startTime") LocalDateTime startTime,
                                     @Param("endTime") LocalDateTime endTime, Pageable pageable);
 

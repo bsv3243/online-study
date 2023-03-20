@@ -76,7 +76,7 @@ class GroupRepositoryCustomTest {
                 ZoneOffset offset = ZoneOffset.of("+09:00");
                 setField(ticket, "endTime", ticket.getStartTime().plusHours(2));
                 setField(ticket, "activeTime",
-                        ticket.getEndTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
+                        ticket.getRecord().getExpiredTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
                 setField(ticket, "memberStatus", TicketStatus.END);
             }
         }
@@ -111,7 +111,7 @@ class GroupRepositoryCustomTest {
                 TicketUpdateRequest request = new TicketUpdateRequest();
                 request.setStatus(TicketStatus.END);
 
-                tickets.get(i).updateStatus(request);
+                tickets.get(i).expiredAndUpdateRecord();
             }
         }
         ticketRepository.saveAll(tickets);
@@ -183,7 +183,7 @@ class GroupRepositoryCustomTest {
             for (Group group : findGroups) {
                 long studyTime = 0L;
                 for (Ticket groupTicket : group.getTickets()) {
-                    studyTime += groupTicket.getActiveTime();
+                    studyTime += groupTicket.getRecord().getActiveTime();
                 }
 
                 studyTimes.add(studyTime);

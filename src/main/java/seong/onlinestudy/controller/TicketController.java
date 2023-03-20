@@ -46,14 +46,14 @@ public class TicketController {
     }
 
     @PostMapping("/ticket/{id}")
-    public Result<Long> updateTicket(@PathVariable("id") Long ticketId,
-                                     @RequestBody @Valid TicketUpdateRequest ticketUpdateRequest,
-                             @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+    public Result<Long> expiredTicket(@PathVariable("id") Long ticketId,
+                                      @RequestBody @Valid TicketUpdateRequest ticketUpdateRequest,
+                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long updateTicketId = ticketService.updateTicket(ticketId, ticketUpdateRequest, loginMember);
+        Long updateTicketId = ticketService.expireTicket(ticketId, ticketUpdateRequest, loginMember);
 
         return new Result<>("201", updateTicketId);
     }

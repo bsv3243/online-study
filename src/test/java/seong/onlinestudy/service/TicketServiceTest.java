@@ -75,7 +75,7 @@ class TicketServiceTest {
         given(ticketRepository.findById(1L)).willReturn(Optional.of(testTicket));
 
         //when
-        Long ticketId = ticketService.updateTicket(testTicket.getId(), updateRequest, member);
+        Long ticketId = ticketService.expireTicket(testTicket.getId(), updateRequest, member);
 
         //then
         assertThat(testTicket.getTicketStatus()).isEqualTo(REST);
@@ -97,7 +97,7 @@ class TicketServiceTest {
         //when
 
         //then
-        assertThatThrownBy(() -> ticketService.updateTicket(testTicket.getId(), updateRequest, memberB))
+        assertThatThrownBy(() -> ticketService.expireTicket(testTicket.getId(), updateRequest, memberB))
                 .isInstanceOf(PermissionControlException.class);
     }
 
@@ -131,9 +131,9 @@ class TicketServiceTest {
             Ticket ticket = MyUtils.createTicket(END, member, study, group);
             setField(ticket, "id", count++);
             setField(ticket, "startTime", ticket.getStartTime().minusHours(2));
-            setField(ticket, "endTime", ticket.getStartTime().plusHours(1));
-            setField(ticket, "activeTime",
-                    ticket.getEndTime().toEpochSecond(offset) - ticket.getStartTime().toEpochSecond(offset));
+            setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusHours(1));
+            setField(ticket.getRecord(), "activeTime",
+                    ticket.getRecord().getExpiredTime().toEpochSecond(offset) - ticket.getStartTime().toEpochSecond(offset));
 
             expiredTickets.add(ticket);
         }

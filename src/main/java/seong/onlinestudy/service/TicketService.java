@@ -20,7 +20,6 @@ import seong.onlinestudy.request.TicketUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static seong.onlinestudy.domain.TicketStatus.*;
 
@@ -46,7 +45,7 @@ public class TicketService {
         Group findGroup = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        ticketRepository.findByMemberAndIsExpiredFalse(member)
+        ticketRepository.findByMemberAndExpiredFalse(member)
                 .ifPresent(ticket -> {
                     throw new DuplicateElementException("이전에 발급받은 티켓이 존재합니다.");
                 });
@@ -55,14 +54,14 @@ public class TicketService {
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
 
-        Ticket ticket = Ticket.createTicket(request, member, findStudy, findGroup);
+        Ticket ticket = Ticket.createWithRecord(request, member, findStudy, findGroup);
         ticketRepository.save(ticket);
 
         return ticket.getId();
     }
 
     @Transactional
-    public Long updateTicket(Long ticketId, TicketUpdateRequest updateTicketRequest, Member loginMember) {
+    public Long expireTicket(Long ticketId, TicketUpdateRequest updateTicketRequest, Member loginMember) {
         Ticket findTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 티켓입니다."));
 
@@ -71,7 +70,7 @@ public class TicketService {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
-        findTicket.updateStatus(updateTicketRequest);
+        findTicket.expiredAndUpdateRecord();
 
         return findTicket.getId();
     }

@@ -8,9 +8,6 @@ import seong.onlinestudy.domain.TicketStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-import static seong.onlinestudy.domain.TicketStatus.END;
-import static seong.onlinestudy.domain.TicketStatus.REST;
-
 @Data
 public class MemberTicketDto {
 
@@ -32,7 +29,7 @@ public class MemberTicketDto {
             if (ticket.isExpired()) {
                 memberTicket.expiredTickets.add(ticketDto);
                 if(ticket.getTicketStatus().equals(TicketStatus.STUDY)) //학습 상태의 티켓 시간만 더함
-                    memberTicket.studyTime += ticket.getActiveTime();
+                    memberTicket.studyTime += ticket.getRecord().getActiveTime();
             } else {
                 memberTicket.activeTicket = ticketDto;
             }

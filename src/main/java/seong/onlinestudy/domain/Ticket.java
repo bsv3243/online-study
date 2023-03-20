@@ -2,11 +2,9 @@ package seong.onlinestudy.domain;
 
 import lombok.Getter;
 import seong.onlinestudy.request.TicketCreateRequest;
-import seong.onlinestudy.request.TicketUpdateRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Entity
 @Getter
@@ -17,14 +15,11 @@ public class Ticket {
     private Long id;
 
     private LocalDateTime startTime;
-    private LocalDateTime endTime;
-
-    private long activeTime;
 
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
 
-    private boolean isExpired;
+    private boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -38,12 +33,24 @@ public class Ticket {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    public static Ticket createTicket(TicketCreateRequest request, Member member, Study study, Group group) {
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "record_id")
+    private Record record;
+
+    public void setRecord(Record record) {
+        this.record = record;
+    }
+
+    public void expiredAndUpdateRecord() {
+        expired = true;
+        record.update(this);
+    }
+
+    public static Ticket createWithRecord(TicketCreateRequest request, Member member, Study study, Group group) {
         Ticket ticket = new Ticket();
         ticket.startTime = LocalDateTime.now();
         ticket.ticketStatus = request.getStatus();
-        ticket.activeTime = 0;
-        ticket.isExpired = false;
+        ticket.expired = false;
 
         member.getTickets().add(ticket);
         ticket.member = member;
@@ -54,15 +61,8 @@ public class Ticket {
         group.getTickets().add(ticket);
         ticket.group = group;
 
-        return ticket;
-    }
+        Record.create(ticket);
 
-    public void updateStatus(TicketUpdateRequest updateRequest) {
-        ZoneOffset offset = ZoneOffset.of("+09:00");
-        if(updateRequest.getStatus() == TicketStatus.END) {
-            this.endTime = LocalDateTime.now();
-            this.activeTime = this.endTime.toEpochSecond(offset) - this.startTime.toEpochSecond(offset);
-            this.isExpired = true;
-        }
+        return ticket;
     }
 }
