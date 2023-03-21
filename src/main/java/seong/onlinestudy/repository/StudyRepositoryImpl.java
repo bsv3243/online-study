@@ -53,7 +53,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                 .selectFrom(study)
                 .leftJoin(study.tickets, ticket)
                 .join(ticket.member, member)
-                .join(ticket.record, record).fetchJoin()
+                .join(ticket.record, record)
                 .join(ticket.group, group)
                 .where(memberIdEq(memberId), groupIdEq(groupId), studyNameContains(search),
                         ticket.startTime.goe(startTime), ticket.startTime.lt(endTime))
