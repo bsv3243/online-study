@@ -25,6 +25,7 @@ import static seong.onlinestudy.MyUtils.createStudy;
 import static seong.onlinestudy.MyUtils.createTicket;
 import static seong.onlinestudy.domain.QGroup.group;
 import static seong.onlinestudy.domain.QGroupMember.groupMember;
+import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
@@ -74,10 +75,10 @@ class GroupRepositoryCustomTest {
 
             if(i < 20) {
                 ZoneOffset offset = ZoneOffset.of("+09:00");
-                setField(ticket, "endTime", ticket.getStartTime().plusHours(2));
-                setField(ticket, "activeTime",
+                setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusHours(2));
+                setField(ticket.getRecord(), "activeTime",
                         ticket.getRecord().getExpiredTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
-                setField(ticket, "memberStatus", TicketStatus.END);
+                setField(ticket, "expired", true);
             }
         }
         ticketRepository.saveAll(tickets);
@@ -149,7 +150,7 @@ class GroupRepositoryCustomTest {
                 order = groupMember.count().desc();
                 break;
             case TIME:
-                order = ticket.activeTime.sum().desc();
+                order =  record.activeTime.sum().desc();
                 break;
             default:
                 order = group.id.desc();
@@ -159,6 +160,7 @@ class GroupRepositoryCustomTest {
                 .select(group)
                 .from(group)
                 .leftJoin(group.tickets, ticket)
+                .join(ticket.record, record)
                 .leftJoin(ticket.study, study)
                 .join(group.groupMembers, groupMember)
                 .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))

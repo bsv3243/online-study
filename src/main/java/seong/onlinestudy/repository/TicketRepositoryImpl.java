@@ -2,6 +2,7 @@ package seong.onlinestudy.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import seong.onlinestudy.domain.QRecord;
 import seong.onlinestudy.domain.Ticket;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static seong.onlinestudy.domain.QGroup.group;
 import static seong.onlinestudy.domain.QMember.member;
+import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
@@ -28,6 +30,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom{
                 .join(ticket.group, group)
                 .leftJoin(ticket.study, study).fetchJoin()
                 .join(ticket.member, member).fetchJoin()
+                .join(ticket.record, record).fetchJoin()
                 .where(studyIdEq(studyId), groupIdEq(groupId),
                         ticket.startTime.goe(startTime), ticket.startTime.lt(endTime))
                 .orderBy(study.id.asc(), ticket.startTime.asc())

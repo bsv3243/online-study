@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.domain.TicketStatus.END;
+import static seong.onlinestudy.domain.TicketStatus.STUDY;
 
 public class MyUtils {
 
@@ -64,8 +65,8 @@ public class MyUtils {
 
     public static void setTicketEnd(Ticket ticket, long seconds) {
         setField(ticket, "ticketStatus", END);
-        setField(ticket, "activeTime", seconds);
-        setField(ticket, "endTime", ticket.getStartTime().plusSeconds(seconds));
+        setField(ticket.getRecord(), "activeTime", seconds);
+        setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(seconds));
     }
 
     public static Study createStudy(String name) {

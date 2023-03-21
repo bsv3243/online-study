@@ -21,6 +21,7 @@ import static seong.onlinestudy.MyUtils.*;
 import static seong.onlinestudy.domain.QGroup.group;
 import static seong.onlinestudy.domain.QGroupMember.groupMember;
 import static seong.onlinestudy.domain.QMember.member;
+import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
@@ -89,10 +90,11 @@ public class StudyRepositoryCustomTest {
                         study.id,
                         group.id,
                         study.name,
-                        ticket.activeTime.sum()
+                        record.activeTime.sum()
                 ))
                 .from(study)
                 .join(study.tickets, ticket)
+                .join(ticket.record, record)
                 .join(ticket.group, group)
                 .where(group.in(groups))
                 .groupBy(study.id)
