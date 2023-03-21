@@ -202,4 +202,20 @@ public class MyUtils {
         }
         return comments;
     }
+
+    public static void joinMembersToGroups(List<Member> members, List<Group> groups) {
+        for(int i=groups.size(); i<members.size(); i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            groups.get(i % groups.size()).addGroupMember(groupMember);
+        }
+    }
+
+    public static List<Ticket> createTickets(List<Member> members, List<Group> groups, List<Study> studies) {
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket ticket = createTicket(STUDY, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            tickets.add(ticket);
+        }
+        return tickets;
+    }
 }

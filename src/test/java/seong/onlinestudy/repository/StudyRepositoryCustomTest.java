@@ -8,10 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -103,6 +107,35 @@ public class StudyRepositoryCustomTest {
 
         //then
         assertThat(groups).contains(group1);
+    }
+
+    @Test
+    void findStudies_조건없음() {
+        //given
+        List<Member> members = createMembers(20);
+        List<Group> groups = createGroups(members, 2);
+        MyUtils.joinMembersToGroups(members, groups);
+
+        List<Study> studies = createStudies(2);
+        List<Ticket> tickets = createTickets(members, groups, studies);
+
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(groups);
+        studyRepository.saveAll(studies);
+        ticketRepository.saveAll(tickets);
+
+        //when
+        Long memberId = null;
+        Long groupId = null;
+        String search = null;
+        LocalDateTime startTime = LocalDateTime.now();
+        int days = 6;
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Study> result = studyRepository.findStudies(memberId, groupId, search, startTime.minusDays(days), startTime, pageRequest);
+
+        //then
+        assertThat(result.getContent()).containsAnyElementsOf(studies);
+
     }
 
     private BooleanExpression studiesIn(List<Study> studies) {
