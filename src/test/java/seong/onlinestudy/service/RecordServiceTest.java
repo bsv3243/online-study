@@ -14,6 +14,7 @@ import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.RecordsGetRequest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,36 @@ class RecordServiceTest {
 
     @Mock
     TicketRepository ticketRepository;
+
+    @Test
+    void getRecords_조건없음() {
+        //given
+        List<Member> members = createMembers(50, true);
+        List<Group> groups = createGroups(members, 10, true);
+        List<Study> studies = createStudies(10, true);
+
+        for(int i=groups.size(); i<members.size(); i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            groups.get(i % groups.size()).addGroupMember(groupMember);
+        }
+
+        List<Ticket> endTickets = createEndTickets(members, groups, studies, 1000);
+
+        given(ticketRepository.findTickets(any(), any(), any(), any(), any())).willReturn(endTickets);
+
+        //when
+        RecordsGetRequest request = new RecordsGetRequest();
+        request.setStartDate(LocalDate.now());
+        request.setDays(1);
+        List<StudyRecordDto> studyRecords = recordService.getRecords(request, members.get(0));
+
+        //then
+        assertThat(studyRecords).allSatisfy(studyRecord -> {
+            assertThat(studyRecord.getRecords()).allSatisfy(record -> {
+                assertThat(record.getStudyTime()).isEqualTo(1000L * members.size()/studies.size());
+            });
+        });
+    }
 
     @Test
     void getRecords_스터디조건() {

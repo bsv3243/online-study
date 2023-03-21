@@ -218,4 +218,18 @@ public class MyUtils {
         }
         return tickets;
     }
+
+    public static List<Ticket> createEndTickets(List<Member> members, List<Group> groups, List<Study> studies, long studyTime) {
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket ticket = createTicket(STUDY, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            tickets.add(ticket);
+        }
+        for (Ticket ticket : tickets) {
+            setField(ticket, "expired", true);
+            setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
+            setField(ticket.getRecord(), "activeTime", studyTime);
+        }
+        return tickets;
+    }
 }

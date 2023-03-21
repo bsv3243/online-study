@@ -72,7 +72,24 @@ public class RecordApiTest {
         studyRepository.saveAll(studies);
         ticketRepository.saveAll(tickets);
 
+        for(int i=0; i<20; i++) {
+            tickets.get(i).expiredAndUpdateRecord();
+        }
 
+    }
+
+    @Test
+    void getTickets_조건없음() throws Exception {
+        //given
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/api/v1/records")
+                .params(request));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test

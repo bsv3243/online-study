@@ -2,8 +2,10 @@ package seong.onlinestudy.request;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import seong.onlinestudy.TimeConst;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class RecordsGetRequest {
@@ -21,7 +23,14 @@ public class RecordsGetRequest {
     }
 
     public RecordsGetRequest() {
-        startDate = LocalDate.now();
         days = 7;
+
+        LocalDateTime now = LocalDateTime.now();
+        if(now.getHour() < TimeConst.DAY_START) {
+            startDate = now.toLocalDate();
+        } else {
+            startDate = now.toLocalDate().plusDays(1);
+        }
+        startDate = startDate.minusDays(days);
     }
 }

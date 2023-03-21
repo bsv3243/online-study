@@ -29,7 +29,7 @@ public class RecordService {
                 throw new PermissionControlException("권한이 없습니다.");
             }
         }
-        LocalDateTime startTime = request.getStartDate().atStartOfDay().plusHours(TimeConst.DAY_START).minusDays(request.getDays());
+        LocalDateTime startTime = request.getStartDate().atStartOfDay().plusHours(TimeConst.DAY_START);
         LocalDateTime endTime = startTime.plusDays(request.getDays());
 
         List<Ticket> findTickets = ticketRepository
@@ -82,7 +82,10 @@ public class RecordService {
             LocalDate ticketDate = ticket.getDateBySetting();
 
             RecordDto recordDto = recordsGroupByDate.getOrDefault(ticketDate, RecordDto.from(ticket));
-            recordDto.addStudyTime(ticket);
+            if(recordsGroupByDate.containsValue(recordDto)) { //새롭게 만든 recordDto 가 아닐 때
+                recordDto.addStudyTime(ticket);
+            }
+
             recordsGroupByDate.put(ticketDate, recordDto);
         }
         return recordsGroupByDate;
