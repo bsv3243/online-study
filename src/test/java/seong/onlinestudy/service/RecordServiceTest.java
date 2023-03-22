@@ -10,11 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.RecordsGetRequest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -59,9 +61,13 @@ class RecordServiceTest {
         List<StudyRecordDto> studyRecords = recordService.getRecords(request, members.get(0));
 
         //then
+        LocalDateTime startTime = endTickets.get(0).getStartTime();
         assertThat(studyRecords).allSatisfy(studyRecord -> {
             assertThat(studyRecord.getRecords()).allSatisfy(record -> {
                 assertThat(record.getStudyTime()).isEqualTo(1000L * members.size()/studies.size());
+                assertThat(record.getStartTime()).isEqualToIgnoringNanos(startTime);
+                assertThat(record.getEndTime()).isEqualToIgnoringNanos(startTime.plusSeconds(1000));
+
             });
         });
     }

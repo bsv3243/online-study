@@ -70,6 +70,8 @@ public class RecordDto {
 
         recordDto.members.add(ticket.getMember());
 
+        recordDto.setStartAndEndTime(ticket);
+
         return recordDto;
     }
 }

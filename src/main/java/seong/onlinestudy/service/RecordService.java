@@ -50,13 +50,34 @@ public class RecordService {
         return studyRecordDtos;
     }
 
-    /**
-     * 요청한 날짜부터 종료날짜까지 각 날짜에 해당하는 Record 들을 StudyRecord 에 추가한다.
-     * @param recordsGroupByDate 날짜별로 분류된 Record 목록
-     * @param request 시작 날짜와 총 반환 일자가 지정된 사용자 요청
-     * @param study StudyRecord 에 지정할 Study
-     * @return 날짜별로 분류된 RecordDto 를 가진 StudyRecordDto 반환
-     */
+    private Map<Study, List<Ticket>> getTicketsGroupByStudy(List<Ticket> findTickets) {
+        Map<Study, List<Ticket>> ticketsGroupByStudy = new HashMap<>();
+        for (Ticket findTicket : findTickets) {
+            Study findStudy = findTicket.getStudy();
+
+            List<Ticket> filteredTickets = ticketsGroupByStudy.getOrDefault(findStudy, new ArrayList<>());
+            filteredTickets.add(findTicket);
+            ticketsGroupByStudy.put(findStudy, filteredTickets);
+        }
+        return ticketsGroupByStudy;
+    }
+
+    private Map<LocalDate, RecordDto> getRecordsGroupByDate(List<Ticket> filteredTickets) {
+        Map<LocalDate, RecordDto> recordsGroupByDate = new HashMap<>();
+        for (Ticket ticket : filteredTickets) {
+            LocalDate ticketDate = ticket.getDateBySetting();
+
+            RecordDto recordDto = recordsGroupByDate.getOrDefault(ticketDate, RecordDto.from(ticket));
+            if(recordsGroupByDate.containsValue(recordDto)) { //새롭게 만든 recordDto 가 아닐 때
+                recordDto.addStudyTime(ticket);
+                recordDto.compareStartAndEndTime(ticket);
+            }
+
+            recordsGroupByDate.put(ticketDate, recordDto);
+        }
+        return recordsGroupByDate;
+    }
+
     private StudyRecordDto getStudyRecordWithRecords(Map<LocalDate, RecordDto> recordsGroupByDate,
                                                      RecordsGetRequest request, Study study) {
         StudyRecordDto studyRecord = StudyRecordDto.from(study);
@@ -69,42 +90,5 @@ public class RecordService {
 
         studyRecord.updateMemberCount();
         return studyRecord;
-    }
-
-    /**
-     * Ticket 을 날짜별로 분류하여 하나의 Record 뭉치로 합친다.
-     * @param filteredTickets 동일한 Study 를 가진 티켓 목록
-     * @return 날짜별로 분류된 record 목록을 반환
-     */
-    private Map<LocalDate, RecordDto> getRecordsGroupByDate(List<Ticket> filteredTickets) {
-        Map<LocalDate, RecordDto> recordsGroupByDate = new HashMap<>();
-        for (Ticket ticket : filteredTickets) {
-            LocalDate ticketDate = ticket.getDateBySetting();
-
-            RecordDto recordDto = recordsGroupByDate.getOrDefault(ticketDate, RecordDto.from(ticket));
-            if(recordsGroupByDate.containsValue(recordDto)) { //새롭게 만든 recordDto 가 아닐 때
-                recordDto.addStudyTime(ticket);
-            }
-
-            recordsGroupByDate.put(ticketDate, recordDto);
-        }
-        return recordsGroupByDate;
-    }
-
-    /**
-     * Ticket 목록을 Study 에 따라 분류한다.
-     * @param findTickets ticket 목록
-     * @return Study 별로 분류된 Ticket 목록을 반환
-     */
-    private Map<Study, List<Ticket>> getTicketsGroupByStudy(List<Ticket> findTickets) {
-        Map<Study, List<Ticket>> ticketsGroupByStudy = new HashMap<>();
-        for (Ticket findTicket : findTickets) {
-            Study findStudy = findTicket.getStudy();
-
-            List<Ticket> filteredTickets = ticketsGroupByStudy.getOrDefault(findStudy, new ArrayList<>());
-            filteredTickets.add(findTicket);
-            ticketsGroupByStudy.put(findStudy, filteredTickets);
-        }
-        return ticketsGroupByStudy;
     }
 }
