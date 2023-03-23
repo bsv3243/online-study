@@ -42,7 +42,7 @@ public class Ticket {
             return startTime.toLocalDate();
         }
     }
-
+    
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "record_id")
     private Record record;
