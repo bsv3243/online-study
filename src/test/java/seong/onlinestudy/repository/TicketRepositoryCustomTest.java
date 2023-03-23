@@ -167,20 +167,22 @@ public class TicketRepositoryCustomTest {
         Long memberId = members.get(0).getId();
 
         //when
-        List<Ticket> findTickets = query
+/*        List<Ticket> findTickets = query
                 .selectFrom(ticket)
                 .join(ticket.group, group)
                 .join(ticket.study, study).fetchJoin()
                 .join(ticket.member, member).fetchJoin()
                 .where(studyIdEq(studyId), groupIdEq(groupId), memberIdEq(memberId))
                 .orderBy(study.id.asc())
-                .fetch();
-        /*List<Ticket> findTickets
-                = ticketRepository.findTickets(studyId, groupId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
-*/
+                .fetch();*/
+        List<Ticket> findTickets
+                = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
+
         //then
         List<Member> findMembers = findTickets.stream().map(Ticket::getMember).collect(Collectors.toList());
-        assertThat(findMembers.get(0)).isEqualTo(members.get(0));
+        assertThat(findMembers).allSatisfy(findMember -> {
+            assertThat(findMember).isEqualTo(members.get(0));
+        });
 
         Set<Member> findMembersRemoveDuplicate = new HashSet<>(findMembers);
         assertThat(findMembersRemoveDuplicate.size()).isEqualTo(1);

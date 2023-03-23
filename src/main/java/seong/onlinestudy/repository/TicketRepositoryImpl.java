@@ -31,12 +31,16 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom{
                 .leftJoin(ticket.study, study).fetchJoin()
                 .join(ticket.member, member).fetchJoin()
                 .join(ticket.record, record).fetchJoin()
-                .where(studyIdEq(studyId), groupIdEq(groupId),
+                .where(studyIdEq(studyId), groupIdEq(groupId), memberIdEq(memberId),
                         ticket.startTime.goe(startTime), ticket.startTime.lt(endTime))
                 .orderBy(study.id.asc(), ticket.startTime.asc())
                 .fetch();
 
         return findTickets;
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return memberId != null ? member.id.eq(memberId) : null;
     }
 
     private BooleanExpression groupIdEq(Long groupId) {
