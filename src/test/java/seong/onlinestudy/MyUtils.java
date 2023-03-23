@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.domain.TicketStatus.END;
+import static seong.onlinestudy.domain.TicketStatus.STUDY;
 
 public class MyUtils {
 
@@ -64,8 +65,8 @@ public class MyUtils {
 
     public static void setTicketEnd(Ticket ticket, long seconds) {
         setField(ticket, "ticketStatus", END);
-        setField(ticket, "activeTime", seconds);
-        setField(ticket, "endTime", ticket.getStartTime().plusSeconds(seconds));
+        setField(ticket.getRecord(), "activeTime", seconds);
+        setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(seconds));
     }
 
     public static Study createStudy(String name) {
@@ -200,5 +201,35 @@ public class MyUtils {
             comments.add(comment);
         }
         return comments;
+    }
+
+    public static void joinMembersToGroups(List<Member> members, List<Group> groups) {
+        for(int i=groups.size(); i<members.size(); i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            groups.get(i % groups.size()).addGroupMember(groupMember);
+        }
+    }
+
+    public static List<Ticket> createTickets(List<Member> members, List<Group> groups, List<Study> studies) {
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket ticket = createTicket(STUDY, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            tickets.add(ticket);
+        }
+        return tickets;
+    }
+
+    public static List<Ticket> createEndTickets(List<Member> members, List<Group> groups, List<Study> studies, long studyTime) {
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket ticket = createTicket(STUDY, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            tickets.add(ticket);
+        }
+        for (Ticket ticket : tickets) {
+            setField(ticket, "expired", true);
+            setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
+            setField(ticket.getRecord(), "activeTime", studyTime);
+        }
+        return tickets;
     }
 }

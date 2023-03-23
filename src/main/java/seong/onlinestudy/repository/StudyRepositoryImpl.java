@@ -1,7 +1,7 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,9 +10,12 @@ import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupStudyDto;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static seong.onlinestudy.domain.QGroup.group;
+import static seong.onlinestudy.domain.QMember.member;
+import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
@@ -32,14 +35,56 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         study.id,
                         group.id,
                         study.name,
-                        ticket.activeTime.sum().as("studyTime")
+                        ticket.record.activeTime.sum().as("studyTime")
                 ))
                 .from(study)
                 .join(study.tickets, ticket)
+                .join(ticket.record, record)
                 .join(ticket.group, group)
                 .where(group.in(groups))
                 .groupBy(group.id, study.id)
-                .orderBy(ticket.activeTime.sum().desc())
+                .orderBy(record.activeTime.sum().desc())
                 .fetch();
+    }
+
+    @Override
+    public Page<Study> findStudies(Long memberId, Long groupId, String search, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
+        List<Study> result = query
+                .selectFrom(study)
+                .leftJoin(study.tickets, ticket)
+                .join(ticket.member, member)
+                .join(ticket.record, record)
+                .join(ticket.group, group)
+                .where(memberIdEq(memberId), groupIdEq(groupId), studyNameContains(search),
+                        ticket.startTime.goe(startTime), ticket.startTime.lt(endTime))
+                .groupBy(study.id)
+                .orderBy(record.activeTime.sum().desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
+        Long count = query
+                .select(study.id.count())
+                .from(study)
+                .leftJoin(study.tickets, ticket)
+                .join(ticket.member, member)
+                .join(ticket.group, group)
+                .where(memberIdEq(memberId), groupIdEq(groupId), studyNameContains(search))
+                .fetchOne();
+
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    private BooleanExpression studyNameContains(String search) {
+        return search != null && !search.isBlank() ? study.name.contains(search) : null;
+    }
+
+    private BooleanExpression groupIdEq(Long groupId) {
+        return groupId != null ? group.id.eq(groupId) : null;
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return memberId != null ? member.id.eq(memberId) : null;
     }
 }

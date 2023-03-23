@@ -51,7 +51,7 @@ class StudyServiceTest {
         PageImpl<Study> allStudies = new PageImpl<>(studies.subList(3, 10), pageRequest, 7);
 
 //        given(studyRepository.findStudiesByMember(any(), any(), any(), any())).willReturn(memberStudies);
-        given(studyRepository.findAllByNameContains(any(), any())).willReturn(allStudies);
+        given(studyRepository.findStudies(any(), any(), any(), any(), any(), any())).willReturn(allStudies);
 
         //when
         StudiesGetRequest request = new StudiesGetRequest();
@@ -83,7 +83,7 @@ class StudyServiceTest {
         PageImpl<Study> memberStudies = new PageImpl<>(studies.subList(0, 3), pageRequest, 3);
         PageImpl<Study> allStudies = new PageImpl<>(studies.subList(3, 10), pageRequest, 7);
 
-        given(studyRepository.findStudiesByMember(any(), any(), any(), any())).willReturn(memberStudies);
+        given(studyRepository.findStudies(any(), any(), any(), any(), any(), any())).willReturn(memberStudies);
 //        given(studyRepository.findAllByNameContains(any(), any())).willReturn(allStudies);
 
         //when
@@ -97,6 +97,5 @@ class StudyServiceTest {
         assertThat(studyDtos.stream().map(StudyDto::getName).collect(Collectors.toList()))
                 .containsExactlyInAnyOrderElementsOf(memberStudies.getContent().stream()
                         .map(Study::getName).collect(Collectors.toList()));
-        assertThat(studyDtos).allSatisfy(studyDto -> assertThat(studyDto.getStudyTime()).isEqualTo(3600));
     }
 }

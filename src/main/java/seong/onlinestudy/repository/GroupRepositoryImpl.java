@@ -14,6 +14,7 @@ import java.util.List;
 
 import static seong.onlinestudy.domain.QGroup.*;
 import static seong.onlinestudy.domain.QGroupMember.groupMember;
+import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
@@ -34,7 +35,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 order = groupMember.count().desc();
                 break;
             case TIME:
-                order = ticket.activeTime.sum().desc();
+                order = record.activeTime.sum().desc();
                 break;
             default:
                 order = group.createdAt.desc();
@@ -43,6 +44,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
         List<Group> groups = query
                 .selectFrom(group)
                 .leftJoin(group.tickets, ticket)
+                .leftJoin(ticket.record, record)
                 .leftJoin(ticket.study, study)
                 .join(group.groupMembers, groupMember)
                 .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))

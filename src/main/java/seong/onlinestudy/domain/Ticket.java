@@ -1,9 +1,11 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import seong.onlinestudy.TimeConst;
 import seong.onlinestudy.request.TicketCreateRequest;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,6 +35,14 @@ public class Ticket {
     @JoinColumn(name = "group_id")
     private Group group;
 
+    public LocalDate getDateBySetting() {
+        if(startTime.getHour() < TimeConst.DAY_START) {
+            return startTime.toLocalDate().minusDays(1);
+        } else {
+            return startTime.toLocalDate();
+        }
+    }
+    
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "record_id")
     private Record record;
@@ -55,8 +65,10 @@ public class Ticket {
         member.getTickets().add(ticket);
         ticket.member = member;
 
-        study.getTickets().add(ticket);
-        ticket.study = study;
+        if(request.getStatus() == TicketStatus.STUDY) {
+            study.getTickets().add(ticket);
+            ticket.study = study;
+        }
 
         group.getTickets().add(ticket);
         ticket.group = group;

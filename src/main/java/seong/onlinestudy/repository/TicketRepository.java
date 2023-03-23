@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRepositoryCustom {
 
     Optional<Ticket> findByMemberAndExpiredFalse(Member member);
 
@@ -45,9 +45,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             " join m.groupMembers gm on gm.group.id = :groupId" +
             " where t.startTime >= :startTime and t.startTime < :endTime" +
             " order by t.member.id")
-    List<Ticket> findTickets(@Param("groupId") Long groupId,
-                             @Param("startTime") LocalDateTime startTime,
-                             @Param("endTime") LocalDateTime endTime);
+    List<Ticket> findTicketsByGroupId(@Param("groupId") Long groupId,
+                                      @Param("startTime") LocalDateTime startTime,
+                                      @Param("endTime") LocalDateTime endTime);
 
     /**
      * 만료되지 않은 티켓들을 만료시킨다.

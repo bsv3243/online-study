@@ -14,6 +14,7 @@ public class TicketDto {
 
     private String startTime;
     private String endTime;
+    private boolean expired;
 
     private StudyDto study;
 
@@ -21,6 +22,7 @@ public class TicketDto {
         TicketDto ticketDto = new TicketDto();
         ticketDto.ticketId = ticket.getId();
         ticketDto.status = ticket.getTicketStatus();
+        ticketDto.expired = ticket.isExpired();
         ticketDto.activeTime = ticket.getRecord().getActiveTime();
 
         ticketDto.startTime = ticket.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME);
@@ -28,7 +30,9 @@ public class TicketDto {
             ticketDto.endTime = ticket.getRecord().getExpiredTime().format(DateTimeFormatter.ISO_DATE_TIME);
         }
 
-        ticketDto.study = StudyDto.from(ticket.getStudy());
+        if(ticket.getStudy() != null) {
+            ticketDto.study = StudyDto.from(ticket.getStudy());
+        }
 
         return ticketDto;
     }
