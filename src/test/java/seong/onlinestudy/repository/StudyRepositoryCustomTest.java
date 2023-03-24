@@ -117,7 +117,7 @@ public class StudyRepositoryCustomTest {
         MyUtils.joinMembersToGroups(members, groups);
 
         List<Study> studies = createStudies(2);
-        List<Ticket> tickets = createTickets(members, groups, studies);
+        List<Ticket> tickets = createTickets(TicketStatus.STUDY, members, groups, studies);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);

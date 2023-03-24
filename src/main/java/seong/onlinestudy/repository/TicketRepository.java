@@ -24,7 +24,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
      */
     @Query("select t from Ticket t" +
             " join t.member m on m = :member" +
-            " join fetch t.study s" +
+            " left join fetch t.study s" +
             " join fetch t.record r" +
             " where t.startTime >= :startTime and t.startTime < :endTime")
     List<Ticket> findTickets(@Param("member") Member member,
