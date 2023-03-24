@@ -10,6 +10,7 @@ public class TicketGetRequest {
 
     Long groupId;
     Long studyId;
+    Long memberId;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     LocalDate date;
     int days;

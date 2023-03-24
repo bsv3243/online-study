@@ -1,5 +1,6 @@
 package seong.onlinestudy.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import seong.onlinestudy.MyUtils;
+import seong.onlinestudy.repository.GroupRepository;
+import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
@@ -30,8 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static seong.onlinestudy.MyUtils.createGroup;
-import static seong.onlinestudy.MyUtils.createMembers;
+import static seong.onlinestudy.MyUtils.*;
 import static seong.onlinestudy.domain.TicketStatus.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +42,11 @@ class TicketServiceTest {
     @InjectMocks
     TicketService ticketService;
 
+    @Mock
+    MemberRepository memberRepository;
+
+    @Mock
+    GroupRepository groupRepository;
 
     @Mock
     TicketRepository ticketRepository;
@@ -47,160 +54,130 @@ class TicketServiceTest {
     @Mock
     StudyRepository studyRepository;
 
+    List<Member> testMembers;
+    List<Group> testGroups;
+    List<Study> testStudies;
+    List<Ticket> testStudyTickets;
+    List<Ticket> testRestTickets;
+
+    @BeforeEach
+    void testDateInit() {
+        testMembers = createMembers(10, true);
+        testGroups = createGroups(testMembers, 2);
+        testStudies = createStudies(2, true);
+        testStudyTickets = createTickets(STUDY, testMembers, testGroups, testStudies);
+        testRestTickets = createTickets(REST, testMembers, testGroups, testStudies);
+    }
+
     @Test
     void createTicket() {
         //given
-        Study study = createStudy();
-        Member member = createMember(1L);
+        Study study = MyUtils.createStudy("테스트스터디");
+        Member member = MyUtils.createMember("member", "member");
+        Group group = createGroup("그룹", 30, member);
+        setField(study, "id", 1L);
+        setField(member, "id", 1L);
+        setField(group, "id", 1L);
 
         given(studyRepository.findById(any())).willReturn(Optional.of(study));
-
-        TicketCreateRequest ticketRequest = createTicketRequest(study.getId());
+        given(memberRepository.findById(any())).willReturn(Optional.of(member));
+        given(groupRepository.findById(any())).willReturn(Optional.of(group));
+        given(ticketRepository.findByMemberAndExpiredFalse(member)).willReturn(Optional.empty());
 
         //when
-        Long ticketId = ticketService.createTicket(ticketRequest, member);
+        TicketCreateRequest request = new TicketCreateRequest();
+        request.setStatus(STUDY); request.setGroupId(group.getId()); request.setStudyId(study.getId());
+
+        Long ticketId = ticketService.createTicket(request, member);
 
         //then
     }
 
     @Test
-    void updateTicket() {
+    void expiredTicket() throws InterruptedException {
         //given
-        Member member = createMember(1L);
-        Ticket testTicket = getTestTicket(member);
+        Study study = MyUtils.createStudy("테스트스터디");
+        Member member = MyUtils.createMember("member", "member");
+        Group group = createGroup("그룹", 30, member);
+        Ticket ticket = MyUtils.createTicket(STUDY, member, study, group);
+        setField(study, "id", 1L);
+        setField(member, "id", 1L);
+        setField(group, "id", 1L);
+        setField(ticket, "id", 1L);
 
-        TicketUpdateRequest updateRequest = new TicketUpdateRequest();
-        updateRequest.setStatus(REST);
 
-        given(ticketRepository.findById(1L)).willReturn(Optional.of(testTicket));
+        given(ticketRepository.findById(1L)).willReturn(Optional.of(ticket));
 
         //when
-        Long ticketId = ticketService.expireTicket(testTicket.getId(), updateRequest, member);
+        Thread.sleep(1000); // ticket.record 의 activeTime 을 조절하기 위해 1초동안 쓰레드를 중지한다.
+        Long ticketId = ticketService.expireTicket(ticket.getId(), member);
 
         //then
-        assertThat(testTicket.getTicketStatus()).isEqualTo(REST);
+        assertThat(ticket.isExpired()).isTrue();
+        assertThat(ticket.getRecord().getExpiredTime()).isNotNull();
+        assertThat(ticket.getRecord().getActiveTime()).isGreaterThan(0);
     }
 
     @Test
     @DisplayName("updateTicket_ex, 멤버 불일치")
-    void updateTicket_ex() {
+    void expiredTicket_ex() {
         //given
-        Member memberA = createMember(1L);
-        Member memberB = createMember(2L);
-        Ticket testTicket = getTestTicket(memberA);
+        Member memberA = MyUtils.createMember("memberA", "memberA");
+        Member memberB = MyUtils.createMember("memberB", "memberB");
+        Study study = MyUtils.createStudy("테스트스터디");
+        Group group = createGroup("그룹", 30, memberA);
+        Ticket ticket = MyUtils.createTicket(STUDY, memberA, study, group);
 
-        TicketUpdateRequest updateRequest = new TicketUpdateRequest();
-        updateRequest.setStatus(REST);
+        setField(memberA, "id", 1L);
+        setField(memberB, "id", 2L);
+        setField(study, "id", 1L);
+        setField(group, "id", 1L);
+        setField(ticket, "id", 1L);
 
-        given(ticketRepository.findById(1L)).willReturn(Optional.of(testTicket));
+        given(ticketRepository.findById(1L)).willReturn(Optional.of(ticket));
 
         //when
 
         //then
-        assertThatThrownBy(() -> ticketService.expireTicket(testTicket.getId(), updateRequest, memberB))
+        assertThatThrownBy(() -> ticketService.expireTicket(ticket.getId(), memberB))
                 .isInstanceOf(PermissionControlException.class);
     }
 
     @Test
-    void getTickets() {
+    void getTickets_조건없음() {
         //given
-        Long groupId = 1L;
-        LocalDate startTime = LocalDate.now();
+        List<Ticket> tickets = new ArrayList<>();
+        tickets.addAll(testStudyTickets);
+        tickets.addAll(testRestTickets);
 
-        TicketGetRequest request = new TicketGetRequest();
-        request.setGroupId(groupId);
-        request.setDate(startTime);
-        request.setDays(1);
+        expireTickets(tickets);
 
-        List<Member> members = createMembers(20, true);
-        Group group = createGroup("테스트그룹", 30, members.get(0));
-        setField(group, "id", 1L);
-
-        Study study = MyUtils.createStudy("study");
-        setField(study, "id", 1L);
-
-        List<Ticket> activeTickets = new ArrayList<>();
-        List<Ticket> expiredTickets = new ArrayList<>();
-        long count = 1L;
-        ZoneOffset offset = ZoneOffset.of("+09:00");
-        for (Member member : members) {
-            if(count > 1L) {
-                GroupMember.createGroupMember(member, GroupRole.USER);
-            }
-
-            Ticket ticket = MyUtils.createTicket(END, member, study, group);
-            setField(ticket, "id", count++);
-            setField(ticket, "startTime", ticket.getStartTime().minusHours(2));
-            setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusHours(1));
-            setField(ticket.getRecord(), "activeTime",
-                    ticket.getRecord().getExpiredTime().toEpochSecond(offset) - ticket.getStartTime().toEpochSecond(offset));
-
-            expiredTickets.add(ticket);
-        }
-        for (Member member : members) {
-            Ticket ticket = MyUtils.createTicket(STUDY, member, study, group);
-            setField(ticket, "id", count++);
-            activeTickets.add(ticket);
-        }
-
-//        given(ticketRepository.findMembersWithTickets(any(), any(), any(Long.class))).willReturn(members);
+        given(ticketRepository.findTickets(any(), any(), any(), any(), any())).willReturn(tickets);
 
         //when
-        List<MemberTicketDto> memberTickets = ticketService.getTickets(request, null);
+        TicketGetRequest request = new TicketGetRequest();
+        Member loginMember = testMembers.get(0);
+
+        List<MemberTicketDto> memberTickets = ticketService.getTickets(request, loginMember);
 
         //then
-        assertThat(memberTickets.size()).isEqualTo(members.size());
-        List<TicketDto> findActiveTickets = memberTickets.stream()
-                .map(MemberTicketDto::getActiveTicket).collect(Collectors.toList());
-        List<TicketDto> findExpiredTickets = new ArrayList<>();
-        for (MemberTicketDto memberTicket : memberTickets) {
-            findExpiredTickets.addAll(memberTicket.getExpiredTickets());
-        }
+        List<Long> testMemberIds = testMembers.stream().map(Member::getId).collect(Collectors.toList());
+        List<Long> findMemberIds = memberTickets.stream().map(MemberTicketDto::getMemberId).collect(Collectors.toList());
 
-        assertThat(findActiveTickets).allSatisfy(ticket -> {
-            assertThat(ticket.getStatus()).isNotEqualTo(END);
-            assertThat(ticket.getEndTime()).isNull();
-        });
-        assertThat(findExpiredTickets).allSatisfy(ticket -> {
-            assertThat(ticket.getStatus()).isEqualTo(END);
-            assertThat(ticket.getEndTime()).isNotNull();
+        assertThat(findMemberIds).containsExactlyInAnyOrderElementsOf(testMemberIds);
+        assertThat(memberTickets).allSatisfy(memberTicket -> {
+            List<Ticket> ticketsFrom = getTicketsOwnsByMember(tickets, memberTicket.getMemberId());
+            List<TicketDto> targetTickets = ticketsFrom.stream().map(TicketDto::from).collect(Collectors.toList());
+
+            assertThat(memberTicket.getActiveTicket()).isNull();
+            assertThat(memberTicket.getExpiredTickets())
+                    .containsExactlyInAnyOrderElementsOf(targetTickets);
         });
     }
 
-    private TicketCreateRequest createTicketRequest(Long studyId) {
-        TicketCreateRequest request = new TicketCreateRequest();
-        request.setStudyId(studyId);
-        return request;
-    }
-
-    private Ticket getTestTicket(Member member) {
-        Ticket ticket = new Ticket();
-
-        setField(ticket, "id", 1L);
-        setField(ticket, "startTime", LocalDateTime.now());
-        setField(ticket, "memberStatus", TicketStatus.STUDY);
-        setField(ticket, "member", member);
-
-        return ticket;
-    }
-
-
-    private Study createStudy() {
-        Study study = new Study();
-
-        setField(study, "id", 1L);
-        setField(study, "name", "테스트");
-
-        return study;
-    }
-
-    private Member createMember(Long memberId) {
-        Member member = new Member();
-
-        setField(member, "id", memberId);
-        setField(member, "username", "test1234");
-        setField(member, "password", "test1234");
-
-        return member;
+    private List<Ticket> getTicketsOwnsByMember(List<Ticket> tickets, Long memberId) {
+        return tickets.stream()
+                .filter(ticket -> ticket.getMember().getId().equals(memberId))
+                .collect(Collectors.toList());
     }
 }
