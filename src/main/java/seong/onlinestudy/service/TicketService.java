@@ -62,7 +62,7 @@ public class TicketService {
     }
 
     @Transactional
-    public Long expireTicket(Long ticketId, TicketUpdateRequest updateTicketRequest, Member loginMember) {
+    public Long expireTicket(Long ticketId, Member loginMember) {
         Ticket findTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 티켓입니다."));
 

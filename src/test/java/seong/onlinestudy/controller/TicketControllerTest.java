@@ -46,7 +46,7 @@ class TicketControllerTest {
         Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
 
         session.setAttribute(SessionConst.LOGIN_MEMBER, member);
-        given(ticketService.expireTicket(any(), any(), any())).willReturn(1L);
+        given(ticketService.expireTicket(any(), any())).willReturn(1L);
 
         //when
         TicketUpdateRequest request = new TicketUpdateRequest();
