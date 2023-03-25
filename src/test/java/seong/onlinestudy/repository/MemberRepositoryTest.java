@@ -1,18 +1,22 @@
 package seong.onlinestudy.repository;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.MyUtils;
-import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.GroupMember;
-import seong.onlinestudy.domain.GroupRole;
-import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupMemberDto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,6 +29,43 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     GroupRepository groupRepository;
+    @Autowired
+    StudyRepository studyRepository;
+    @Autowired
+    TicketRepository ticketRepository;
+
+    List<Member> testMembers;
+    List<Group> testGroups;
+    List<Study> testStudies;
+    List<Ticket> testStudyTickets;
+    List<Ticket> testRestTickets;
+
+    @BeforeEach
+    void init() {
+        testMembers = createMembers(10);
+        testGroups = createGroups(testMembers, 2);
+        testStudies = createStudies(2);
+        joinMembersToGroups(testMembers, testGroups);
+
+        testStudyTickets = createTickets(TicketStatus.STUDY, testMembers, testGroups, testStudies);
+        testRestTickets = createTickets(TicketStatus.REST, testMembers, testGroups, testStudies);
+
+        memberRepository.saveAll(testMembers);
+        groupRepository.saveAll(testGroups);
+        studyRepository.saveAll(testStudies);
+        ticketRepository.saveAll(testStudyTickets);
+        ticketRepository.saveAll(testRestTickets);
+    }
+
+    @Test
+    void initTest() {
+        List<Ticket> testTickets = new ArrayList<>(testStudyTickets);
+        testTickets.addAll(testRestTickets);
+
+        List<Ticket> findTickets = ticketRepository.findAll();
+
+        assertThat(findTickets).containsExactlyInAnyOrderElementsOf(findTickets);
+    }
 
     @Test
     void findGroupMasters() {
@@ -47,14 +88,6 @@ class MemberRepositoryTest {
             groups.get(i-20).addGroupMember(groupMember);
         }
 
-        //when
-//        List<GroupMemberDto> groupMasters = memberRepository.findGroupMasters(groups);
-
-        //then
-//        assertThat(groupMasters).allSatisfy(member -> {
-//            member.getRole().equals(GroupRole.MASTER);
-//        });
-//        assertThat(groupMasters.size()).isEqualTo(10);
     }
 
     @Test
@@ -78,4 +111,24 @@ class MemberRepositoryTest {
         assertThat(membersInGroup).containsExactlyInAnyOrderElementsOf(members.subList(0, 5));
     }
 
+    @Test
+    public void findMembersOrderByStudyTime() {
+        //given
+        Member testMember = testMembers.get(5);
+        List<Ticket> testTickets = testMember.getTickets();
+        for (Ticket ticket : testTickets) {
+            expireTicket(ticket, 3600);
+        }
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        LocalDateTime now = LocalDateTime.now();
+        Page<Member> findMembersWithPage = memberRepository
+                .findMembersOrderByStudyTime(now.minusMinutes(1), now.plusMinutes(1), pageRequest);
+
+        //then
+        List<Member> content = findMembersWithPage.getContent();
+        assertThat(content.size()).isEqualTo(1);
+        assertThat(content.get(0)).isEqualTo(testMember);
+    }
 }

@@ -15,12 +15,14 @@ public class TicketGetRequest {
     LocalDate date;
     int days;
 
+    int page;
+    int size;
+
     public TicketGetRequest() {
         date = LocalDate.now();
         days = 1;
-    }
 
-    public boolean isAnySearchCondition() {
-        return groupId != null || studyId != null;
+        page = 0;
+        size = 30;
     }
 }

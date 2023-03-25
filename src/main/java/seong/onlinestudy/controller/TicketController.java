@@ -24,10 +24,9 @@ public class TicketController {
     private final TicketService ticketService;
 
     @GetMapping("/tickets")
-    public Result<List<MemberTicketDto>> getTickets(@Valid TicketGetRequest ticketGetRequest,
-                                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+    public Result<List<MemberTicketDto>> getTickets(@Valid TicketGetRequest ticketGetRequest) {
 
-        List<MemberTicketDto> memberTickets = ticketService.getTickets(ticketGetRequest, loginMember);
+        List<MemberTicketDto> memberTickets = ticketService.getTickets(ticketGetRequest);
 
         return new Result<>("200", memberTickets);
     }

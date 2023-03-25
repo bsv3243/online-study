@@ -219,6 +219,17 @@ public class MyUtils {
         return tickets;
     }
 
+    public static List<Ticket> createTickets(TicketStatus status, List<Member> members, List<Group> groups,
+                                             List<Study> studies, boolean setId) {
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket ticket = createTicket(status, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            tickets.add(ticket);
+            setField(ticket, "id", (long)i);
+        }
+        return tickets;
+    }
+
     public static List<Ticket> createEndTickets(List<Member> members, List<Group> groups, List<Study> studies, long studyTime) {
         List<Ticket> tickets = new ArrayList<>();
         for(int i=0; i<members.size(); i++) {
@@ -232,6 +243,7 @@ public class MyUtils {
         }
         return tickets;
     }
+
 
     public static void expireTickets(List<Ticket> tickets) {
         for (Ticket ticket : tickets) {

@@ -2,6 +2,7 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.TimeConst;
@@ -16,7 +17,6 @@ import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.TicketCreateRequest;
-import seong.onlinestudy.request.TicketUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -85,24 +85,47 @@ public class TicketService {
         return ticketDto;
     }
 
-    public List<MemberTicketDto> getTickets(TicketGetRequest request, Member loginMember) {
+    public List<MemberTicketDto> getTickets(TicketGetRequest request) {
         //하루의 시작을 DAY_START 시로 한다.
         LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(TimeConst.DAY_START);
         LocalDateTime endTime = startTime.plusDays(request.getDays());
 
+        List<Member> findMembers = getMemberIdsByRequest(request);
+        List<Long> findMemberIds = findMembers.stream().map(Member::getId).collect(Collectors.toList());
+
         List<Ticket> findTickets = ticketRepository
-                .findTickets(request.getStudyId(), request.getGroupId(), request.getMemberId(),
+                .findTickets(request.getStudyId(), request.getGroupId(), findMemberIds,
                         startTime, endTime);
 
-        List<MemberTicketDto> memberTicketDtos = joinMembersAndTickets(findTickets);
-
-        return memberTicketDtos;
+        return joinMembersAndTickets(findMembers, findTickets);
     }
 
-    private List<MemberTicketDto> joinMembersAndTickets(List<Ticket> tickets) {
-        List<Member> members = tickets.stream()
-                .map(Ticket::getMember).distinct().collect(Collectors.toList());
+    private List<Member> getMemberIdsByRequest(TicketGetRequest request) {
+        LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(TimeConst.DAY_START);
+        LocalDateTime endTime = startTime.plusDays(request.getDays());
 
+        List<Member> members;
+        if(request.getGroupId() != null) {
+            Group findGroup = groupRepository.findGroupWithMembers(request.getGroupId())
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
+
+            members = findGroup.getGroupMembers().stream()
+                    .map(GroupMember::getMember).collect(Collectors.toList());
+        }
+        else if(request.getMemberId() != null) {
+            Member findMember = memberRepository.findById(request.getMemberId())
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+            members = List.of(findMember);
+        }
+        else {
+            PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+            members = memberRepository.findMembersOrderByStudyTime(startTime, endTime, pageRequest).getContent();
+        }
+        return members;
+    }
+
+    private List<MemberTicketDto> joinMembersAndTickets(List<Member> members, List<Ticket> tickets) {
         List<MemberTicketDto> memberTicketDtos = new ArrayList<>();
 
         // ticket 을 member 별로 분류
