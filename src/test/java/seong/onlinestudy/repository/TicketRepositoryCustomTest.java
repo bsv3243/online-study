@@ -115,13 +115,6 @@ public class TicketRepositoryCustomTest {
         Long memberId = null;
 
         //when
-/*        List<Ticket> findTickets = query
-                .selectFrom(ticket)
-                .join(ticket.group, group)
-                .join(ticket.study, study).fetchJoin()
-                .join(ticket.member, member).fetchJoin()
-                .where(studyIdEq(studyId), groupIdEq(groupId))
-                .fetch();*/
         List<Ticket> findTickets
                 = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
 
@@ -141,13 +134,6 @@ public class TicketRepositoryCustomTest {
         Long memberId = null;
 
         //when
-/*        List<Ticket> findTickets = query
-                .selectFrom(ticket)
-                .join(ticket.group, group)
-                .join(ticket.study, study).fetchJoin()
-                .join(ticket.member, member).fetchJoin()
-                .where(studyIdEq(studyId), groupIdEq(groupId))
-                .fetch();*/
         List<Ticket> findTickets
                 = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
 
@@ -167,14 +153,6 @@ public class TicketRepositoryCustomTest {
         Long memberId = members.get(0).getId();
 
         //when
-/*        List<Ticket> findTickets = query
-                .selectFrom(ticket)
-                .join(ticket.group, group)
-                .join(ticket.study, study).fetchJoin()
-                .join(ticket.member, member).fetchJoin()
-                .where(studyIdEq(studyId), groupIdEq(groupId), memberIdEq(memberId))
-                .orderBy(study.id.asc())
-                .fetch();*/
         List<Ticket> findTickets
                 = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
 
@@ -186,37 +164,5 @@ public class TicketRepositoryCustomTest {
 
         Set<Member> findMembersRemoveDuplicate = new HashSet<>(findMembers);
         assertThat(findMembersRemoveDuplicate.size()).isEqualTo(1);
-    }
-
-    private BooleanExpression memberIdEq(Long memberId) {
-        return memberId != null ? member.id.eq(memberId) : null;
-    }
-
-    private BooleanExpression groupIdEq(Long groupId) {
-        return groupId != null ? group.id.eq(groupId) : null;
-    }
-
-    private BooleanExpression studyIdEq(Long studyId) {
-        return studyId != null ? study.id.eq(studyId) : null;
-    }
-
-
-    private Group createGroup(String name, int headcount, Member member) {
-        GroupCreateRequest request = new GroupCreateRequest();
-        request.setName(name);
-        request.setHeadcount(headcount);
-
-        GroupMember groupMember = GroupMember.createGroupMember(member, GroupRole.MASTER);
-
-        return Group.createGroup(request, groupMember);
-    }
-
-    private Member createMember(String username) {
-        MemberCreateRequest request = new MemberCreateRequest();
-        request.setUsername(username);
-        request.setNickname(username);
-        request.setPassword(username);
-
-        return Member.createMember(request);
     }
 }

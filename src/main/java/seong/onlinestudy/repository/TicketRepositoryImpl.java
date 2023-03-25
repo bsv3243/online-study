@@ -2,7 +2,6 @@ package seong.onlinestudy.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import seong.onlinestudy.domain.QRecord;
 import seong.onlinestudy.domain.Ticket;
 
 import javax.persistence.EntityManager;
@@ -24,6 +23,22 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom{
     }
 
     @Override
+    public List<Ticket> findTickets(Long studyId, Long groupId, List<Long> memberIds, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Ticket> findTickets = query
+                .selectFrom(ticket)
+                .join(ticket.group, group)
+                .leftJoin(ticket.study, study).fetchJoin()
+                .join(ticket.member, member).fetchJoin()
+                .join(ticket.record, record).fetchJoin()
+                .where(studyIdEq(studyId), groupIdEq(groupId), memberIdsIn(memberIds),
+                        ticket.startTime.goe(startTime), ticket.startTime.lt(endTime))
+                .orderBy(study.id.asc(), ticket.startTime.asc())
+                .fetch();
+
+        return findTickets;
+    }
+
+    @Override
     public List<Ticket> findTickets(Long studyId, Long groupId, Long memberId, LocalDateTime startTime, LocalDateTime endTime) {
         List<Ticket> findTickets = query
                 .selectFrom(ticket)
@@ -37,6 +52,10 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom{
                 .fetch();
 
         return findTickets;
+    }
+
+    private BooleanExpression memberIdsIn(List<Long> memberIds) {
+        return memberIds != null && memberIds.size() > 0 ? member.id.in(memberIds) : null;
     }
 
     private BooleanExpression memberIdEq(Long memberId) {

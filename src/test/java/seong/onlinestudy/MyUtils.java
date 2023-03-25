@@ -210,11 +210,22 @@ public class MyUtils {
         }
     }
 
-    public static List<Ticket> createTickets(List<Member> members, List<Group> groups, List<Study> studies) {
+    public static List<Ticket> createTickets(TicketStatus status, List<Member> members, List<Group> groups, List<Study> studies) {
         List<Ticket> tickets = new ArrayList<>();
         for(int i=0; i<members.size(); i++) {
-            Ticket ticket = createTicket(STUDY, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            Ticket ticket = createTicket(status, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
             tickets.add(ticket);
+        }
+        return tickets;
+    }
+
+    public static List<Ticket> createTickets(TicketStatus status, List<Member> members, List<Group> groups,
+                                             List<Study> studies, boolean setId) {
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket ticket = createTicket(status, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            tickets.add(ticket);
+            setField(ticket, "id", (long)i);
         }
         return tickets;
     }
@@ -231,5 +242,18 @@ public class MyUtils {
             setField(ticket.getRecord(), "activeTime", studyTime);
         }
         return tickets;
+    }
+
+
+    public static void expireTickets(List<Ticket> tickets) {
+        for (Ticket ticket : tickets) {
+            ticket.expiredAndUpdateRecord();
+        }
+    }
+
+    public static void expireTicket(Ticket ticket, int studyTime) {
+        ticket.expiredAndUpdateRecord();
+        setField(ticket.getRecord(), "activeTime", studyTime);
+        setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
     }
 }

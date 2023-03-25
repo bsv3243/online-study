@@ -2,10 +2,10 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.TimeConst;
-import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.domain.*;
@@ -17,10 +17,10 @@ import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.TicketCreateRequest;
-import seong.onlinestudy.request.TicketUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static seong.onlinestudy.domain.TicketStatus.*;
 
@@ -62,7 +62,7 @@ public class TicketService {
     }
 
     @Transactional
-    public Long expireTicket(Long ticketId, TicketUpdateRequest updateTicketRequest, Member loginMember) {
+    public Long expireTicket(Long ticketId, Member loginMember) {
         Ticket findTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 티켓입니다."));
 
@@ -85,40 +85,50 @@ public class TicketService {
         return ticketDto;
     }
 
-    public List<MemberTicketDto> getTickets(TicketGetRequest request, Member loginMember) {
+    public List<MemberTicketDto> getTickets(TicketGetRequest request) {
         //하루의 시작을 DAY_START 시로 한다.
         LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(TimeConst.DAY_START);
         LocalDateTime endTime = startTime.plusDays(request.getDays());
 
-        List<MemberTicketDto> memberTicketDtos = new ArrayList<>();
-        if (request.isAnySearchCondition()) {
-            List<Ticket> tickets = ticketRepository
-                    .findTickets(request.getStudyId(), request.getGroupId(), null, startTime, endTime);
+        List<Member> findMembers = getMemberIdsByRequest(request);
+        List<Long> findMemberIds = findMembers.stream().map(Member::getId).collect(Collectors.toList());
 
-            List<Member> membersInGroup = memberRepository
-                    .findMembersInGroup(request.getGroupId());
+        List<Ticket> findTickets = ticketRepository
+                .findTickets(request.getStudyId(), request.getGroupId(), findMemberIds,
+                        startTime, endTime);
 
-            memberTicketDtos = joinMembersAndTickets(membersInGroup, tickets);
+        return joinMembersAndTickets(findMembers, findTickets);
+    }
+
+    private List<Member> getMemberIdsByRequest(TicketGetRequest request) {
+        LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(TimeConst.DAY_START);
+        LocalDateTime endTime = startTime.plusDays(request.getDays());
+
+        List<Member> members;
+        if(request.getGroupId() != null) {
+            Group findGroup = groupRepository.findGroupWithMembers(request.getGroupId())
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
+
+            members = findGroup.getGroupMembers().stream()
+                    .map(GroupMember::getMember).collect(Collectors.toList());
         }
-        else { //로그인한 회원의 정보와 티켓 정보를 반환한다.
-            if(loginMember==null) {
-                throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-            }
-            Member member = memberRepository.findById(loginMember.getId())
-                    .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+        else if(request.getMemberId() != null) {
+            Member findMember = memberRepository.findById(request.getMemberId())
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
-            List<Ticket> tickets = ticketRepository
-                    .findTickets(member, startTime, endTime);
-
-            memberTicketDtos.add(MemberTicketDto.from(member, tickets));
+            members = List.of(findMember);
         }
-
-        return memberTicketDtos;
+        else {
+            PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+            members = memberRepository.findMembersOrderByStudyTime(startTime, endTime, pageRequest).getContent();
+        }
+        return members;
     }
 
     private List<MemberTicketDto> joinMembersAndTickets(List<Member> members, List<Ticket> tickets) {
         List<MemberTicketDto> memberTicketDtos = new ArrayList<>();
 
+        // ticket 을 member 별로 분류
         Map<Member, List<Ticket>> map = new HashMap<>();
         for (Ticket ticket : tickets) {
             Member member = ticket.getMember();
@@ -128,6 +138,7 @@ public class TicketService {
             map.put(member, memberTickets);
         }
 
+        // 분류된 tickets 에 대해 member 별로 dto 를 생성
         for (Member member : members) {
             List<Ticket> memberTickets = map.getOrDefault(member, new ArrayList<>());
 

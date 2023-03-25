@@ -24,10 +24,9 @@ public class TicketController {
     private final TicketService ticketService;
 
     @GetMapping("/tickets")
-    public Result<List<MemberTicketDto>> getTickets(@Valid TicketGetRequest ticketGetRequest,
-                                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+    public Result<List<MemberTicketDto>> getTickets(@Valid TicketGetRequest ticketGetRequest) {
 
-        List<MemberTicketDto> memberTickets = ticketService.getTickets(ticketGetRequest, loginMember);
+        List<MemberTicketDto> memberTickets = ticketService.getTickets(ticketGetRequest);
 
         return new Result<>("200", memberTickets);
     }
@@ -47,13 +46,12 @@ public class TicketController {
 
     @PostMapping("/ticket/{id}")
     public Result<Long> expiredTicket(@PathVariable("id") Long ticketId,
-                                      @RequestBody @Valid TicketUpdateRequest ticketUpdateRequest,
                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long updateTicketId = ticketService.expireTicket(ticketId, ticketUpdateRequest, loginMember);
+        Long updateTicketId = ticketService.expireTicket(ticketId, loginMember);
 
         return new Result<>("201", updateTicketId);
     }

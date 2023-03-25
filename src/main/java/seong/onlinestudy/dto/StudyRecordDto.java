@@ -42,9 +42,11 @@ public class StudyRecordDto {
 
     public static StudyRecordDto from(Study study) {
         StudyRecordDto studyRecordDto = new StudyRecordDto();
-        studyRecordDto.studyId = study.getId();
-        studyRecordDto.studyName = study.getName();
-        studyRecordDto.memberCount = 0;
+        if(study != null) {
+            studyRecordDto.studyId = study.getId();
+            studyRecordDto.studyName = study.getName();
+            studyRecordDto.memberCount = 0;
+        }
 
         return studyRecordDto;
     }
