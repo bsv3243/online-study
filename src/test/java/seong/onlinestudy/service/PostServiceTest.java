@@ -19,6 +19,7 @@ import seong.onlinestudy.repository.PostStudyRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.PostCreateRequest;
 import seong.onlinestudy.request.PostUpdateRequest;
+import seong.onlinestudy.request.PostsGetRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,17 +135,16 @@ class PostServiceTest {
 
         int page = 0;
         int size = 10;
-        Long groupId = null;
-        String search = null;
-        PostCategory category = null;
-        List<Long> studyIds = null;
+
+        PostsGetRequest request = new PostsGetRequest();
+
 
         List<Post> subList = posts.subList(0, 10);
-        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), false))
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), any()))
                 .willReturn(new PageImpl<>(subList, PageRequest.of(page, size), posts.size()));
 
         //when
-        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds, false);
+        Page<PostDto> postDtos = postService.getPosts(request);
 
         //then
         List<PostDto> postDtoList = subList.stream().map(PostDto::from).collect(Collectors.toList());
@@ -167,16 +167,14 @@ class PostServiceTest {
 
         int page = 0;
         int size = 10;
-        Long groupId = null;
-        String search = null;
-        PostCategory category = null;
-        List<Long> studyIds = null;
 
-        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), false))
+        PostsGetRequest request = new PostsGetRequest();
+
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), any()))
                 .willReturn(new PageImpl<>(posts, PageRequest.of(page, size), posts.size()));
 
         //when
-        Page<PostDto> postDtos = postService.getPosts(page, size, groupId, search, category, studyIds, false);
+        Page<PostDto> postDtos = postService.getPosts(request);
 
         //then
         List<PostDto> postDtoList = posts.stream().map(PostDto::from).collect(Collectors.toList());

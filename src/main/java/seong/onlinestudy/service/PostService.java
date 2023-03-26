@@ -12,6 +12,7 @@ import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.PostCreateRequest;
 import seong.onlinestudy.request.PostUpdateRequest;
+import seong.onlinestudy.request.PostsGetRequest;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,9 +28,12 @@ public class PostService {
     private final StudyRepository studyRepository;
     private final PostStudyRepository postStudyRepository;
 
-    public Page<PostDto> getPosts(int page, int size, Long groupId, String search, PostCategory category, List<Long> studyIds, Boolean deleted) {
+    public Page<PostDto> getPosts(PostsGetRequest request) {
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
         Page<Post> postsWithComments
-                = postRepository.findPostsWithComments(PageRequest.of(page, size), groupId, search, category, studyIds, deleted);
+                = postRepository.findPostsWithComments(pageRequest,
+                request.getGroupId(), request.getSearch(), request.getCategory(),
+                request.getStudyIds(), request.isDeleted());
 
         List<PostStudy> postStudies = postStudyRepository.findStudiesWhereInPosts(postsWithComments.getContent());
 

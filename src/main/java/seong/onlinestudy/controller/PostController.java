@@ -11,6 +11,7 @@ import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.PostCreateRequest;
 import seong.onlinestudy.request.PostUpdateRequest;
+import seong.onlinestudy.request.PostsGetRequest;
 import seong.onlinestudy.service.PostService;
 
 import javax.validation.Valid;
@@ -26,14 +27,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public Result<List<PostDto>> getPosts(@RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size,
-                                          @RequestParam(required = false) Long groupId,
-                                          @RequestParam(required = false) String search,
-                                          @RequestParam(required = false) PostCategory category,
-                                          @RequestParam(required = false) List<Long> studyIds,
-                                          @RequestParam(defaultValue = "false") Boolean deleted) {
-        Page<PostDto> postsWithPageInfo = postService.getPosts(page, size, groupId, search, category, studyIds, deleted);
+    public Result<List<PostDto>> getPosts(@Valid PostsGetRequest request) {
+        Page<PostDto> postsWithPageInfo = postService.getPosts(request);
 
         return new PageResult<>("200", postsWithPageInfo.getContent(), postsWithPageInfo);
     }
