@@ -28,8 +28,9 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping("/groups")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public Result<Long> createGroup(@RequestBody @Valid GroupCreateRequest createRequest,
-                            @SessionAttribute(name = LOGIN_MEMBER, required = false)Member loginMember) {
+                                    @SessionAttribute(name = LOGIN_MEMBER, required = false)Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
@@ -40,6 +41,7 @@ public class GroupController {
     }
 
     @PostMapping("/group/{groupId}/join")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public Result<Long> joinGroup(@PathVariable Long groupId,
                           @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
