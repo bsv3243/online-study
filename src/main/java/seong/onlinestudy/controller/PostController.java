@@ -3,6 +3,7 @@ package seong.onlinestudy.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.PostCategory;
@@ -32,12 +33,9 @@ public class PostController {
                                           @RequestParam(required = false) PostCategory category,
                                           @RequestParam(required = false) List<Long> studyIds,
                                           @RequestParam(defaultValue = "false") Boolean deleted) {
-        Page<PostDto> posts = postService.getPosts(page, size, groupId, search, category, studyIds, deleted);
+        Page<PostDto> postsWithPageInfo = postService.getPosts(page, size, groupId, search, category, studyIds, deleted);
 
-        Result<List<PostDto>> result = new Result<>("200", posts.getContent());
-        result.setPageInfo(posts);
-
-        return result;
+        return new PageResult<>("200", postsWithPageInfo.getContent(), postsWithPageInfo);
     }
 
     @PostMapping("/posts")

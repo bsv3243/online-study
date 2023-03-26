@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
@@ -64,12 +65,9 @@ public class GroupController {
 
     @GetMapping("/groups")
     public Result<List<GroupDto>> getGroups(@Valid GroupsGetRequest request) {
-        Page<GroupDto> groups = groupService.getGroups(request);
+        Page<GroupDto> groupsWithPageInfo = groupService.getGroups(request);
 
-        Result<List<GroupDto>> result = new Result<>("200", groups.getContent());
-        result.setPageInfo(groups);
-
-        return result;
+        return new PageResult<>("200", groupsWithPageInfo.getContent(), groupsWithPageInfo);
     }
 
     @GetMapping("/group/{id}")

@@ -3,6 +3,7 @@ package seong.onlinestudy.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.StudyDto;
@@ -32,11 +33,8 @@ public class StudyController {
     @GetMapping("/studies")
     public Result<List<StudyDto>> getStudies(@Valid StudiesGetRequest searchCond,
                                              @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
+        Page<StudyDto> studiesWithPageInfo = studyService.getStudies(searchCond, loginMember);
 
-        Page<StudyDto> studies = studyService.getStudies(searchCond, loginMember);
-        Result<List<StudyDto>> result = new Result<>("200", studies.getContent());
-        result.setPageInfo(studies);
-
-        return result;
+        return new PageResult<>("200", studiesWithPageInfo.getContent(), studiesWithPageInfo);
     }
 }
