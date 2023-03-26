@@ -1,10 +1,8 @@
-package seong.onlinestudy.controller;
+package seong.onlinestudy.controller.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-import seong.onlinestudy.dto.GroupDto;
 
 @Data
 @NoArgsConstructor

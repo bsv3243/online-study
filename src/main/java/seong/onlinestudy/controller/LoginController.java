@@ -5,17 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.SessionConst;
+import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.request.LoginRequest;
 import seong.onlinestudy.service.LoginService;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RestController
@@ -28,7 +26,7 @@ public class LoginController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public Result<String> login(@RequestBody @Valid LoginRequest loginRequest,
-                        HttpServletRequest request, HttpServletResponse response) {
+                                HttpServletRequest request, HttpServletResponse response) {
 
         /* JWT 사용 로그인
         String token = "Barer " + loginService.createToken(loginRequest);
