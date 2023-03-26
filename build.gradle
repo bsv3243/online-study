@@ -9,6 +9,9 @@ plugins {
     id 'org.springframework.boot' version '2.7.7'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+
+    //spring rest docs
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'seong'
@@ -16,6 +19,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
+    asciidoctorExt //spring rest docs
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -36,8 +40,9 @@ dependencies {
     //jwt 추가
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5', 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-    //swagger 추가
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    //spring rest docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
@@ -50,6 +55,29 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+//spring rest docs
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
+}
+//spring rest docs end
 
 //querydsl 추가 시작 (위에 plugin 추가 부분과 맞물림)
 def querydslDir = "$buildDir/generated/querydsl"
