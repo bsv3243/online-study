@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
@@ -52,7 +53,7 @@ class RecordServiceTest {
 
         List<Ticket> endTickets = createEndTickets(members, groups, studies, 1000);
 
-        given(ticketRepository.findTickets(any(), any(), any(), any(), any())).willReturn(endTickets);
+        given(ticketRepository.findTickets(any(), any(), (Long)isNull(), any(), any())).willReturn(endTickets);
 
         //when
         RecordsGetRequest request = new RecordsGetRequest();
@@ -82,6 +83,7 @@ class RecordServiceTest {
 
         for(int i=groups.size(); i<members.size(); i++) {
             GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            groups.get(i % 10).addGroupMember(groupMember);
         }
         for(int i=0; i<50; i++) {
             Ticket ticket = createTicket(TicketStatus.STUDY, members.get(i),
@@ -90,8 +92,7 @@ class RecordServiceTest {
             tickets.add(ticket);
         }
 
-
-        given(ticketRepository.findTickets(any(), any(), any(), any(), any()))
+        given(ticketRepository.findTickets(any(), any(), (Long)isNull(), any(), any()))
                 .willReturn(tickets.stream().filter(ticket ->
                                 ticket.getStudy().equals(studies.get(0))).collect(Collectors.toList()));
 
@@ -128,7 +129,7 @@ class RecordServiceTest {
 
         List<Ticket> filteredTickets = tickets.stream().filter(ticket ->
                 ticket.getGroup().equals(groups.get(0))).collect(Collectors.toList());
-        given(ticketRepository.findTickets(any(), any(), any(), any(), any()))
+        given(ticketRepository.findTickets(any(), any(), (Long)isNull(), any(), any()))
                 .willReturn(filteredTickets);
 
         //when

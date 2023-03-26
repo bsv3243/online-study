@@ -28,7 +28,7 @@ public class RecordDto {
         if(startTime.isAfter(ticket.getStartTime())) {
             startTime = ticket.getStartTime();
         }
-        if(endTime.isBefore(ticket.getRecord().getExpiredTime())) {
+        if(ticket.isExpired() && endTime.isBefore(ticket.getRecord().getExpiredTime())) {
             endTime = ticket.getRecord().getExpiredTime();
         }
     }
