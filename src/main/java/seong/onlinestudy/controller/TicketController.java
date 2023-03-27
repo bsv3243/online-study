@@ -2,13 +2,13 @@ package seong.onlinestudy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.request.TicketGetRequest;
-import seong.onlinestudy.request.TicketUpdateRequest;
 import seong.onlinestudy.service.TicketService;
 
 import javax.validation.Valid;

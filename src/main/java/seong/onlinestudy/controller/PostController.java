@@ -3,12 +3,15 @@ package seong.onlinestudy.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.controller.response.PageResult;
+import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.PostCategory;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.PostCreateRequest;
 import seong.onlinestudy.request.PostUpdateRequest;
+import seong.onlinestudy.request.PostsGetRequest;
 import seong.onlinestudy.service.PostService;
 
 import javax.validation.Valid;
@@ -24,19 +27,10 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public Result<List<PostDto>> getPosts(@RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size,
-                                          @RequestParam(required = false) Long groupId,
-                                          @RequestParam(required = false) String search,
-                                          @RequestParam(required = false) PostCategory category,
-                                          @RequestParam(required = false) List<Long> studyIds,
-                                          @RequestParam(defaultValue = "false") Boolean deleted) {
-        Page<PostDto> posts = postService.getPosts(page, size, groupId, search, category, studyIds, deleted);
+    public Result<List<PostDto>> getPosts(@Valid PostsGetRequest request) {
+        Page<PostDto> postsWithPageInfo = postService.getPosts(request);
 
-        Result<List<PostDto>> result = new Result<>("200", posts.getContent());
-        result.setPageInfo(posts);
-
-        return result;
+        return new PageResult<>("200", postsWithPageInfo.getContent(), postsWithPageInfo);
     }
 
     @PostMapping("/posts")

@@ -5,6 +5,7 @@ import seong.onlinestudy.domain.Post;
 import seong.onlinestudy.domain.PostCategory;
 import seong.onlinestudy.domain.PostStudy;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class PostDto {
     private String title;
     private String content;
     private PostCategory category;
-    private String createdAt;
+    private LocalDateTime createdAt;
     private int viewCount;
     private MemberDto member;
     private GroupDto group;
@@ -30,7 +31,7 @@ public class PostDto {
         postDto.title = post.getTitle();
         postDto.content = post.getContent();
         postDto.category = post.getCategory();
-        postDto.createdAt = post.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME);
+        postDto.createdAt = post.getCreatedAt();
         postDto.viewCount = post.getViewCount();
         postDto.member = MemberDto.from(post.getMember());
 

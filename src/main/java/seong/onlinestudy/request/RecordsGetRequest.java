@@ -18,10 +18,6 @@ public class RecordsGetRequest {
     private LocalDate startDate;
     private int days;
 
-    public boolean isAnySearchCondition() {
-        return studyId != null || groupId != null;
-    }
-
     public RecordsGetRequest() {
         days = 7;
 
