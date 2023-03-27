@@ -1,5 +1,6 @@
 package seong.onlinestudy.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.domain.Ticket;
@@ -9,12 +10,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudyDto {
 
     private Long studyId;
     private String name;
 
-    private long studyTime;
+    private Long studyTime;
     private String startTime;
     private String endTime;
 
