@@ -3,6 +3,7 @@ package seong.onlinestudy.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seong.onlinestudy.TimeConst;
+import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.request.RecordsGetRequest;
@@ -32,8 +33,8 @@ public class RecordService {
         LocalDateTime startTime = request.getStartDate().atStartOfDay().plusHours(TimeConst.DAY_START);
         LocalDateTime endTime = startTime.plusDays(request.getDays());
 
-        List<Ticket> findTickets = ticketRepository
-                .findTickets(request.getStudyId(), request.getGroupId(), request.getMemberId(), startTime, endTime);
+        List<StudyTicket> findTickets = ticketRepository
+                .findStudyTickets(request.getMemberId(), request.getGroupId(), request.getStudyId(), startTime, endTime);
 
         Map<Study, List<Ticket>> ticketsGroupByStudy = getTicketsGroupByStudy(findTickets);
 
@@ -50,9 +51,9 @@ public class RecordService {
         return studyRecordDtos;
     }
 
-    private Map<Study, List<Ticket>> getTicketsGroupByStudy(List<Ticket> findTickets) {
+    private Map<Study, List<Ticket>> getTicketsGroupByStudy(List<StudyTicket> findTickets) {
         Map<Study, List<Ticket>> ticketsGroupByStudy = new HashMap<>();
-        for (Ticket findTicket : findTickets) {
+        for (StudyTicket findTicket : findTickets) {
             Study findStudy = findTicket.getStudy();
 
             List<Ticket> filteredTickets = ticketsGroupByStudy.getOrDefault(findStudy, new ArrayList<>());

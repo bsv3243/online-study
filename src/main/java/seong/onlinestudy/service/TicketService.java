@@ -37,7 +37,7 @@ public class TicketService {
 
     @Transactional
     public Long createTicket(TicketCreateRequest request, Member loginMember) {
-        Member member = memberRepository.findById(loginMember.getId())
+        Member findMember = memberRepository.findById(loginMember.getId())
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
         Study findStudy = studyRepository.findById(request.getStudyId())
@@ -46,16 +46,17 @@ public class TicketService {
         Group findGroup = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        ticketRepository.findByMemberAndExpiredFalse(member)
+        ticketRepository.findByMemberAndExpiredFalse(findMember)
                 .ifPresent(ticket -> {
                     throw new DuplicateElementException("이전에 발급받은 티켓이 존재합니다.");
                 });
 
-        if (request.getStatus().equals(END)) {
-            throw new IllegalArgumentException("잘못된 접근입니다.");
+        Ticket ticket;
+        if(request.getStatus().equals(STUDY)) {
+            ticket = StudyTicket.createStudyTicket(findMember, findGroup, findStudy);
+        } else {
+            ticket = RestTicket.createRestTicket(findMember, findGroup);
         }
-
-        Ticket ticket = Ticket.createWithRecord(request, member, findStudy, findGroup);
         ticketRepository.save(ticket);
 
         return ticket.getId();
@@ -94,7 +95,7 @@ public class TicketService {
         List<Long> findMemberIds = findMembers.stream().map(Member::getId).collect(Collectors.toList());
 
         List<Ticket> findTickets = ticketRepository
-                .findTickets(request.getStudyId(), request.getGroupId(), findMemberIds,
+                .findTickets(findMemberIds, request.getGroupId(), request.getStudyId(),
                         startTime, endTime);
 
         return joinMembersAndTickets(findMembers, findTickets);
