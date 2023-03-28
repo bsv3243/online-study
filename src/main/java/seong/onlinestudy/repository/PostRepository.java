@@ -18,6 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("select p from Post p left join fetch p.member m left join fetch p.group g where p.id=:postId")
     Optional<Post> findByIdWithMemberAndGroup(@Param("postId") Long postId);
 
-    @Query("select p from Post p left join fetch p.postStudies ps join fetch ps.study s where p.id=:postId")
+    @Query("select p from Post p left join fetch p.postStudies ps left join fetch ps.study s where p.id=:postId")
     Optional<Post> findByIdWithStudies(@Param("postId") Long postId);
 }

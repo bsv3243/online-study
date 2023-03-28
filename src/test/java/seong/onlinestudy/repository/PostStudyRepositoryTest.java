@@ -1,5 +1,6 @@
 package seong.onlinestudy.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static seong.onlinestudy.MyUtils.*;
 
 @DataJpaTest
 class PostStudyRepositoryTest {
@@ -24,6 +26,26 @@ class PostStudyRepositoryTest {
     StudyRepository studyRepository;
     @Autowired
     PostStudyRepository postStudyRepository;
+
+    List<Member> members;
+    List<Group> groups;
+    List<Study> studies;
+    List<Post> posts;
+
+    @BeforeEach
+    void init() {
+        members = createMembers(30);
+        groups = createGroups(members, 3);
+
+        joinMembersToGroups(members, groups);
+
+        studies = createStudies(3);
+        posts = createPosts(members, groups, 30, false);
+
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(groups);
+        postRepository.saveAll(posts);
+    }
 
     @Test
     void findStudiesWherePost() {

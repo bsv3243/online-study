@@ -2,8 +2,7 @@ package seong.onlinestudy.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import seong.onlinestudy.domain.StudyTicket;
-import seong.onlinestudy.domain.Ticket;
+import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -28,13 +27,17 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
     public List<Ticket> findTickets(List<Long> memberIds, Long groupId, Long studyId, LocalDateTime startTime, LocalDateTime endTime) {
         List<Ticket> findTickets = query
                 .selectFrom(ticket)
-                .join(ticket.group, group)
                 .join(ticket.member, member).fetchJoin()
                 .join(ticket.record, record).fetchJoin()
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
                 .join(studyTicket.study, study).fetchJoin()
-                .where(studyIdEq(studyId), groupIdEq(groupId), memberIdsIn(memberIds),
-                        ticket.startTime.goe(startTime), ticket.startTime.lt(endTime))
+                .where(
+                        memberIdsIn(ticket.member, memberIds),
+                        groupIdEq(studyTicket.group, groupId),
+                        studyIdEq(studyTicket.study, studyId),
+                        ticket.startTime.goe(startTime),
+                        ticket.startTime.lt(endTime)
+                )
                 .orderBy(study.id.asc(), ticket.startTime.asc())
                 .fetch();
 
@@ -45,14 +48,17 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
     public List<Ticket> findTickets(Long memberId, Long groupId, Long studyId, LocalDateTime startTime, LocalDateTime endTime) {
         List<Ticket> findTickets = query
                 .selectFrom(ticket)
-                .join(ticket.group, group)
                 .join(ticket.member, member).fetchJoin()
                 .join(ticket.record, record).fetchJoin()
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
-                .join(studyTicket.study, study).fetchJoin()
-                .where(studyIdEq(studyId), groupIdEq(groupId), memberIdEq(memberId),
-                        ticket.startTime.goe(startTime), ticket.startTime.lt(endTime))
-                .orderBy(study.id.asc(), ticket.startTime.asc())
+                .where(
+                        memberIdEq(ticket.member, memberId),
+                        groupIdEq(ticket.group, groupId),
+                        studyIdEq(studyTicket.study, studyId),
+                        ticket.startTime.goe(startTime),
+                        ticket.startTime.lt(endTime)
+                )
+                .orderBy(studyTicket.study.id.asc(), ticket.startTime.asc())
                 .fetch();
 
         return findTickets;
@@ -63,27 +69,31 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
         return query
                 .selectFrom(studyTicket)
                 .join(studyTicket.member, member).fetchJoin()
-                .join(studyTicket.group, group)
                 .join(studyTicket.study, study).fetchJoin()
                 .join(studyTicket.record, record).fetchJoin()
-                .where(memberIdEq(memberId), groupIdEq(groupId), studyIdEq(studyId),
-                        studyTicket.startTime.goe(startTime), studyTicket.startTime.lt(endTime))
+                .where(
+                        memberIdEq(studyTicket.member, memberId),
+                        groupIdEq(studyTicket.group, groupId),
+                        studyIdEq(studyTicket.study, studyId),
+                        studyTicket.startTime.goe(startTime),
+                        studyTicket.startTime.lt(endTime)
+                )
                 .fetch();
     }
 
-    private BooleanExpression memberIdsIn(List<Long> memberIds) {
+    private BooleanExpression memberIdsIn(QMember member, List<Long> memberIds) {
         return memberIds != null && memberIds.size() > 0 ? member.id.in(memberIds) : null;
     }
 
-    private BooleanExpression memberIdEq(Long memberId) {
+    private BooleanExpression memberIdEq(QMember member, Long memberId) {
         return memberId != null ? member.id.eq(memberId) : null;
     }
 
-    private BooleanExpression groupIdEq(Long groupId) {
+    private BooleanExpression groupIdEq(QGroup group, Long groupId) {
         return groupId != null ? group.id.eq(groupId) : null;
     }
 
-    private BooleanExpression studyIdEq(Long studyId) {
+    private BooleanExpression studyIdEq(QStudy study, Long studyId) {
         return studyId != null ? study.id.eq(studyId) : null;
     }
 

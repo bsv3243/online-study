@@ -14,7 +14,6 @@ import java.util.List;
 
 import static seong.onlinestudy.domain.QGroup.*;
 import static seong.onlinestudy.domain.QGroupMember.groupMember;
-import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
 import static seong.onlinestudy.domain.QTicket.ticket;
@@ -36,7 +35,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 order = groupMember.count().desc();
                 break;
             case TIME:
-                order = record.activeTime.sum().desc();
+                order = ticket.record.activeTime.sum().desc();
                 break;
             default:
                 order = group.createdAt.desc();
@@ -44,12 +43,10 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
 
         List<Group> groups = query
                 .selectFrom(group)
-                .leftJoin(group.tickets, ticket)
-                .leftJoin(ticket.record, record)
-                .join(studyTicket).on(studyTicket.eq(ticket))
-                .join(studyTicket.study, study)
                 .join(group.groupMembers, groupMember)
-                .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))
+                .leftJoin(group.tickets, ticket)
+                .leftJoin(studyTicket).on(studyTicket.eq(ticket))
+                .where(categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
                 .groupBy(group.id)
                 .orderBy(order)
                 .limit(pageable.getPageSize())
@@ -62,14 +59,14 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .leftJoin(group.tickets, ticket)
                 .join(studyTicket).on(studyTicket.eq(ticket))
                 .join(studyTicket.study, study)
-                .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))
+                .where(categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
                 .fetchOne();
 
         return new PageImpl<>(groups, pageable, total);
     }
 
-    private BooleanExpression studyIdsIn(List<Long> studyIds) {
-        return studyIds != null ? study.id.in(studyIds) : null;
+    private BooleanExpression studyIdsIn(QStudy study, List<Long> studyIds) {
+        return studyIds != null && !studyIds.isEmpty() ? study.id.in(studyIds) : null;
     }
 
     private BooleanExpression categoryEq(GroupCategory category) {

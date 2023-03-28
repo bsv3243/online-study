@@ -36,20 +36,6 @@ class GroupMemberRepositoryTest {
     GroupRepository groupRepository;
 
     @Test
-    void countMemberInGroups() {
-        List<Member> members = createMembers(50);
-        memberRepository.saveAll(members);
-
-        List<Group> groups = new ArrayList<>();
-        for(int i=0; i<10; i++) {
-            groups.add(MyUtils.createGroup("테스트그룹" + i, 30, members.get(i)));
-        }
-        groupRepository.saveAll(groups);
-
-    }
-
-    @Test
-    @DisplayName("그룹 목록의 그룹장 리스트를 조회")
     void findGroupMasters() {
         //given
         List<Member> masters = createMembers(10);
@@ -69,12 +55,6 @@ class GroupMemberRepositoryTest {
         }
 
         //when
-//        List<GroupMember> result = em.createQuery("select gm from GroupMember gm" +
-//                        " join fetch gm.group g" +
-//                        " join fetch gm.member m" +
-//                        " where gm.role='MASTER' and g in :groups", GroupMember.class)
-//                .setParameter("groups", groups)
-//                .getResultList();
         List<GroupMember> result = groupMemberRepository.findGroupMasters(groups);
 
         //then

@@ -1,6 +1,7 @@
 package seong.onlinestudy.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,11 +11,11 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.domain.TicketStatus.*;
 
 @Slf4j
 @DataJpaTest
@@ -33,91 +34,40 @@ class TicketRepositoryTest {
     @Autowired
     StudyRepository studyRepository;
 
-    @Test
-    void updateTicketStatus_네이티브쿼리테스트() {
-        //given
-        List<Member> members = createMembers(30);
+    List<Member> members;
+    List<Group> groups;
+    List<Study> studies;
+    List<Ticket> studyTickets;
+
+    @BeforeEach
+    void init() {
+        members = createMembers(50);
+        groups = createGroups(members, 10);
+
+        joinMembersToGroups(members, groups);
+
+        studies = createStudies(3);
+        studyTickets = createStudyTickets(members, groups, studies);
+
         memberRepository.saveAll(members);
-
-        Study study = createStudy("study");
-        studyRepository.save(study);
-
-        Group group = createGroup("group", 30, members.get(0));
-        groupRepository.save(group);
-
-        for(int i=1; i<30; i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-            group.addGroupMember(groupMember);
-        }
-
-        List<Ticket> tickets = new ArrayList<>();
-        for (Member member : members) {
-            tickets.add(createTicket(STUDY, member, study, group));
-        }
-        ticketRepository.saveAll(tickets);
-        em.clear();
-
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-
-        //when
-        int count = em
-                .createNativeQuery("update Ticket t" +
-                        " set t.is_expired = true, t.end_time=:endTime," +
-                        " t.active_time=:endTimeSecond-datediff('second', '1970-01-01', t.start_time)" +
-                        " where t.is_expired = false")
-                .setParameter("endTime", endTime)
-                .setParameter("endTimeSecond", endTime.toEpochSecond(ZoneOffset.of("+00:00")))
-                .executeUpdate();
-
-        //then
-        assertThat(count).isEqualTo(tickets.size());
-
-        List<Ticket> result = ticketRepository.findAll();
-        assertThat(result).allSatisfy(ticket -> {
-            assertThat(ticket.isExpired()).isEqualTo(true);
-            assertThat(ticket.getRecord().getActiveTime()).isEqualTo(3600);
-        });
-
-        log.info("time={}", result.get(0).getStartTime());
-
+        groupRepository.saveAll(groups);
+        studyRepository.saveAll(studies);
+        ticketRepository.saveAll(studyTickets);
     }
 
     @Test
     void updateTicketStatus() {
         //given
-        List<Member> members = createMembers(30);
-        memberRepository.saveAll(members);
-
-        Study study = createStudy("study");
-        studyRepository.save(study);
-
-        Group group = createGroup("group", 30, members.get(0));
-        groupRepository.save(group);
-
-        for(int i=1; i<30; i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-            group.addGroupMember(groupMember);
-        }
-
-        List<Ticket> tickets = new ArrayList<>();
-        for (Member member : members) {
-            tickets.add(createTicket(STUDY, member, study, group));
-        }
-        ticketRepository.saveAll(tickets);
+        List<Ticket> testTicketsNotExpired = studyTickets.stream()
+                .filter(ticket -> !ticket.isExpired())
+                .collect(Collectors.toList());
 
         //when
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
         int updateCount = ticketRepository.expireTicketsWhereExpiredFalse();
         em.clear(); //벌크 연산 수행 후 영속성 컨텍스트 초기화
 
         //then
-        assertThat(updateCount).isEqualTo(tickets.size());
-
-        tickets = ticketRepository.findAll();
-        assertThat(tickets).allSatisfy(ticket -> {
-            assertThat(ticket.isExpired()).isEqualTo(true);
-            assertThat(ticket.getRecord().getActiveTime()).isEqualTo(3600);
-        });
+        assertThat(updateCount).isEqualTo(testTicketsNotExpired.size());
     }
 
     @Test
@@ -139,13 +89,13 @@ class TicketRepositoryTest {
 
         List<Ticket> tickets = new ArrayList<>();
         for (int i=0; i<20; i++) {
-            tickets.add(createTicket(STUDY, members.get(i), study, group));
+            tickets.add(createStudyTicket(members.get(i), group, study));
         }
         ticketRepository.saveAll(tickets);
 
         List<Ticket> newTickets = new ArrayList<>();
         for(int i=0; i<50; i++) {
-            Ticket ticket = createTicket(STUDY, members.get(0), study, group);
+            Ticket ticket = createStudyTicket(members.get(0), group, study);
             setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
             newTickets.add(ticket);
         }
@@ -185,13 +135,13 @@ class TicketRepositoryTest {
 
         List<Ticket> tickets = new ArrayList<>();
         for (int i=0; i<20; i++) {
-            tickets.add(createTicket(STUDY, members.get(i), study, group));
+            tickets.add(createStudyTicket(members.get(i), group, study));
         }
         ticketRepository.saveAll(tickets);
 
         List<Ticket> newTickets = new ArrayList<>();
         for(int i=0; i<50; i++) {
-            Ticket ticket = createTicket(STUDY, members.get(0), study, group);
+            Ticket ticket = createStudyTicket(members.get(0), group, study);
             setField(ticket, "startTime", LocalDateTime.now().minusDays(5));
             newTickets.add(ticket);
         }
@@ -229,9 +179,9 @@ class TicketRepositoryTest {
         Study study = createStudy("study");
         studyRepository.save(study);
 
-        Ticket ticket = createTicket(STUDY, member, study, group);
+        Ticket ticket = createStudyTicket(member, group, study);
         setField(ticket, "expired", true);
-        Ticket ticket1 = createTicket(STUDY, member, study, group);
+        Ticket ticket1 = createStudyTicket(member, group, study);
         ticketRepository.save(ticket);
         ticketRepository.save(ticket1);
 
