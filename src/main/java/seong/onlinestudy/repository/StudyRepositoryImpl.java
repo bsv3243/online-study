@@ -17,6 +17,7 @@ import static seong.onlinestudy.domain.QGroup.group;
 import static seong.onlinestudy.domain.QMember.member;
 import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
+import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
 public class StudyRepositoryImpl implements StudyRepositoryCustom{
@@ -38,7 +39,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         ticket.record.activeTime.sum().as("studyTime")
                 ))
                 .from(study)
-                .join(study.tickets, ticket)
+                .join(study.studyTickets, studyTicket)
                 .join(ticket.record, record)
                 .join(ticket.group, group)
                 .where(group.in(groups))
@@ -51,7 +52,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
     public Page<Study> findStudies(Long memberId, Long groupId, String search, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
         List<Study> result = query
                 .selectFrom(study)
-                .leftJoin(study.tickets, ticket)
+                .join(study.studyTickets, studyTicket)
                 .join(ticket.member, member)
                 .join(ticket.record, record)
                 .join(ticket.group, group)
@@ -66,7 +67,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
         Long count = query
                 .select(study.id.count())
                 .from(study)
-                .leftJoin(study.tickets, ticket)
+                .join(study.studyTickets, studyTicket)
                 .join(ticket.member, member)
                 .join(ticket.group, group)
                 .where(memberIdEq(memberId), groupIdEq(groupId), studyNameContains(search))

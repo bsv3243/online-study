@@ -16,6 +16,7 @@ import static seong.onlinestudy.domain.QGroup.*;
 import static seong.onlinestudy.domain.QGroupMember.groupMember;
 import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
+import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
 public class GroupRepositoryImpl implements GroupRepositoryCustom{
@@ -45,7 +46,8 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .selectFrom(group)
                 .leftJoin(group.tickets, ticket)
                 .leftJoin(ticket.record, record)
-                .leftJoin(ticket.study, study)
+                .join(studyTicket).on(studyTicket.eq(ticket))
+                .join(studyTicket.study, study)
                 .join(group.groupMembers, groupMember)
                 .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))
                 .groupBy(group.id)
@@ -58,7 +60,8 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .select(group.count())
                 .from(group)
                 .leftJoin(group.tickets, ticket)
-                .leftJoin(ticket.study, study)
+                .join(studyTicket).on(studyTicket.eq(ticket))
+                .join(studyTicket.study, study)
                 .where(categoryEq(category), nameContains(search), studyIdsIn(studyIds))
                 .fetchOne();
 

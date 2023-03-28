@@ -24,7 +24,7 @@ public interface StudyRepository extends JpaRepository<Study, Long>, StudyReposi
      * @return Study 리스트를 반환
      */
     @Query("select s from Study s" +
-            " join s.tickets t on t.member.id = :memberId and t.startTime >= :startTime and t.startTime < :endTime" +
+            " join s.studyTickets t on t.member.id = :memberId and t.startTime >= :startTime and t.startTime < :endTime" +
             " join t.record r" +
             " group by s.id" +
             " order by sum(r.activeTime) desc")

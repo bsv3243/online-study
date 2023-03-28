@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRepositoryCustom {
+public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRepositoryCustom, StudyTicketRepositoryCustom {
 
     Optional<Ticket> findByMemberAndExpiredFalse(Member member);
 
@@ -24,7 +24,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
      */
     @Query("select t from Ticket t" +
             " join t.member m on m = :member" +
-            " left join fetch t.study s" +
             " join fetch t.record r" +
             " where t.startTime >= :startTime and t.startTime < :endTime")
     List<Ticket> findTickets(@Param("member") Member member,
@@ -40,7 +39,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
      */
     @Query("select t from Ticket t" +
             " join fetch t.member m" +
-            " join fetch t.study s" +
             " join fetch t.record r" +
             " join m.groupMembers gm on gm.group.id = :groupId" +
             " where t.startTime >= :startTime and t.startTime < :endTime" +
