@@ -2,6 +2,7 @@ package seong.onlinestudy.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.domain.TicketStatus;
 import seong.onlinestudy.domain.Ticket;
 
@@ -24,7 +25,7 @@ public class TicketDto {
     public static TicketDto from(Ticket ticket) {
         TicketDto ticketDto = new TicketDto();
         ticketDto.ticketId = ticket.getId();
-        ticketDto.status = ticket.getTicketStatus();
+        ticketDto.status = TicketStatus.valueOf(ticket.getTicketStatus());
         ticketDto.expired = ticket.isExpired();
         ticketDto.activeTime = ticket.getRecord().getActiveTime();
 
@@ -33,8 +34,9 @@ public class TicketDto {
             ticketDto.endTime = ticket.getRecord().getExpiredTime();
         }
 
-        if(ticket.getStudy() != null) {
-            ticketDto.study = StudyDto.from(ticket.getStudy());
+        if(ticket.getTicketStatus().equals(TicketStatus.Values.STUDY)) {
+            StudyTicket studyTicket = (StudyTicket) ticket;
+            ticketDto.study = StudyDto.from(studyTicket.getStudy());
         }
 
         return ticketDto;

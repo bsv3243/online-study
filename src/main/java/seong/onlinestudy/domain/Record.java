@@ -18,14 +18,9 @@ public class Record {
     private LocalDateTime expiredTime;
     private long activeTime;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "record")
-    private Ticket ticket;
+    public static Record create() {
 
-    public static Record create(Ticket ticket) {
-        Record record = new Record();
-        ticket.setRecord(record);
-
-        return record;
+        return new Record();
     }
 
     public void update(Ticket ticket) {

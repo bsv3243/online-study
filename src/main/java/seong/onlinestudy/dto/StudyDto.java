@@ -3,6 +3,7 @@ package seong.onlinestudy.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import seong.onlinestudy.domain.Study;
+import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.domain.Ticket;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class StudyDto {
      * @param study Ticket 과 페치 조인한 Study
      */
     public void setStudyTime(Study study) {
-        List<Ticket> tickets = study.getTickets();
+        List<StudyTicket> studyTickets = study.getStudyTickets();
 
         long studyTime = 0;
         LocalDateTime now = LocalDateTime.now();
@@ -33,7 +34,7 @@ public class StudyDto {
         LocalDateTime startTime = now;
         LocalDateTime endTime = now;
 
-        for (Ticket ticket : tickets) {
+        for (Ticket ticket : studyTickets) {
             studyTime += ticket.getRecord().getActiveTime();
             startTime = ticket.getStartTime().isBefore(startTime) ? ticket.getStartTime() : startTime;
 

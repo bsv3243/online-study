@@ -23,7 +23,7 @@ public class StudyTicket extends Ticket{
 
     public void setStudy(Study study) {
         this.study = study;
-        study.getTickets().add(this);
+        study.getStudyTickets().add(this);
     }
 
     public static Ticket createStudyTicket(Member member, Group group, Study study) {

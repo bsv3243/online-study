@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Ticket;
+import seong.onlinestudy.domain.TicketStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class RecordDto {
     private int memberCount;
 
     @JsonIgnore
-    private Set<Member> members = new HashSet<>();
+    private Set<Member> memberCounter = new HashSet<>();
 
     public void compareStartAndEndTime(Ticket ticket) {
         if(startTime.isAfter(ticket.getStartTime())) {
@@ -39,16 +40,14 @@ public class RecordDto {
     }
 
     public void updateMemberCount() {
-        memberCount = members.size();
+        memberCount = memberCounter.size();
     }
 
     public void addStudyTime(Ticket ticket) {
-        if(ticket.getStudy() == null) {
-            return;
+        if(ticket.getTicketStatus().equals(TicketStatus.Values.STUDY)) {
+            memberCounter.add(ticket.getMember());
+            studyTime += ticket.getRecord().getActiveTime();
         }
-
-        members.add(ticket.getMember());
-        studyTime += ticket.getRecord().getActiveTime();
     }
 
     protected RecordDto() {
@@ -68,7 +67,7 @@ public class RecordDto {
         recordDto.studyTime = ticket.getRecord().getActiveTime();
         recordDto.memberCount = 1;
 
-        recordDto.members.add(ticket.getMember());
+        recordDto.memberCounter.add(ticket.getMember());
 
         recordDto.setStartAndEndTime(ticket);
 
