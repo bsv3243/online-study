@@ -247,7 +247,9 @@ public class MyUtils {
                     groups.get(random.nextInt(groups.size()))
             );
             tickets.add(ticket);
-            setField(ticket, "id", (long)i);
+            if(setId) {
+                setField(ticket, "id", (long) i);
+            }
         }
         return tickets;
     }

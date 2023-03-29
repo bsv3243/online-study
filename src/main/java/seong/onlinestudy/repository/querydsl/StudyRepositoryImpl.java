@@ -70,7 +70,6 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                 .select(study.id.count())
                 .from(study)
                 .leftJoin(study.studyTickets, studyTicket)
-                .join(studyTicket.member, member)
                 .where(
                         memberIdEq(studyTicket.member, memberId),
                         groupIdEq(studyTicket.group, groupId),

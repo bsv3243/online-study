@@ -160,4 +160,24 @@ public class TicketRepositoryCustomTest {
         Set<Member> findMembersRemoveDuplicate = new HashSet<>(findMembers);
         assertThat(findMembersRemoveDuplicate.size()).isEqualTo(1);
     }
+
+    @Test
+    void findTickets_회원목록조건() {
+        //given
+        List<Member> testMembers = this.members.subList(0, 2);
+        List<Long> testMemberIds = testMembers.stream().map(Member::getId).collect(Collectors.toList());
+
+        //when
+        LocalDateTime startTime = LocalDateTime.now().minusHours(1);
+        LocalDateTime endTime = startTime.plusHours(2);
+        List<Ticket> findTickets = ticketRepository.findTickets(testMemberIds, null, null, startTime, endTime);
+
+        //then
+        List<Ticket> targetTickets = new ArrayList<>();
+        for (Member testMember : testMembers) {
+            targetTickets.addAll(testMember.getTickets());
+        }
+
+        assertThat(findTickets).containsExactlyInAnyOrderElementsOf(targetTickets);
+    }
 }

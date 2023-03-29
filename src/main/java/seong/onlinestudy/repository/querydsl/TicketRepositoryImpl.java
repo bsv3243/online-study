@@ -29,7 +29,6 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
                 .join(ticket.member, member).fetchJoin()
                 .join(ticket.record, record).fetchJoin()
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
-                .join(studyTicket.study, study).fetchJoin()
                 .where(
                         memberIdsIn(ticket.member, memberIds),
                         groupIdEq(studyTicket.group, groupId),
@@ -37,7 +36,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
                         ticket.startTime.goe(startTime),
                         ticket.startTime.lt(endTime)
                 )
-                .orderBy(study.id.asc(), ticket.startTime.asc())
+                .orderBy(studyTicket.study.id.asc(), ticket.startTime.asc())
                 .fetch();
 
         return findTickets;
