@@ -1,18 +1,14 @@
 package seong.onlinestudy.service;
 
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.servlet.MockMvc;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.StudyDto;
@@ -23,12 +19,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.domain.TicketStatus.STUDY;
 
 @ExtendWith(MockitoExtension.class)
 class StudyServiceTest {
@@ -40,6 +34,7 @@ class StudyServiceTest {
     StudyRepository studyRepository;
 
     @Test
+    @DisplayName("스터디 목록 조회_검색어 조건")
     void getStudies_검색어있음() {
         Member member = createMember("member", "member");
         setField(member, "id", 1L);
@@ -66,6 +61,7 @@ class StudyServiceTest {
     }
 
     @Test
+    @DisplayName("티켓 목록 조회_조건 없음")
     void getStudies_검색어없음() {
         Member member = createMember("member", "member");
         setField(member, "id", 1L);
@@ -76,7 +72,7 @@ class StudyServiceTest {
         Group group = createGroup("group", 30, member);
 
         for(int i=0; i<3; i++) {
-            Ticket ticket = createTicket(STUDY, member, studies.get(i), group);
+            Ticket ticket = createStudyTicket(member, group, studies.get(i));
             MyUtils.setTicketEnd(ticket, 3600);
         }
 

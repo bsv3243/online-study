@@ -20,5 +20,7 @@ public class PostCreateRequest {
     private PostCategory category;
 
     private List<Long> studyIds;
+
+    @NotNull(message = "그룹은 필수로 지정되어야 합니다.")
     private Long groupId;
 }

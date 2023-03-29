@@ -1,17 +1,13 @@
 package seong.onlinestudy.service;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.RecordsGetRequest;
@@ -24,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -39,21 +34,37 @@ class RecordServiceTest {
     @Mock
     TicketRepository ticketRepository;
 
+    List<Member> members;
+    List<Group> groups;
+    List<Study> studies;
+
+    List<Ticket> tickets;
+    List<StudyTicket> studyTickets;
+
+    @BeforeEach
+    void init() {
+        members = createMembers(50, true);
+        groups = createGroups(members, 10, true);
+        studies = createStudies(10, true);
+
+        joinMembersToGroups(members, groups);
+
+        tickets = createStudyTickets(members, groups, studies, true);
+        studyTickets = tickets.stream().map(ticket -> (StudyTicket) ticket).collect(Collectors.toList());
+
+        for (StudyTicket studyTicket : studyTickets) {
+            if(studyTicket.isExpired()) {
+                setField(studyTicket.getRecord(), "activeTime", 1000L);
+                setField(studyTicket.getRecord(), "expiredTime", studyTicket.getStartTime().plusSeconds(1000));
+            }
+        }
+    }
+
     @Test
+    @DisplayName("공부 기록 목록 조회_조건 없음")
     void getRecords_조건없음() {
         //given
-        List<Member> members = createMembers(50, true);
-        List<Group> groups = createGroups(members, 10, true);
-        List<Study> studies = createStudies(10, true);
-
-        for(int i=groups.size(); i<members.size(); i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-            groups.get(i % groups.size()).addGroupMember(groupMember);
-        }
-
-        List<Ticket> endTickets = createEndTickets(members, groups, studies, 1000);
-
-        given(ticketRepository.findTickets(any(), any(), (Long)isNull(), any(), any())).willReturn(endTickets);
+        given(ticketRepository.findStudyTickets((Long)isNull(), any(), any(), any(), any())).willReturn(studyTickets);
 
         //when
         RecordsGetRequest request = new RecordsGetRequest();
@@ -62,39 +73,36 @@ class RecordServiceTest {
         List<StudyRecordDto> studyRecords = recordService.getRecords(request, members.get(0));
 
         //then
-        LocalDateTime startTime = endTickets.get(0).getStartTime();
-        assertThat(studyRecords).allSatisfy(studyRecord -> {
-            assertThat(studyRecord.getRecords()).allSatisfy(record -> {
-                assertThat(record.getStudyTime()).isEqualTo(1000L * members.size()/studies.size());
-                assertThat(record.getStartTime()).isEqualToIgnoringNanos(startTime);
-                assertThat(record.getEndTime()).isEqualToIgnoringNanos(startTime.plusSeconds(1000));
+        assertThat(studyRecords.size()).isEqualTo(studies.size());
+        assertThat(studyRecords).allSatisfy(studyRecordDto -> {
+            long testStudyTime = getTargetStudyTime(studyTickets, studyRecordDto.getStudyId());
 
+            assertThat(studyRecordDto.getMemberCount()).isGreaterThan(0);
+            assertThat(studyRecordDto.getRecords()).allSatisfy(recordDto -> {
+                assertThat(recordDto.getStudyTime()).isEqualTo(testStudyTime);
             });
         });
     }
 
+    private long getTargetStudyTime(List<StudyTicket> studyTickets, Long studyId) {
+        List<StudyTicket> targetTestStudyTickets = studyTickets.stream()
+                .filter(studyTicket -> studyTicket.getStudy().getId().equals(studyId))
+                .collect(Collectors.toList());
+
+        long testStudyTime = 0;
+        for (StudyTicket targetTestStudyTicket : targetTestStudyTickets) {
+            testStudyTime += targetTestStudyTicket.getRecord().getActiveTime();
+        }
+        return testStudyTime;
+    }
+
     @Test
+    @DisplayName("공부 기록 목록 조회_스터디 조건")
     void getRecords_스터디조건() {
         //given
-        List<Member> members = createMembers(50, true);
-        List<Group> groups = createGroups(members, 10, true);
-        List<Study> studies = createStudies(10, true);
-        List<Ticket> tickets = new ArrayList<>();
 
-        for(int i=groups.size(); i<members.size(); i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-            groups.get(i % 10).addGroupMember(groupMember);
-        }
-        for(int i=0; i<50; i++) {
-            Ticket ticket = createTicket(TicketStatus.STUDY, members.get(i),
-                    studies.get(i % studies.size()), groups.get(i % groups.size()));
-            setField(ticket, "id", (long) i);
-            tickets.add(ticket);
-        }
-
-        given(ticketRepository.findTickets(any(), any(), (Long)isNull(), any(), any()))
-                .willReturn(tickets.stream().filter(ticket ->
-                                ticket.getStudy().equals(studies.get(0))).collect(Collectors.toList()));
+        given(ticketRepository.findStudyTickets((Long) isNull(), any(), any(), any(), any()))
+                .willReturn(studyTickets);
 
         //when
         RecordsGetRequest request = new RecordsGetRequest();
@@ -102,35 +110,34 @@ class RecordServiceTest {
         List<StudyRecordDto> records = recordService.getRecords(request, members.get(0));
 
         //then
-        assertThat(records).anySatisfy(record -> {
-            assertThat(record.getStudyId()).isEqualTo(studies.get(0).getId());
+        assertThat(records).allSatisfy(studyRecordDto -> {
+            assertThat(studyRecordDto.getStudyId()).isNotNull();
+            assertThat(studyRecordDto.getStudyName()).isNotNull();
+            assertThat(studyRecordDto.getMemberCount()).isGreaterThan(0);
         });
-        assertThat(records.size()).isEqualTo(1);
     }
 
     @Test
+    @DisplayName("공부 기록 목록 조회_그룹 조건")
     void getRecords_그룹조건() {
         //given
         List<Member> members = createMembers(50, true);
         List<Group> groups = createGroups(members, 10, true);
         List<Study> studies = createStudies(10, true);
-        List<Ticket> tickets = new ArrayList<>();
+        List<StudyTicket> tickets = new ArrayList<>();
 
         for(int i=groups.size(); i<members.size(); i++) {
             GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
         }
         for(int i=0; i<50; i++) {
-            Ticket ticket = createTicket(TicketStatus.STUDY, members.get(i),
-                    studies.get(i % studies.size()), groups.get(i % groups.size()));
+            Ticket ticket = createStudyTicket(members.get(i),
+                    groups.get(i % groups.size()), studies.get(i % studies.size()));
             setField(ticket, "id", (long) i);
-            tickets.add(ticket);
+            tickets.add((StudyTicket) ticket);
         }
 
-
-        List<Ticket> filteredTickets = tickets.stream().filter(ticket ->
-                ticket.getGroup().equals(groups.get(0))).collect(Collectors.toList());
-        given(ticketRepository.findTickets(any(), any(), (Long)isNull(), any(), any()))
-                .willReturn(filteredTickets);
+        given(ticketRepository.findStudyTickets((Long)isNull(), any(), any(), any(), any()))
+                .willReturn(tickets);
 
         //when
         RecordsGetRequest request = new RecordsGetRequest();
@@ -138,9 +145,15 @@ class RecordServiceTest {
         List<StudyRecordDto> records = recordService.getRecords(request, members.get(0));
 
         //then
-        Set<Study> filteredStudies = filteredTickets.stream()
-                .map(Ticket::getStudy).collect(Collectors.toSet());
-        assertThat(records.stream().map(StudyRecordDto::getStudyId).collect(Collectors.toList()))
-                .containsAnyElementsOf(filteredStudies.stream().map(Study::getId).collect(Collectors.toList()));
+        List<Long> testTargetStudyIds = tickets.stream()
+                .map(studyTicket -> studyTicket.getStudy().getId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Long> findStudyIds = records.stream()
+                .map(StudyRecordDto::getStudyId)
+                .collect(Collectors.toList());
+
+        assertThat(findStudyIds).containsAnyElementsOf(testTargetStudyIds);
     }
 }

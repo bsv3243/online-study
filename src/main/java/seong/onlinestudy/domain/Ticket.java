@@ -22,9 +22,6 @@ public abstract class Ticket {
 
     private boolean expired;
 
-    @Column(name = "ticket_status", insertable = false, updatable = false)
-    private String ticketStatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

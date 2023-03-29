@@ -209,7 +209,7 @@ public class MyUtils {
         }
     }
 
-    public static List<Ticket> createStudyTickets(List<Member> members, List<Group> groups, List<Study> studies) {
+    public static List<Ticket> createStudyTickets(List<Member> members, List<Group> groups, List<Study> studies, boolean setId) {
         List<Ticket> tickets = new ArrayList<>();
 
         Map<Member, Ticket> memberActiveTicket = new HashMap<>();
@@ -221,8 +221,14 @@ public class MyUtils {
                     groups.get(random.nextInt(groups.size())),
                     studies.get(random.nextInt(studies.size()))
             );
+
+            if(setId) {
+                setField(ticket, "id", (long) i);
+            }
+
             tickets.add(ticket);
 
+            //회원의 활성 상태 티켓이 존재한다면 만료시킨다.
             if(memberActiveTicket.containsKey(targetMember)) {
                 Ticket activeTicket = memberActiveTicket.get(targetMember);
                 activeTicket.expiredAndUpdateRecord();
@@ -232,7 +238,7 @@ public class MyUtils {
         return tickets;
     }
 
-    public static List<Ticket> createRestTickets(List<Member> members, List<Group> groups) {
+    public static List<Ticket> createRestTickets(List<Member> members, List<Group> groups, boolean setId) {
         List<Ticket> tickets = new ArrayList<>();
         for(int i=0; i<members.size(); i++) {
             Ticket ticket = createRestTicket(
@@ -240,6 +246,7 @@ public class MyUtils {
                     groups.get(random.nextInt(groups.size()))
             );
             tickets.add(ticket);
+            setField(ticket, "id", (long)i);
         }
         return tickets;
     }

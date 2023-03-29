@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.domain.Ticket;
 import seong.onlinestudy.domain.TicketStatus;
 
@@ -36,7 +37,12 @@ public class RecordDto {
 
     public void setStartAndEndTime(Ticket ticket) {
         startTime = ticket.getStartTime();
-        endTime = ticket.getRecord().getExpiredTime();
+
+        if(ticket.isExpired()) {
+            endTime = ticket.getRecord().getExpiredTime();
+        } else {
+            endTime = startTime;
+        }
     }
 
     public void updateMemberCount() {
@@ -44,7 +50,7 @@ public class RecordDto {
     }
 
     public void addStudyTime(Ticket ticket) {
-        if(ticket.getTicketStatus().equals(TicketStatus.Values.STUDY)) {
+        if(ticket instanceof StudyTicket) {
             memberCounter.add(ticket.getMember());
             studyTime += ticket.getRecord().getActiveTime();
         }
