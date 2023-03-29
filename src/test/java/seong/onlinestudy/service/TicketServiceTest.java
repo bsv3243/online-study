@@ -20,12 +20,7 @@ import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.TicketCreateRequest;
-import seong.onlinestudy.request.TicketUpdateRequest;
 
-import javax.swing.text.html.Option;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,11 +66,12 @@ class TicketServiceTest {
         joinMembersToGroups(testMembers, testGroups);
 
         testStudies = createStudies(2, true);
-        testStudyTickets = createTickets(STUDY, testMembers, testGroups, testStudies, true);
-        testRestTickets = createTickets(REST, testMembers, testGroups, testStudies, true);
+        testStudyTickets = createStudyTickets(testMembers, testGroups, testStudies, true);
+        testRestTickets = createRestTickets(testMembers, testGroups, true);
     }
 
     @Test
+    @DisplayName("티켓 생성")
     void createTicket() {
         //given
         Study study = MyUtils.createStudy("테스트스터디");
@@ -100,12 +96,13 @@ class TicketServiceTest {
     }
 
     @Test
+    @DisplayName("티켓 만료")
     void expiredTicket() throws InterruptedException {
         //given
         Study study = MyUtils.createStudy("테스트스터디");
         Member member = MyUtils.createMember("member", "member");
         Group group = createGroup("그룹", 30, member);
-        Ticket ticket = MyUtils.createTicket(STUDY, member, study, group);
+        Ticket ticket = MyUtils.createStudyTicket(member, group, study);
         setField(study, "id", 1L);
         setField(member, "id", 1L);
         setField(group, "id", 1L);
@@ -125,14 +122,14 @@ class TicketServiceTest {
     }
 
     @Test
-    @DisplayName("expiredTicket_ex, 멤버 불일치")
+    @DisplayName("티켓 만료_예외, 멤버 불일치")
     void expiredTicket_ex() {
         //given
         Member memberA = MyUtils.createMember("memberA", "memberA");
         Member memberB = MyUtils.createMember("memberB", "memberB");
         Study study = MyUtils.createStudy("테스트스터디");
         Group group = createGroup("그룹", 30, memberA);
-        Ticket ticket = MyUtils.createTicket(STUDY, memberA, study, group);
+        Ticket ticket = MyUtils.createStudyTicket(memberA, group, study);
 
         setField(memberA, "id", 1L);
         setField(memberB, "id", 2L);
@@ -150,7 +147,7 @@ class TicketServiceTest {
     }
 
     @Test
-    @DisplayName("ticket 데이터 없음, 조건 없음")
+    @DisplayName("티켓 목록 조회_ticket 데이터 없음, 조건 없음")
     public void getTickets_NoDataWithoutCondition() {
         //given
         PageImpl<Member> membersPage = new PageImpl<>(testMembers);
@@ -176,13 +173,13 @@ class TicketServiceTest {
     }
 
     @Test
-    @DisplayName("ticket 데이터 없음, memberId 조건 추가")
+    @DisplayName("티켓 목록 조회_ticket 데이터 없음, memberId 조건 추가")
     void getTickets_NoDataWithCondition() {
         //given
         Member testMember = testMembers.get(0);
         List<Ticket> tickets = new ArrayList<>();
 
-        given(ticketRepository.findTickets(any(), any(), anyList(), any(), any())).willReturn(tickets);
+        given(ticketRepository.findTickets(anyList(), any(), any(), any(), any())).willReturn(tickets);
         given(memberRepository.findById(any())).willReturn(Optional.of(testMember));
 
         //when
@@ -203,7 +200,7 @@ class TicketServiceTest {
     }
 
     @Test
-    @DisplayName("ticket 데이터 존재, 아무런 조건도 주어지지 않음")
+    @DisplayName("티켓 목록 조회_ticket 데이터 존재, 아무런 조건도 주어지지 않음")
     void getTickets_DataWithoutCondition() {
         //given
         List<Ticket> tickets = new ArrayList<>();
@@ -216,7 +213,7 @@ class TicketServiceTest {
         PageImpl<Member> testMembersPage = new PageImpl<>(testMembers);
 
         given(memberRepository.findMembersOrderByStudyTime(any(), any(), any())).willReturn(testMembersPage);
-        given(ticketRepository.findTickets(any(), any(), anyList(), any(), any())).willReturn(tickets);
+        given(ticketRepository.findTickets(anyList(), any(), any(), any(), any())).willReturn(tickets);
 
         //when
         TicketGetRequest request = new TicketGetRequest();
@@ -240,7 +237,7 @@ class TicketServiceTest {
     }
 
     @Test
-    @DisplayName("ticket 데이터 존재, groupId 조건")
+    @DisplayName("티켓 목록 조회_ticket 데이터 존재, groupId 조건")
     void getTickets_DataWithCondition() {
         //given
         Group testGroup = testGroups.get(0);
@@ -248,10 +245,20 @@ class TicketServiceTest {
                 .map(GroupMember::getMember).collect(Collectors.toList());
         List<Ticket> testTicketsInGroup = testGroup.getTickets();
 
-        expireTickets(testStudyTickets); //activeTicket 을 testRestTickets(휴식 티켓) 으로 한정한다.
+        //활성화된 티켓을 testRestTickets 로 한정시키기 위함
+        expireTickets(testStudyTickets);
 
-        given(memberRepository.findMembersInGroup(any())).willReturn(testMembersInGroup);
-        given(ticketRepository.findTickets(any(), any(), anyList(), any(), any())).willReturn(testTicketsInGroup);
+        List<Ticket> testActiveTickets = new ArrayList<>();
+        for(int i=0; i<testMembersInGroup.size(); i++) {
+            Member testMember = testMembersInGroup.get(i);
+            Study testStudy = testStudies.get(i % testStudies.size());
+            Ticket studyTicket = StudyTicket.createStudyTicket(testMember, testGroup, testStudy);
+
+            testActiveTickets.add(studyTicket);
+        }
+
+        given(groupRepository.findGroupWithMembers(any())).willReturn(Optional.of(testGroup));
+        given(ticketRepository.findTickets(anyList(), any(), any(), any(), any())).willReturn(testTicketsInGroup);
 
         //when
         TicketGetRequest request = new TicketGetRequest();
@@ -264,18 +271,14 @@ class TicketServiceTest {
         List<Long> testMemberIds = testMembersInGroup.stream()
                 .map(Member::getId).collect(Collectors.toList());
 
-        List<Long> testActiveTicketIds = memberTickets.stream()
-                .map(MemberTicketDto::getActiveTicket)
-                .map(TicketDto::getTicketId)
+        List<Long> findActiveTicketIds = memberTickets.stream()
+                .map(memberTicketDto -> memberTicketDto.getActiveTicket().getTicketId())
                 .collect(Collectors.toList());
 
-        List<Long> testRestTicketIds = testTicketsInGroup.stream()
-                .filter(ticket -> ticket.getTicketStatus().equals(REST))
-                .map(Ticket::getId)
-                .collect(Collectors.toList());
+        List<Long> testActiveTicketIds = testActiveTickets.stream().map(Ticket::getId).collect(Collectors.toList());
 
         assertThat(findMemberIds).isEqualTo(testMemberIds);
-        assertThat(testActiveTicketIds).containsExactlyInAnyOrderElementsOf(testRestTicketIds);
+        assertThat(findActiveTicketIds).containsExactlyInAnyOrderElementsOf(testActiveTicketIds);
 
     }
 

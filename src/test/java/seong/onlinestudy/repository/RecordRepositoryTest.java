@@ -47,9 +47,9 @@ class RecordRepositoryTest {
         }
         List<Ticket> tickets = new ArrayList<>();
         for(int i=0; i<20; i++) {
-            Ticket ticket = createTicket(TicketStatus.STUDY, members.get(i),
-                    studies.get(i % studies.size()),
-                    groups.get(i % groups.size()));
+            Ticket ticket = createStudyTicket(members.get(i),
+                    groups.get(i % groups.size()), studies.get(i % studies.size())
+            );
 
             ReflectionTestUtils.setField(ticket, "startTime", LocalDateTime.now().plusMinutes(i));
 
@@ -65,18 +65,8 @@ class RecordRepositoryTest {
         LocalDateTime endTime = LocalDateTime.now().plusHours(1);
         ZoneOffset offset = ZoneOffset.of("+00:00");
         List<Long> studyIds = tickets.stream().map(Ticket::getId).collect(Collectors.toList());
-//        recordRepository.updateRecordsWhereExpiredFalse(endTime, endTime.toEpochSecond(offset));
         em.clear();
         em.flush();
-/*        em.createNativeQuery("update Record r" +
-                        " set r.expired_time=:expiredTime," +
-                        " r.active_time=:expiredTimeToSeconds - datediff('second', '1970-01-01', (" +
-                        "select t.start_time from Ticket t where t.record_id=r.record_id))" +
-                        " where r.record_id in (select t.record_id from Ticket t where t.ticket_id in :ticketIds)")
-                .setParameter("expiredTime", endTime)
-                .setParameter("expiredTimeToSeconds", endTime.toEpochSecond(offset))
-                .setParameter("ticketIds", tickets.stream().map(Ticket::getId).collect(Collectors.toList()))
-                .executeUpdate();*/
         recordRepository.updateRecordsWhereExpiredFalse(endTime, endTime.toEpochSecond(offset),
                 studyIds);
 

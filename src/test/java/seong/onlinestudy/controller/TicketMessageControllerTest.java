@@ -1,7 +1,6 @@
 package seong.onlinestudy.controller;
 
 import lombok.Getter;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,15 +19,12 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.TicketCreateRequest;
 import seong.onlinestudy.websocket.TicketMessage;
 
 import javax.persistence.EntityManager;
@@ -103,7 +99,7 @@ class TicketMessageControllerTest {
         groupRepository.save(group);
         Study study = createStudy("study");
         studyRepository.save(study);
-        Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
+        Ticket ticket = createStudyTicket(member, group, study);
         ticketRepository.save(ticket);
         em.flush();
         em.clear();

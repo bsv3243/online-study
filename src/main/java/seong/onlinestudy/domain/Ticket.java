@@ -10,16 +10,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class Ticket {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "ticket_status")
+public abstract class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_id")
     private Long id;
 
     private LocalDateTime startTime;
-
-    @Enumerated(EnumType.STRING)
-    private TicketStatus ticketStatus;
 
     private boolean expired;
 
@@ -28,12 +27,38 @@ public class Ticket {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_id")
-    private Study study;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "record_id")
+    private Record record;
+
+    protected Ticket() {
+    }
+
+    protected Ticket(Member member, Group group) {
+        this.startTime = LocalDateTime.now();
+        this.setMember(member);
+        this.setGroup(group);
+
+        Record record = Record.create();
+        this.setRecord(record);
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+        member.getTickets().add(this);
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+        group.getTickets().add(this);
+    }
+
+    public void setRecord(Record record) {
+        this.record = record;
+    }
 
     public LocalDate getDateBySetting() {
         if(startTime.getHour() < TimeConst.DAY_START) {
@@ -42,39 +67,9 @@ public class Ticket {
             return startTime.toLocalDate();
         }
     }
-    
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "record_id")
-    private Record record;
-
-    public void setRecord(Record record) {
-        this.record = record;
-    }
 
     public void expiredAndUpdateRecord() {
         expired = true;
         record.update(this);
-    }
-
-    public static Ticket createWithRecord(TicketCreateRequest request, Member member, Study study, Group group) {
-        Ticket ticket = new Ticket();
-        ticket.startTime = LocalDateTime.now();
-        ticket.ticketStatus = request.getStatus();
-        ticket.expired = false;
-
-        member.getTickets().add(ticket);
-        ticket.member = member;
-
-        if(request.getStatus() == TicketStatus.STUDY) {
-            study.getTickets().add(ticket);
-            ticket.study = study;
-        }
-
-        group.getTickets().add(ticket);
-        ticket.group = group;
-
-        Record.create(ticket);
-
-        return ticket;
     }
 }

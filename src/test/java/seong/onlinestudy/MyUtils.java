@@ -7,14 +7,12 @@ import seong.onlinestudy.request.MemberCreateRequest;
 import seong.onlinestudy.request.StudyCreateRequest;
 import seong.onlinestudy.request.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static seong.onlinestudy.domain.TicketStatus.END;
-import static seong.onlinestudy.domain.TicketStatus.STUDY;
-
 public class MyUtils {
+
+    private static final Random random = new Random();
 
     public static Member createMember(String username, String password) {
         MemberCreateRequest request = new MemberCreateRequest();
@@ -57,14 +55,15 @@ public class MyUtils {
         return groups;
     }
 
-    public static Ticket createTicket(TicketStatus status, Member member, Study study, Group group) {
-        TicketCreateRequest request = new TicketCreateRequest();
-        request.setStatus(status);
-        return Ticket.createWithRecord(request, member, study, group);
+    public static Ticket createRestTicket(Member member, Group group) {
+        return RestTicket.createRestTicket(member, group);
+    }
+
+    public static Ticket createStudyTicket(Member member, Group group, Study study) {
+        return StudyTicket.createStudyTicket(member, group, study);
     }
 
     public static void setTicketEnd(Ticket ticket, long seconds) {
-        setField(ticket, "ticketStatus", END);
         setField(ticket.getRecord(), "activeTime", seconds);
         setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(seconds));
     }
@@ -169,8 +168,8 @@ public class MyUtils {
     public static List<Post> createPosts(List<Member> members, List<Group> groups, int endId, boolean setId) {
         List<Post> posts = new ArrayList<>();
         for(int i=0; i<endId; i++) {
-            Post post = createPost("testPost" + i, "testPost" + i, PostCategory.CHAT, members.get(i%members.size()));
-            post.setGroup(groups.get(i%groups.size()));
+            Post post = createPost("testPost" + i, "testPost" + i, PostCategory.CHAT, members.get(random.nextInt(members.size())));
+            post.setGroup(groups.get(random.nextInt(groups.size())));
             posts.add(post);
 
             if(setId) {
@@ -210,20 +209,53 @@ public class MyUtils {
         }
     }
 
-    public static List<Ticket> createTickets(TicketStatus status, List<Member> members, List<Group> groups, List<Study> studies) {
+    public static List<Ticket> createStudyTickets(List<Member> members, List<Group> groups, List<Study> studies, boolean setId) {
         List<Ticket> tickets = new ArrayList<>();
-        for(int i=0; i<members.size(); i++) {
-            Ticket ticket = createTicket(status, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+
+        Map<Member, Ticket> memberActiveTicket = new HashMap<>();
+        for(int i=0; i<members.size()*4; i++) {
+            Member targetMember = members.get(random.nextInt(members.size()));
+
+            Ticket ticket = createStudyTicket(
+                    targetMember,
+                    groups.get(random.nextInt(groups.size())),
+                    studies.get(random.nextInt(studies.size()))
+            );
+
+            if(setId) {
+                setField(ticket, "id", (long) i);
+            }
+
             tickets.add(ticket);
+
+            //회원의 활성 상태 티켓이 존재한다면 만료시킨다.
+            if(memberActiveTicket.containsKey(targetMember)) {
+                Ticket activeTicket = memberActiveTicket.get(targetMember);
+                activeTicket.expiredAndUpdateRecord();
+            }
+            memberActiveTicket.put(targetMember, ticket);
         }
         return tickets;
     }
 
-    public static List<Ticket> createTickets(TicketStatus status, List<Member> members, List<Group> groups,
-                                             List<Study> studies, boolean setId) {
+    public static List<Ticket> createRestTickets(List<Member> members, List<Group> groups, boolean setId) {
         List<Ticket> tickets = new ArrayList<>();
         for(int i=0; i<members.size(); i++) {
-            Ticket ticket = createTicket(status, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            Ticket ticket = createRestTicket(
+                    members.get(random.nextInt(members.size())),
+                    groups.get(random.nextInt(groups.size()))
+            );
+            tickets.add(ticket);
+            setField(ticket, "id", (long)i);
+        }
+        return tickets;
+    }
+
+    public static List<Ticket> createStudyTickets(TicketStatus status, List<Member> members, List<Group> groups,
+                                                  List<Study> studies, boolean setId) {
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket ticket = createStudyTicket(members.get(i), groups.get(i % groups.size()), studies.get(i % studies.size()));
             tickets.add(ticket);
             setField(ticket, "id", (long)i);
         }
@@ -233,7 +265,7 @@ public class MyUtils {
     public static List<Ticket> createEndTickets(List<Member> members, List<Group> groups, List<Study> studies, long studyTime) {
         List<Ticket> tickets = new ArrayList<>();
         for(int i=0; i<members.size(); i++) {
-            Ticket ticket = createTicket(STUDY, members.get(i), studies.get(i % studies.size()), groups.get(i % groups.size()));
+            Ticket ticket = createStudyTicket(members.get(i), groups.get(i % groups.size()), studies.get(i % studies.size()));
             tickets.add(ticket);
         }
         for (Ticket ticket : tickets) {

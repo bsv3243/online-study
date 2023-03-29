@@ -37,7 +37,7 @@ public class StudyRecordDto {
         recordDto.updateMemberCount();
 
         records.add(recordDto);
-        members.addAll(recordDto.getMembers());
+        members.addAll(recordDto.getMemberCounter());
     }
 
     public static StudyRecordDto from(Study study) {

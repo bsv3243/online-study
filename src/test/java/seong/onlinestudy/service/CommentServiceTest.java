@@ -1,6 +1,7 @@
 package seong.onlinestudy.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +13,7 @@ import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Post;
 import seong.onlinestudy.domain.PostCategory;
 import seong.onlinestudy.repository.CommentRepository;
+import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.request.CommentCreateRequest;
 import seong.onlinestudy.request.CommentUpdateRequest;
@@ -36,8 +38,11 @@ class CommentServiceTest {
     PostRepository postRepository;
     @Mock
     CommentRepository commentRepository;
+    @Mock
+    MemberRepository memberRepository;
 
     @Test
+    @DisplayName("댓글 생성")
     void createComment() {
         //given
         String content = "commentA";
@@ -52,6 +57,7 @@ class CommentServiceTest {
         CommentCreateRequest request = new CommentCreateRequest();
         request.setContent(content);
 
+        given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(postRepository.findById(any())).willReturn(Optional.of(post));
 
         //when
@@ -63,6 +69,7 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("댓글 업데이트")
     void updateComment() {
         String content = "content";
 
@@ -90,6 +97,7 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("댓글 삭제")
     void deleteComment() {
         //given
         String content = "content";

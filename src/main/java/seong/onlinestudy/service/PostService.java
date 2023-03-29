@@ -60,16 +60,14 @@ public class PostService {
 
         Post post = Post.createPost(request, member);
 
-        if(request.getGroupId() != null) {
-            Group group = groupRepository.findGroupWithMembers(request.getGroupId())
-                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
+        Group group = groupRepository.findGroupWithMembers(request.getGroupId())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-            Optional<GroupMember> groupMember = group.getGroupMembers().stream()
-                    .filter(gm -> gm.getMember().getId().equals(member.getId())).findFirst();
-            groupMember.orElseThrow(() -> new PermissionControlException("접근 권한이 없습니다."));
+        Optional<GroupMember> groupMember = group.getGroupMembers().stream()
+                .filter(gm -> gm.getMember().getId().equals(member.getId())).findFirst();
+        groupMember.orElseThrow(() -> new PermissionControlException("접근 권한이 없습니다."));
 
-            post.setGroup(group);
-        }
+        post.setGroup(group);
 
         if(request.getStudyIds() != null) {
             List<Study> studies = studyRepository.findAllById(request.getStudyIds());

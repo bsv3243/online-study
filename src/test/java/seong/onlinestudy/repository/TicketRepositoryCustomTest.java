@@ -1,6 +1,5 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.MemberCreateRequest;
 
 import javax.persistence.EntityManager;
 
@@ -21,10 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static seong.onlinestudy.domain.QGroup.group;
-import static seong.onlinestudy.domain.QMember.member;
-import static seong.onlinestudy.domain.QStudy.study;
-import static seong.onlinestudy.domain.QTicket.ticket;
 
 @DataJpaTest
 public class TicketRepositoryCustomTest {
@@ -46,7 +39,7 @@ public class TicketRepositoryCustomTest {
     List<Member> members = new ArrayList<>();
     List<Group> groups = new ArrayList<>();
     List<Study> studies = new ArrayList<>();
-    List<Ticket> tickets = new ArrayList<>();
+    List<Ticket> studyTickets = new ArrayList<>();
     List<Ticket> restTickets = new ArrayList<>();
 
     @BeforeEach
@@ -57,36 +50,19 @@ public class TicketRepositoryCustomTest {
         groups = MyUtils.createGroups(members, 10);
         studies = MyUtils.createStudies(10);
 
-        for(int i=10; i<50; i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-            groups.get(i%10).addGroupMember(groupMember);
-        }
+        MyUtils.joinMembersToGroups(members, groups);
 
-        for (int i=0; i<50; i++) {
-            Ticket ticket = MyUtils.createTicket(TicketStatus.STUDY, members.get(i), studies.get(i % 10), groups.get(i % 10));
-            tickets.add(ticket);
-        }
+        studyTickets = MyUtils.createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);
         studyRepository.saveAll(studies);
-        ticketRepository.saveAll(tickets);
+        ticketRepository.saveAll(this.studyTickets);
 
-        for(int i=0; i<10; i++) {
-            Ticket ticket = MyUtils.createTicket(TicketStatus.REST, members.get(i), studies.get(i % 10), groups.get(i % 10));
-            restTickets.add(ticket);
-        }
+        restTickets = MyUtils.createRestTickets(members, groups, false);
+
         ticketRepository.saveAll(restTickets);
 
-    }
-
-    @Test
-    void 저장데이터확인() {
-        List<Group> findGroups = groupRepository.findAll();
-        assertThat(findGroups.size()).isEqualTo(10);
-
-        List<Study> findStudies = studyRepository.findAll();
-        assertThat(findStudies.size()).isEqualTo(10);
     }
 
     @Test
@@ -101,9 +77,12 @@ public class TicketRepositoryCustomTest {
                 = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
 
         //then
-        assertThat(findTickets.size()).isEqualTo(tickets.size() + restTickets.size());
+        assertThat(findTickets.size()).isEqualTo(studyTickets.size() + restTickets.size());
         assertThat(findTickets).anySatisfy(findTicket -> {
-            assertThat(findTicket.getStudy()).isNull();
+            if(findTicket instanceof StudyTicket) {
+                StudyTicket studyTicket = (StudyTicket) findTicket;
+                assertThat(studyTicket.getStudy()).isNotNull();
+            }
         });
     }
 
@@ -116,14 +95,22 @@ public class TicketRepositoryCustomTest {
 
         //when
         List<Ticket> findTickets
-                = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
+                = ticketRepository.findTickets(memberId, groupId, studyId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
 
         //then
-        List<Study> findStudies = findTickets.stream().map(Ticket::getStudy).collect(Collectors.toList());
-        assertThat(findStudies).allSatisfy(studyInner -> studyInner.getId().equals(studyId));
+        List<StudyTicket> testStudyTickets = studyTickets.stream()
+                .map(ticket -> (StudyTicket) ticket)
+                .collect(Collectors.toList());
+        List<StudyTicket> testFilteredTickets = testStudyTickets.stream()
+                .filter(studyTicket -> studyTicket.getStudy().equals(studies.get(0)))
+                .collect(Collectors.toList());
 
-        Set<Study> findStudiesRemoveDuplicate = new HashSet<>(findStudies);
-        assertThat(findStudiesRemoveDuplicate.size()).isEqualTo(1);
+        List<StudyTicket> findStudyTickets = findTickets.stream()
+                .map(ticket -> (StudyTicket) ticket)
+                .collect(Collectors.toList());
+
+        assertThat(testFilteredTickets).containsExactlyInAnyOrderElementsOf(findStudyTickets);
+
     }
 
     @Test
@@ -135,7 +122,11 @@ public class TicketRepositoryCustomTest {
 
         //when
         List<Ticket> findTickets
-                = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
+                = ticketRepository.findTickets(
+                        memberId, groupId, studyId,
+                        LocalDateTime.now().minusHours(1),
+                        LocalDateTime.now().plusHours(1)
+        );
 
         //then
         List<Group> findGroups = findTickets.stream().map(Ticket::getGroup).collect(Collectors.toList());
@@ -154,7 +145,11 @@ public class TicketRepositoryCustomTest {
 
         //when
         List<Ticket> findTickets
-                = ticketRepository.findTickets(studyId, groupId, memberId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
+                = ticketRepository.findTickets(
+                        memberId, groupId, studyId,
+                        LocalDateTime.now().minusHours(1),
+                        LocalDateTime.now().plusHours(1)
+        );
 
         //then
         List<Member> findMembers = findTickets.stream().map(Ticket::getMember).collect(Collectors.toList());

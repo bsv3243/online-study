@@ -2,6 +2,7 @@ package seong.onlinestudy.dto;
 
 import lombok.Data;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.domain.Ticket;
 import seong.onlinestudy.domain.TicketStatus;
 
@@ -28,7 +29,7 @@ public class MemberTicketDto {
             TicketDto ticketDto = TicketDto.from(ticket);
             if (ticket.isExpired()) {
                 memberTicket.expiredTickets.add(ticketDto);
-                if(ticket.getTicketStatus().equals(TicketStatus.STUDY)) //학습 상태의 티켓 시간만 더함
+                if(ticket instanceof StudyTicket)
                     memberTicket.studyTime += ticket.getRecord().getActiveTime();
             } else {
                 memberTicket.activeTicket = ticketDto;

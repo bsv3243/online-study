@@ -1,9 +1,6 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +13,12 @@ import seong.onlinestudy.domain.*;
 import javax.persistence.EntityManager;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.domain.QGroup.group;
-import static seong.onlinestudy.domain.QGroupMember.groupMember;
-import static seong.onlinestudy.domain.QMember.member;
-import static seong.onlinestudy.domain.QRecord.record;
-import static seong.onlinestudy.domain.QStudy.study;
-import static seong.onlinestudy.domain.QTicket.ticket;
 
 @DataJpaTest
 public class StudyRepositoryCustomTest {
@@ -45,79 +36,39 @@ public class StudyRepositoryCustomTest {
     @Autowired
     TicketRepository ticketRepository;
 
+    List<Member> members;
+    List<Group> groups;
+    List<Study> studies;
+    List<Ticket> studyTickets;
+
+
     @BeforeEach
     void init() {
         query = new JPAQueryFactory(em);
 
-        Member member = createMember("member", "member");
-        Group group = createGroup("테스트그룹", 30, member);
-        memberRepository.save(member);
-        groupRepository.save(group);
+        members = createMembers(50);
+        groups = createGroups(members, 10);
 
-        Study study = createStudy("테스트스터디");
-        studyRepository.save(study);
+        joinMembersToGroups(members, groups);
 
-        Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
-        ticketRepository.save(ticket);
-    }
+        studies = createStudies(3);
+        studyTickets = createStudyTickets(members, groups, studies, false);
 
-    @Test
-    void findGroupStudies() {
-        //given
-        Member member1 = createMember("member1", "member1");
-        memberRepository.save(member1);
-
-        Group group1 = groupRepository.findAll().get(0);
-        GroupMember groupMember1 = GroupMember.createGroupMember(member1, GroupRole.USER);
-        group1 .addGroupMember(groupMember1);
-
-        Study study1 = createStudy("테스트스터디1");
-        studyRepository.save(study1);
-
-        Ticket ticket1 = getEndTicket(member1, group1 , study1, 2);
-        ticketRepository.save(ticket1);
-
-        //when
-        List<Group> groups = query
-                .select(group)
-                .from(group)
-                .join(group.groupMembers, groupMember).fetchJoin()
-                .join(groupMember.member, member).fetchJoin()
-                .where(categoryEq(null), nameContains(null), studiesIn(null))
-                .limit(10)
-                .offset(0)
-                .fetch();
-
-//        List<Long> groupIds = groups.stream().map(Group::getId).collect(Collectors.toList());
-        List<GroupStudyDto> groupStudies = query
-                .select(Projections.constructor(GroupStudyDto.class,
-                        study.id,
-                        group.id,
-                        study.name,
-                        record.activeTime.sum()
-                ))
-                .from(study)
-                .join(study.tickets, ticket)
-                .join(ticket.record, record)
-                .join(ticket.group, group)
-                .where(group.in(groups))
-                .groupBy(study.id)
-                .limit(10)
-                .fetch();
-
-        //then
-        assertThat(groups).contains(group1);
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(groups);
+        studyRepository.saveAll(studies);
+        ticketRepository.saveAll(studyTickets);
     }
 
     @Test
     void findStudies_조건없음() {
         //given
         List<Member> members = createMembers(20);
-        List<Group> groups = createGroups(members, 2);
+        List<Group> groups = createGroups(members, 3);
         MyUtils.joinMembersToGroups(members, groups);
 
-        List<Study> studies = createStudies(2);
-        List<Ticket> tickets = createTickets(TicketStatus.STUDY, members, groups, studies);
+        List<Study> studies = createStudies(5);
+        List<Ticket> tickets = createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);
@@ -135,47 +86,74 @@ public class StudyRepositoryCustomTest {
 
         //then
         assertThat(result.getContent()).containsAnyElementsOf(studies);
-
     }
 
-    private BooleanExpression studiesIn(List<Study> studies) {
-        return studies != null ? study.in(studies) : null;
+    @Test
+    void findStudies_회원조건() {
+        //given
+        List<Member> members = createMembers(20);
+        List<Group> groups = createGroups(members, 3);
+        MyUtils.joinMembersToGroups(members, groups);
+
+        List<Study> studies = createStudies(5);
+        List<Ticket> tickets = createStudyTickets(members, groups, studies, false);
+
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(groups);
+        studyRepository.saveAll(studies);
+        ticketRepository.saveAll(tickets);
+
+        //when
+        Long memberId = members.get(0).getId();
+        Long groupId = null;
+        String search = null;
+        LocalDateTime startTime = LocalDateTime.now();
+        int days = 6;
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Study> result = studyRepository.findStudies(memberId, groupId, search, startTime.minusDays(days), startTime, pageRequest);
+
+        //then
+        List<Ticket> filteredTickets = tickets.stream()
+                .filter(ticket ->
+                        ticket.getMember().getId().equals(memberId)
+                        && ticket instanceof StudyTicket)
+                .collect(Collectors.toList());
+        List<StudyTicket> testStudyTickets = filteredTickets.stream().map(ticket -> (StudyTicket) ticket).collect(Collectors.toList());
+        List<Study> testStudies = testStudyTickets.stream().map(StudyTicket::getStudy).collect(Collectors.toList());
+
+        assertThat(result.getContent()).containsAnyElementsOf(testStudies);
     }
 
-    private BooleanExpression categoryEq(GroupCategory category) {
-        return category != null ? group.category.eq(category) : null;
+    @Test
+    void findStudies_그룹조건() {
+        //given
+        Group testGroup = groups.get(0);
+        LocalDateTime startTime = LocalDateTime.now().minusHours(1);
+        LocalDateTime endTime = startTime.plusHours(2);
+
+        List<Study> testStudiesInGroup = getStudiesInGroup(testGroup);
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Study> studies = studyRepository.findStudies(
+                null, testGroup.getId(), null,
+                startTime, endTime,
+                pageRequest);
+        List<Study> findStudies = studies.getContent();
+
+        //then
+        assertThat(findStudies).containsExactlyInAnyOrderElementsOf(testStudiesInGroup);
     }
 
-    private BooleanExpression nameContains(String search) {
-        return search != null ? group.name.contains(search) : null;
+    private List<Study> getStudiesInGroup(Group testGroup) {
+        List<Ticket> testStudyTickets = testGroup.getTickets().stream().filter(ticket -> {
+            return ticket instanceof StudyTicket;
+        }).collect(Collectors.toList());
+
+        return testStudyTickets.stream().map(ticket -> {
+            StudyTicket studyTicket1 = (StudyTicket) ticket;
+            return studyTicket1.getStudy();
+        }).distinct().collect(Collectors.toList());
     }
 
-    @Data
-    public static class GroupStudyDto {
-        private Long studyId;
-        private Long groupId;
-        private String name;
-        private Long studyTime;
-
-        public GroupStudyDto() {
-        }
-
-        public GroupStudyDto(Long studyId, Long groupId, String name, Long studyTime) {
-            this.studyId = studyId;
-            this.groupId = groupId;
-            this.name = name;
-            this.studyTime = studyTime;
-        }
-    }
-
-    private Ticket getEndTicket(Member member, Group group, Study study, long hours) {
-        Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
-        setField(ticket, "endTime", ticket.getStartTime().plusHours(hours));
-        ZoneOffset offset = ZoneOffset.of("+09:00");
-        setField(ticket, "activeTime",
-                ticket.getRecord().getExpiredTime().toEpochSecond(offset)-ticket.getStartTime().toEpochSecond(offset));
-        setField(ticket, "memberStatus", TicketStatus.END);
-
-        return ticket;
-    }
 }

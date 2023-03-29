@@ -18,17 +18,21 @@ import seong.onlinestudy.dto.GroupStudyDto;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.GroupMemberRepository;
 import seong.onlinestudy.repository.GroupRepository;
+import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.request.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static seong.onlinestudy.MyUtils.createMembers;
+import static seong.onlinestudy.MyUtils.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -40,12 +44,15 @@ class GroupServiceTest {
     StudyRepository studyRepository;
     @Mock
     GroupMemberRepository groupMemberRepository;
+    @Mock
+    MemberRepository memberRepository;
 
     @InjectMocks
     GroupService groupService;
 
 
     @Test
+    @DisplayName("그룹 가입")
     void joinGroup() {
         //given
         Member master = createMember("memberA", "test1234");
@@ -54,6 +61,7 @@ class GroupServiceTest {
         GroupMember groupMember = GroupMember.createGroupMember(master, GroupRole.MASTER);
         Group group = createGroup("test", 30, groupMember);
 
+        given(memberRepository.findById(any())).willReturn(Optional.of(memberA));
         given(groupRepository.findById(1L)).willReturn(Optional.of(group));
 
         //when
@@ -71,6 +79,8 @@ class GroupServiceTest {
         //given
         Member member = createMember("memberA", "test1234");
         GroupCreateRequest request = getGroupCreateRequest("groupA", 30);
+
+        given(memberRepository.findById(any())).willReturn(Optional.of(member));
 
         //when
         groupService.createGroup(request, member);
@@ -129,49 +139,86 @@ class GroupServiceTest {
     }
 
     @Test
+    @DisplayName("그룹 조회")
     void 그룹조회() {
         //given
+
+
         GroupsGetRequest request = new GroupsGetRequest();
         request.setPage(0); request.setSize(10);
 
-        Member member = MyUtils.createMember("testMember", "testMember");
-        Group group1 = MyUtils.createGroup("테스트그룹", 30, member);
-        Group group2 = MyUtils.createGroup("테스트그룹2", 30, member);
-        setField(group1, "id", 1L);
-        setField(group2, "id", 2L);
+        List<Member> testMembers = createMembers(20, true);
+        List<Group> testGroups = createGroups(testMembers, 3, true);
 
-        GroupStudyDto groupStudyDto1 = new GroupStudyDto(1L, 1L, "테스트스터디", 1000);
-        GroupStudyDto groupStudyDto2 = new GroupStudyDto(2L, 2L, "테스트스터디2", 2000);
+        List<GroupMember> testGroupMasters = testGroups.stream()
+                .map(group -> group.getGroupMembers().get(0))
+                .collect(Collectors.toList());
 
-        GroupMember groupMember = GroupMember.createGroupMember(member, GroupRole.MASTER);
-        group1.addGroupMember(groupMember);
-        group2.addGroupMember(groupMember);
+        joinMembersToGroups(testMembers, testGroups);
 
-        PageImpl<Group> testGroups = new PageImpl<>(List.of(group1, group2), PageRequest.of(request.getPage(), request.getSize()), 2);
+
+        List<Study> testStudies = createStudies(4, true);
+        List<GroupStudyDto> testGroupStudyDtos = getGroupStudyDtosRandomOwn(testGroups, testStudies);
+
+        PageImpl<Group> testGroupsWtihPage = new PageImpl<>(testGroups, PageRequest.of(0, 5), 3);
 
         given(groupRepository.findGroups(any(), any(), any(), any(), any()))
-                .willReturn(testGroups);
-        given(studyRepository.findStudiesInGroups(testGroups.getContent()))
-                .willReturn(List.of(groupStudyDto1, groupStudyDto2));
-        given(groupMemberRepository.findGroupMasters(any())).willReturn(List.of(groupMember, groupMember));
+                .willReturn(testGroupsWtihPage);
+        given(studyRepository.findStudiesInGroups(any()))
+                .willReturn(testGroupStudyDtos);
+        given(groupMemberRepository.findGroupMasters(any())).willReturn(testGroupMasters);
 
 
         //when
-        Page<GroupDto> groups = groupService.getGroups(request);
+        Page<GroupDto> findGroupsWithPage = groupService.getGroups(request);
 
         //then
-        List<GroupDto> groupDtos = groups.getContent();
-        assertThat(groupDtos).anySatisfy(group -> {
-            assertThat(group.getName()).isEqualTo("테스트그룹");
+        List<GroupDto> groupDtos = findGroupsWithPage.getContent();
+        assertThat(groupDtos.size()).isEqualTo(testGroups.size());
+        assertThat(groupDtos).allSatisfy(groupDto -> {
+            Group testTargetGroup = getTestTargetGroup(testGroups, groupDto);
 
-            assertThat(group.getStudies()).anySatisfy(study -> {
-                assertThat(study.getName()).isEqualTo("테스트스터디");
+            assertThat(testTargetGroup).isNotNull();
+            assertThat(groupDto.getGroupMembers()).allSatisfy(groupMemberDto -> {
+                assertThat(groupMemberDto.getRole()).isEqualTo(GroupRole.MASTER);
+            });
+            assertThat(groupDto.getStudies().size()).isGreaterThan(0);
+            assertThat(groupDto.getStudies()).allSatisfy(groupStudyDto -> {
+                assertThat(groupStudyDto.getGroupId()).isEqualTo(groupDto.getGroupId());
             });
         });
-        assertThat(groupDtos.get(0).getStudies().get(0).getName()).isEqualTo("테스트스터디1");
+    }
+
+    private List<GroupStudyDto> getTestTargetGroupStudyDtos(List<GroupStudyDto> testGroupStudyDtos, GroupDto groupDto) {
+        return testGroupStudyDtos.stream()
+                .filter(groupStudyDto -> groupStudyDto.getGroupId().equals(groupDto.getGroupId()))
+                .collect(Collectors.toList());
+    }
+
+    private Group getTestTargetGroup(List<Group> testGroups, GroupDto groupDto) {
+        return testGroups.stream()
+                .filter(testGroup -> testGroup.getId().equals(groupDto.getGroupId()))
+                .findFirst().get();
+    }
+
+    private List<GroupStudyDto> getGroupStudyDtosRandomOwn(List<Group> testGroups, List<Study> studies) {
+        Random random = new Random();
+        List<GroupStudyDto> testGroupStudyDtos = new ArrayList<>();
+        for (Group group : testGroups) {
+            int randomTo = random.nextInt(studies.size()) + 1;
+            for(int i = 0; i< randomTo; i++) {
+                Study selectedStudy = studies.get(i);
+                GroupStudyDto groupStudyDto = new GroupStudyDto(selectedStudy.getId(), group.getId(),
+                        selectedStudy.getName(), 1000);
+
+                testGroupStudyDtos.add(groupStudyDto);
+            }
+        }
+        return testGroupStudyDtos;
     }
 
     @Test
+    @DisplayName("그룹 업데이트")
     void updateGroup() {
         //given
         Member member = createMember("member", "member");
@@ -194,6 +241,7 @@ class GroupServiceTest {
     }
 
     @Test
+    @DisplayName("그룹 업데이트_예외, 잘못된 인원수")
     void updateGroup_인원수예외() {
         //given
         List<Member> members = createMembers(30, true);

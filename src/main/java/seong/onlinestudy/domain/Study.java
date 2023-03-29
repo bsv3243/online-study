@@ -18,7 +18,7 @@ public class Study {
     private String name;
 
     @OneToMany(mappedBy = "study")
-    private List<Ticket> tickets = new ArrayList<>();
+    private List<StudyTicket> studyTickets = new ArrayList<>();
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<PostStudy> postStudies = new ArrayList<>();

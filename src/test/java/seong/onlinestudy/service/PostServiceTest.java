@@ -1,6 +1,8 @@
 package seong.onlinestudy.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,10 +15,7 @@ import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.dto.PostStudyDto;
-import seong.onlinestudy.repository.GroupRepository;
-import seong.onlinestudy.repository.PostRepository;
-import seong.onlinestudy.repository.PostStudyRepository;
-import seong.onlinestudy.repository.StudyRepository;
+import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.PostCreateRequest;
 import seong.onlinestudy.request.PostUpdateRequest;
 import seong.onlinestudy.request.PostsGetRequest;
@@ -28,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
@@ -40,6 +40,8 @@ class PostServiceTest {
     PostService postService;
 
     @Mock
+    MemberRepository memberRepository;
+    @Mock
     PostRepository postRepository;
     @Mock
     GroupRepository groupRepository;
@@ -48,7 +50,24 @@ class PostServiceTest {
     @Mock
     PostStudyRepository postStudyRepository;
 
+    List<Member> members;
+    List<Group> groups;
+    List<Study> studies;
+    List<Post> posts;
+
+    @BeforeEach
+    void init() {
+        members = createMembers(20, true);
+        groups = createGroups(members, 2, true);
+
+        joinMembersToGroups(members, groups);
+
+        studies = createStudies(3, true);
+        posts = createPosts(members, groups, 13, true);
+    }
+
     @Test
+    @DisplayName("게시글 생성")
     void createPost() {
         //given
         PostCreateRequest request = new PostCreateRequest();
@@ -56,77 +75,55 @@ class PostServiceTest {
         request.setContent("test");
         request.setCategory(PostCategory.CHAT);
 
-        Member member = MyUtils.createMember("test1234", "test1234");
-        setField(member, "id", 1L);
-        Post post = Post.createPost(request, member);
-        setField(post, "id", 1L);
+        Member testMember = members.get(0);
+        Group testGroup = groups.get(0);
 
-        Group group = MyUtils.createGroup("테스트그룹", 30, member);
-        setField(group, "id", 1L);
-        request.setGroupId(group.getId());
+        Post testPost = Post.createPost(request, testMember);
+        setField(testPost, "id", 1L);
 
-        List<Study> studies = MyUtils.createStudies(5, false);
-        List<PostStudy> postStudies = new ArrayList<>();
-        for(int i=0; i<=5; i++) {
-            setField(studies.get(i), "id", (long) i);
-            postStudies.add(PostStudy.create(post, studies.get(i)));
-        }
-        request.setStudyIds(studies.stream().map(Study::getId).collect(Collectors.toList()));
-
-        given(postRepository.save(any())).willReturn(post);
-        if(request.getGroupId() != null) {
-            post.setGroup(group);
-            given(groupRepository.findGroupWithMembers(any())).willReturn(Optional.of(group));
-        }
-        if(request.getStudyIds() != null) {
-            given(studyRepository.findAllById(any())).willReturn(studies);
-        }
+        given(memberRepository.findById(any())).willReturn(Optional.of(testMember));
+        given(groupRepository.findGroupWithMembers(any())).willReturn(Optional.of(testGroup));
+        given(postRepository.save(any())).willReturn(testPost);
 
         //when
-        Long postId = postService.createPost(request, member);
+        Long postId = postService.createPost(request, testMember);
 
         //then
-        assertThat(postId).isEqualTo(post.getId());
     }
 
     @Test
+    @DisplayName("게시글 단건 조회")
     void getPost() {
         //given
-        Member member = MyUtils.createMember("tester", "tester");
-        setField(member, "id", 1L);
+        Post testPost = posts.get(0);
+        Member testMember = testPost.getMember();
 
-        Post post = MyUtils.createPost("test", "test", PostCategory.CHAT, member);
-        setField(post, "id", 1L);
+        given(postRepository.findByIdWithMemberAndGroup(any()))
+                .willReturn(Optional.of(testPost));
 
-        given(postRepository.findByIdWithMemberAndGroup(any())).willReturn(Optional.of(post));
-
-        List<Study> studies = MyUtils.createStudies(5, false);
         List<PostStudy> postStudies = new ArrayList<>();
-        for(int i=0; i<=5; i++) {
-            setField(studies.get(i), "id", (long)i);
-
-            PostStudy postStudy = PostStudy.create(post, studies.get(i));
-            setField(postStudy, "id", (long)i);
-
+        for (Study study : studies) {
+            PostStudy postStudy = PostStudy.create(testPost, study);
             postStudies.add(postStudy);
-            log.info("id={}", postStudy.getId());
         }
+
         given(postStudyRepository.findStudiesWherePost(any())).willReturn(postStudies);
 
         //when
-        PostDto postDto = postService.getPost(post.getId());
+        PostDto postDto = postService.getPost(testPost.getId());
 
         //then
-        assertThat(postDto.getPostId()).isEqualTo(post.getId());
-        assertThat(postDto.getTitle()).isEqualTo(post.getTitle());
-        assertThat(postDto.getMember().getUsername()).isEqualTo(member.getUsername());
+        assertThat(postDto.getPostId()).isEqualTo(testPost.getId());
+        assertThat(postDto.getTitle()).isEqualTo(testPost.getTitle());
+        assertThat(postDto.getMember().getUsername()).isEqualTo(testMember.getUsername());
 
         List<PostStudyDto> postStudyDtos = postStudies.stream()
                 .map(PostStudyDto::from).collect(Collectors.toList());
-        assertThat(postDto.getPostStudies()).containsAll(postStudyDtos);
+        assertThat(postDto.getPostStudies()).containsExactlyInAnyOrderElementsOf(postStudyDtos);
     }
 
     @Test
+    @DisplayName("게시글 목록 조회")
     void getPosts() {
         //given
         List<Member> members = createMembers(5, false);
@@ -154,15 +151,20 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("게시글 목록 조회(스터디 포함 검증)")
     void getPosts_withStudies() {
         //given
         List<Member> members = createMembers(5, false);
         List<Group> groups = createGroups(members, 5, true);
         List<Post> posts = createPosts(members, groups, 5, true);
         List<Study> studies = createStudies(30, true);
+
+        List<PostStudy> postStudies = new ArrayList<>();
         for(int i=0; i<30; i++) {
             PostStudy postStudy = PostStudy.create(posts.get(i%5), studies.get(i));
             setField(postStudy, "id", (long) i);
+
+            postStudies.add(postStudy);
         }
 
         int page = 0;
@@ -172,18 +174,27 @@ class PostServiceTest {
 
         given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), any()))
                 .willReturn(new PageImpl<>(posts, PageRequest.of(page, size), posts.size()));
+        given(postStudyRepository.findStudiesWhereInPosts(anyList()))
+                .willReturn(postStudies);
 
         //when
-        Page<PostDto> postDtos = postService.getPosts(request);
+        Page<PostDto> testPostDtosWithPage = postService.getPosts(request);
 
         //then
-        List<PostDto> postDtoList = posts.stream().map(PostDto::from).collect(Collectors.toList());
+        List<PostDto> testPostDtos = testPostDtosWithPage.getContent();
+        assertThat(testPostDtos).allSatisfy(postDto -> {
+            List<PostStudy> targetPostStudies = postStudies.stream().filter(postStudy -> postStudy.getPost().getId().equals(postDto.getPostId()))
+                    .collect(Collectors.toList());
+            List<Long> targetPostStudyIds = targetPostStudies.stream().map(PostStudy::getId).collect(Collectors.toList());
 
-        List<PostDto> content = postDtos.getContent();
-        assertThat(content).containsExactlyInAnyOrderElementsOf(postDtoList);
+            List<Long> findPostStudyIds = postDto.getPostStudies().stream().map(PostStudyDto::getPostStudyId).collect(Collectors.toList());
+
+            assertThat(findPostStudyIds).containsExactlyInAnyOrderElementsOf(targetPostStudyIds);
+        });
     }
 
     @Test
+    @DisplayName("게시글 업데이트")
     void updatePost() {
         //given
         Member member = createMember("member", "member");

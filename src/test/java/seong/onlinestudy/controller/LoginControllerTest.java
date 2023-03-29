@@ -3,6 +3,7 @@ package seong.onlinestudy.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,7 +36,7 @@ class LoginControllerTest {
     void init() {
         MemberCreateRequest request = new MemberCreateRequest();
         request.setUsername("test1234");
-        request.setPassword("test1234");
+        request.setPassword("test1234!");
         request.setNickname("test");
 
         Member member = Member.createMember(request);
@@ -43,11 +44,14 @@ class LoginControllerTest {
     }
 
     @Test
+    @DisplayName("로그인 성공")
     void 로그인성공() throws Exception {
+        //given
         LoginRequest request = new LoginRequest();
         request.setUsername("test1234");
-        request.setPassword("test1234");
+        request.setPassword("test1234!");
 
+        //when
         mvc.perform(post("/api/v1/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(request)))

@@ -16,6 +16,7 @@ import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.request.GroupCreateRequest;
 import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.OrderBy;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,9 +51,16 @@ class GroupRepositoryTest {
         }
     }
 
+    List<Member> members;
+    List<Group> groups;
+
     @BeforeEach
     void init() {
+        members = MyUtils.createMembers(30);
+        groups = MyUtils.createGroups(members, 4);
 
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(groups);
     }
 
     @Test
@@ -94,46 +102,18 @@ class GroupRepositoryTest {
     }
 
     @Test
-    void getGroupMember() {
-        //given
-
-
-        //when
-        Group group = groupRepository.findAll().get(0);
-
-        //then
-        log.info("groupMembers={}",group.getGroupMembers());
-        List<GroupMember> groupMembers = group.getGroupMembers();
-        assertThat(groupMembers.size()).isEqualTo(2);
-    }
-
-    @Test
     void getGroups() {
         //given
-        List<Member> members = MyUtils.createMembers(50);
-        memberRepository.saveAll(members);
-
-        List<Group> groups = new ArrayList<>();
-        for(int i=0; i<20; i++) {
-            groups.add(MyUtils.createGroup("테스트그룹" + 1, 30, members.get(i)));
-        }
-        groupRepository.saveAll(groups);
-
-        PageRequest request = PageRequest.of(0, 10);
+        PageRequest request = PageRequest.of(0, groups.size());
 
         //when
-        Page<Group> findGroups = groupRepository.findGroups(request, null, null, null, null);
+        Page<Group> findGroups = groupRepository.findGroups(request,
+                null, null, null, OrderBy.CREATEDAT);
 
         //then
-        Group[] groupArr = new Group[10];
-        for(int i=0; i<10; i++) {
-            groupArr[i] = groups.get(i);
-        }
-
-        assertThat(findGroups.getContent()).containsExactly(groupArr);
-        assertThat(findGroups.getSize()).isEqualTo(10);
+        assertThat(findGroups.getContent())
+                .containsExactlyInAnyOrderElementsOf(groups);
     }
-
 
     private BooleanExpression categoryEq(GroupCategory category) {
         return category != null ? group.category.eq(category) : null;

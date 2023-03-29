@@ -12,10 +12,6 @@ import java.util.List;
 
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
 
-    @Query("select new seong.onlinestudy.dto.GroupMemberCountDto(g.id, count(gm.id)) from Group g join GroupMember gm" +
-            " where g in :groups group by g.id")
-    List<GroupMemberCountDto> countMemberInGroups(@Param("groups") List<Group> groups);
-
     @Query("select gm from GroupMember gm" +
             " join fetch gm.group g" +
             " join fetch gm.member m" +
