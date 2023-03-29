@@ -1,4 +1,4 @@
-package seong.onlinestudy.repository;
+package seong.onlinestudy.repository.querydsl;
 
 import seong.onlinestudy.domain.StudyTicket;
 

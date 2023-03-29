@@ -1,4 +1,4 @@
-package seong.onlinestudy.repository;
+package seong.onlinestudy.repository.querydsl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;

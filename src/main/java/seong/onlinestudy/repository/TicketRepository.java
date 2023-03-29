@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Ticket;
+import seong.onlinestudy.repository.querydsl.StudyTicketRepositoryCustom;
+import seong.onlinestudy.repository.querydsl.TicketRepositoryCustom;
 
 import java.time.LocalDateTime;
 import java.util.List;

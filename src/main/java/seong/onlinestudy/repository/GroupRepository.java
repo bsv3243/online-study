@@ -4,9 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.dto.GroupMemberDto;
+import seong.onlinestudy.repository.querydsl.GroupRepositoryCustom;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<Group, Long>, GroupRepositoryCustom {
