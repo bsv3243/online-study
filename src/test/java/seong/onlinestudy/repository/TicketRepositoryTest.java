@@ -9,7 +9,6 @@ import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,7 +46,7 @@ class TicketRepositoryTest {
         joinMembersToGroups(members, groups);
 
         studies = createStudies(3);
-        studyTickets = createStudyTickets(members, groups, studies);
+        studyTickets = createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);

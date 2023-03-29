@@ -52,14 +52,14 @@ public class TicketRepositoryCustomTest {
 
         MyUtils.joinMembersToGroups(members, groups);
 
-        studyTickets = MyUtils.createStudyTickets(members, groups, studies);
+        studyTickets = MyUtils.createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);
         studyRepository.saveAll(studies);
         ticketRepository.saveAll(this.studyTickets);
 
-        restTickets = MyUtils.createRestTickets(members, groups);
+        restTickets = MyUtils.createRestTickets(members, groups, false);
 
         ticketRepository.saveAll(restTickets);
 

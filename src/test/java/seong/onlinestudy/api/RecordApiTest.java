@@ -1,13 +1,11 @@
 package seong.onlinestudy.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -15,7 +13,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
@@ -64,7 +61,7 @@ public class RecordApiTest {
         studies = createStudies(10);
         tickets = new ArrayList<>();
         for(int i=0; i<50; i++) {
-            tickets.add(createTicket(TicketStatus.STUDY, members.get(i), studies.get(i % 10), groups.get(i % 10)));
+            tickets.add(createStudyTicket(members.get(i), groups.get(i % 10), studies.get(i % 10)));
         }
 
         memberRepository.saveAll(members);

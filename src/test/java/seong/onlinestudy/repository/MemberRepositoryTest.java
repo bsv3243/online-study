@@ -40,8 +40,8 @@ class MemberRepositoryTest {
         testStudies = createStudies(2);
         joinMembersToGroups(testMembers, testGroups);
 
-        testStudyTickets = createStudyTickets(testMembers, testGroups, testStudies);
-        testRestTickets = createStudyTickets(testMembers, testGroups, testStudies);
+        testStudyTickets = createStudyTickets(testMembers, testGroups, testStudies, false);
+        testRestTickets = createStudyTickets(testMembers, testGroups, testStudies, false);
 
         memberRepository.saveAll(testMembers);
         groupRepository.saveAll(testGroups);

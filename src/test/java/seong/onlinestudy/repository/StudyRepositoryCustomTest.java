@@ -1,11 +1,7 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,19 +13,12 @@ import seong.onlinestudy.domain.*;
 import javax.persistence.EntityManager;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.domain.QGroup.group;
-import static seong.onlinestudy.domain.QGroupMember.groupMember;
-import static seong.onlinestudy.domain.QMember.member;
-import static seong.onlinestudy.domain.QRecord.record;
-import static seong.onlinestudy.domain.QStudy.study;
-import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
 
 @DataJpaTest
 public class StudyRepositoryCustomTest {
@@ -63,7 +52,7 @@ public class StudyRepositoryCustomTest {
         joinMembersToGroups(members, groups);
 
         studies = createStudies(3);
-        studyTickets = createStudyTickets(members, groups, studies);
+        studyTickets = createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);
@@ -79,7 +68,7 @@ public class StudyRepositoryCustomTest {
         MyUtils.joinMembersToGroups(members, groups);
 
         List<Study> studies = createStudies(5);
-        List<Ticket> tickets = createStudyTickets(members, groups, studies);
+        List<Ticket> tickets = createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);
@@ -107,7 +96,7 @@ public class StudyRepositoryCustomTest {
         MyUtils.joinMembersToGroups(members, groups);
 
         List<Study> studies = createStudies(5);
-        List<Ticket> tickets = createStudyTickets(members, groups, studies);
+        List<Ticket> tickets = createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);

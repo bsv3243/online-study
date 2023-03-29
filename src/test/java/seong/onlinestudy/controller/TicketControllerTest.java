@@ -8,16 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
-import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.request.TicketGetRequest;
 import seong.onlinestudy.request.TicketUpdateRequest;
 import seong.onlinestudy.service.TicketService;
@@ -62,14 +59,13 @@ class TicketControllerTest {
         Member member = MyUtils.createMember("member", "member");
         Study study = createStudy("study");
         Group group = createGroup("group", 30, member);
-        Ticket ticket = createTicket(TicketStatus.STUDY, member, study, group);
+        Ticket ticket = createStudyTicket(member, group, study);
 
         session.setAttribute(SessionConst.LOGIN_MEMBER, member);
         given(ticketService.expireTicket(any(), any())).willReturn(1L);
 
         //when
         TicketUpdateRequest request = new TicketUpdateRequest();
-        request.setStatus(TicketStatus.END);
         mvc.perform(post("/api/v1/ticket/1")
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -94,9 +90,9 @@ class TicketControllerTest {
         setField(study, "id", 1L);
         setField(group, "id", 1L);
 
-        Ticket targetTicket = createTicket(TicketStatus.STUDY, member, study, group);
-        Ticket expiredStudyTicket = createTicket(TicketStatus.STUDY, member, study, group);
-        Ticket expiredRestTicket = createTicket(TicketStatus.REST, member, study, group);
+        Ticket targetTicket = createStudyTicket(member, group, study);
+        Ticket expiredStudyTicket = createStudyTicket(member, group, study);
+        Ticket expiredRestTicket = createStudyTicket(member, group, study);
         setField(expiredStudyTicket, "id", 1L);
         setField(expiredRestTicket, "id", 2L);
         setField(targetTicket, "id", 3L);

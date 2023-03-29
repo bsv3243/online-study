@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
@@ -16,16 +15,12 @@ import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.MyUtils.createTicket;
-import static seong.onlinestudy.domain.TicketStatus.REST;
-import static seong.onlinestudy.domain.TicketStatus.STUDY;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -54,9 +49,9 @@ public class TicketApiTest {
         }
 
         List<Study> studies = createStudies(2);
-        List<Ticket> studyTicketsToExpire = createTickets(STUDY, members, groups, studies);
-        List<Ticket> restTicketsToExpire = createTickets(REST, members, groups, studies);
-        List<Ticket> studyTickets = createTickets(STUDY, members, groups, studies);
+        List<Ticket> studyTicketsToExpire = createStudyTickets(members, groups, studies, false);
+        List<Ticket> restTicketsToExpire = createStudyTickets(members, groups, studies, false);
+        List<Ticket> studyTickets = createStudyTickets(members, groups, studies, false);
 
         memberRepository.saveAll(members);
         groupRepository.saveAll(groups);
