@@ -1,7 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
-import seong.onlinestudy.request.StudyCreateRequest;
+import seong.onlinestudy.request.study.StudyCreateRequest;
 
 import javax.persistence.*;
 import java.util.ArrayList;

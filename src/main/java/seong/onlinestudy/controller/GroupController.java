@@ -9,9 +9,9 @@ import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.exception.InvalidSessionException;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.GroupUpdateRequest;
-import seong.onlinestudy.request.GroupsGetRequest;
+import seong.onlinestudy.request.group.GroupCreateRequest;
+import seong.onlinestudy.request.group.GroupUpdateRequest;
+import seong.onlinestudy.request.group.GroupsGetRequest;
 import seong.onlinestudy.service.GroupService;
 
 import javax.validation.Valid;

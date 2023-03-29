@@ -2,10 +2,11 @@ package seong.onlinestudy;
 
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupStudyDto;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.MemberCreateRequest;
-import seong.onlinestudy.request.StudyCreateRequest;
-import seong.onlinestudy.request.*;
+import seong.onlinestudy.request.comment.CommentCreateRequest;
+import seong.onlinestudy.request.group.GroupCreateRequest;
+import seong.onlinestudy.request.member.MemberCreateRequest;
+import seong.onlinestudy.request.post.PostCreateRequest;
+import seong.onlinestudy.request.study.StudyCreateRequest;
 
 import java.util.*;
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.exception.BadCredentialException;
 import seong.onlinestudy.repository.MemberRepository;
-import seong.onlinestudy.request.LoginRequest;
+import seong.onlinestudy.request.login.LoginRequest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

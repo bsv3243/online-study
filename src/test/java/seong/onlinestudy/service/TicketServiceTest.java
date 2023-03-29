@@ -12,14 +12,14 @@ import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
-import seong.onlinestudy.request.TicketGetRequest;
+import seong.onlinestudy.request.ticket.TicketGetRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
-import seong.onlinestudy.request.TicketCreateRequest;
+import seong.onlinestudy.request.ticket.TicketCreateRequest;
 
 import java.util.ArrayList;
 import java.util.List;

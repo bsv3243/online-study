@@ -15,8 +15,8 @@ import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
-import seong.onlinestudy.request.TicketGetRequest;
-import seong.onlinestudy.request.TicketUpdateRequest;
+import seong.onlinestudy.request.ticket.TicketGetRequest;
+import seong.onlinestudy.request.ticket.TicketUpdateRequest;
 import seong.onlinestudy.service.TicketService;
 
 import java.time.LocalDate;

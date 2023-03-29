@@ -15,9 +15,9 @@ import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.exception.PermissionControlException;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.GroupUpdateRequest;
-import seong.onlinestudy.request.GroupsGetRequest;
+import seong.onlinestudy.request.group.GroupCreateRequest;
+import seong.onlinestudy.request.group.GroupUpdateRequest;
+import seong.onlinestudy.request.group.GroupsGetRequest;
 
 import java.util.*;
 import java.util.stream.Collectors;

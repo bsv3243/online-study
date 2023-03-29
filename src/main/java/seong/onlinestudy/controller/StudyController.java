@@ -7,8 +7,8 @@ import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.StudyDto;
-import seong.onlinestudy.request.StudyCreateRequest;
-import seong.onlinestudy.request.StudiesGetRequest;
+import seong.onlinestudy.request.study.StudyCreateRequest;
+import seong.onlinestudy.request.study.StudiesGetRequest;
 import seong.onlinestudy.service.StudyService;
 
 import javax.validation.Valid;

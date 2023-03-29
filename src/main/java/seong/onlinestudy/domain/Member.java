@@ -1,7 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
-import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.member.MemberCreateRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

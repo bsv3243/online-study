@@ -1,4 +1,4 @@
-package seong.onlinestudy.request;
+package seong.onlinestudy.request.ticket;
 
 import lombok.Data;
 import seong.onlinestudy.domain.TicketStatus;

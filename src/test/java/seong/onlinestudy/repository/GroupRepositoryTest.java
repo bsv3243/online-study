@@ -14,14 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.group.GroupCreateRequest;
+import seong.onlinestudy.request.member.MemberCreateRequest;
 import seong.onlinestudy.request.OrderBy;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;

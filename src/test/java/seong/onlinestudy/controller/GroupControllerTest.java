@@ -28,9 +28,9 @@ import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.dto.GroupMemberDto;
 import seong.onlinestudy.dto.GroupStudyDto;
 import seong.onlinestudy.exception.InvalidSessionException;
-import seong.onlinestudy.request.GroupCreateRequest;
-import seong.onlinestudy.request.GroupUpdateRequest;
-import seong.onlinestudy.request.GroupsGetRequest;
+import seong.onlinestudy.request.group.GroupCreateRequest;
+import seong.onlinestudy.request.group.GroupUpdateRequest;
+import seong.onlinestudy.request.group.GroupsGetRequest;
 import seong.onlinestudy.request.OrderBy;
 import seong.onlinestudy.service.GroupService;
 

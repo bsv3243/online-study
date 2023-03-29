@@ -1,4 +1,4 @@
-package seong.onlinestudy.request;
+package seong.onlinestudy.request.comment;
 
 import lombok.Data;
 

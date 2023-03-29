@@ -1,6 +1,5 @@
 package seong.onlinestudy.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,13 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.repository.MemberRepository;
-import seong.onlinestudy.request.LoginRequest;
-import seong.onlinestudy.request.MemberCreateRequest;
+import seong.onlinestudy.request.login.LoginRequest;
+import seong.onlinestudy.request.member.MemberCreateRequest;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest

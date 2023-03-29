@@ -9,14 +9,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.dto.StudyRecordDto;
-import seong.onlinestudy.request.RecordsGetRequest;
+import seong.onlinestudy.request.record.RecordsGetRequest;
 import seong.onlinestudy.service.RecordService;
 
 import java.time.LocalDate;

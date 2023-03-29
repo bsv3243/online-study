@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
-import seong.onlinestudy.request.LoginRequest;
+import seong.onlinestudy.request.login.LoginRequest;
 import seong.onlinestudy.service.LoginService;
 
 import javax.servlet.http.HttpServletRequest;

@@ -15,8 +15,8 @@ import seong.onlinestudy.domain.PostCategory;
 import seong.onlinestudy.repository.CommentRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;
-import seong.onlinestudy.request.CommentCreateRequest;
-import seong.onlinestudy.request.CommentUpdateRequest;
+import seong.onlinestudy.request.comment.CommentCreateRequest;
+import seong.onlinestudy.request.comment.CommentUpdateRequest;
 
 import java.util.List;
 import java.util.Optional;

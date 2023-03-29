@@ -7,8 +7,8 @@ import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidSessionException;
-import seong.onlinestudy.request.TicketCreateRequest;
-import seong.onlinestudy.request.TicketGetRequest;
+import seong.onlinestudy.request.ticket.TicketCreateRequest;
+import seong.onlinestudy.request.ticket.TicketGetRequest;
 import seong.onlinestudy.service.TicketService;
 
 import javax.validation.Valid;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.StudyRecordDto;
-import seong.onlinestudy.request.RecordsGetRequest;
+import seong.onlinestudy.request.record.RecordsGetRequest;
 import seong.onlinestudy.service.RecordService;
 
 import javax.validation.Valid;

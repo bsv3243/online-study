@@ -7,8 +7,8 @@ import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.InvalidSessionException;
-import seong.onlinestudy.request.MemberCreateRequest;
-import seong.onlinestudy.request.MemberDuplicateCheckRequest;
+import seong.onlinestudy.request.member.MemberCreateRequest;
+import seong.onlinestudy.request.member.MemberDuplicateCheckRequest;
 import seong.onlinestudy.service.MemberService;
 
 import javax.validation.Valid;

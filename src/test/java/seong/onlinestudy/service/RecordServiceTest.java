@@ -10,13 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.repository.TicketRepository;
-import seong.onlinestudy.request.RecordsGetRequest;
+import seong.onlinestudy.request.record.RecordsGetRequest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;

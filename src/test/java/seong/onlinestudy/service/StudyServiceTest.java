@@ -13,7 +13,7 @@ import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.StudyDto;
 import seong.onlinestudy.repository.StudyRepository;
-import seong.onlinestudy.request.StudiesGetRequest;
+import seong.onlinestudy.request.study.StudiesGetRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;

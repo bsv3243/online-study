@@ -6,7 +6,7 @@ import seong.onlinestudy.TimeConst;
 import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.exception.PermissionControlException;
-import seong.onlinestudy.request.RecordsGetRequest;
+import seong.onlinestudy.request.record.RecordsGetRequest;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.domain.Ticket;

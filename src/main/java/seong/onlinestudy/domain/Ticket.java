@@ -2,7 +2,6 @@ package seong.onlinestudy.domain;
 
 import lombok.Getter;
 import seong.onlinestudy.TimeConst;
-import seong.onlinestudy.request.TicketCreateRequest;
 
 import javax.persistence.*;
 import java.time.LocalDate;

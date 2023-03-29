@@ -6,12 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
-import seong.onlinestudy.domain.PostCategory;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.exception.InvalidSessionException;
-import seong.onlinestudy.request.PostCreateRequest;
-import seong.onlinestudy.request.PostUpdateRequest;
-import seong.onlinestudy.request.PostsGetRequest;
+import seong.onlinestudy.request.post.PostCreateRequest;
+import seong.onlinestudy.request.post.PostUpdateRequest;
+import seong.onlinestudy.request.post.PostsGetRequest;
 import seong.onlinestudy.service.PostService;
 
 import javax.validation.Valid;

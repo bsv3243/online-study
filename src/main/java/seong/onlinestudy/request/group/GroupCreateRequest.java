@@ -1,4 +1,4 @@
-package seong.onlinestudy.request;
+package seong.onlinestudy.request.group;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;

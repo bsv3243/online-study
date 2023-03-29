@@ -7,8 +7,8 @@ import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.repository.MemberRepository;
-import seong.onlinestudy.request.MemberCreateRequest;
-import seong.onlinestudy.request.MemberDuplicateCheckRequest;
+import seong.onlinestudy.request.member.MemberCreateRequest;
+import seong.onlinestudy.request.member.MemberDuplicateCheckRequest;
 
 import java.util.NoSuchElementException;
 

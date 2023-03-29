@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.exception.InvalidSessionException;
-import seong.onlinestudy.request.CommentCreateRequest;
-import seong.onlinestudy.request.CommentUpdateRequest;
+import seong.onlinestudy.request.comment.CommentCreateRequest;
+import seong.onlinestudy.request.comment.CommentUpdateRequest;
 import seong.onlinestudy.service.CommentService;
 
 import javax.validation.Valid;

@@ -1,4 +1,4 @@
-package seong.onlinestudy.request;
+package seong.onlinestudy.request.record;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -1,8 +1,8 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
-import seong.onlinestudy.request.CommentCreateRequest;
-import seong.onlinestudy.request.CommentUpdateRequest;
+import seong.onlinestudy.request.comment.CommentCreateRequest;
+import seong.onlinestudy.request.comment.CommentUpdateRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

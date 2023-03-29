@@ -16,9 +16,9 @@ import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.dto.PostStudyDto;
 import seong.onlinestudy.repository.*;
-import seong.onlinestudy.request.PostCreateRequest;
-import seong.onlinestudy.request.PostUpdateRequest;
-import seong.onlinestudy.request.PostsGetRequest;
+import seong.onlinestudy.request.post.PostCreateRequest;
+import seong.onlinestudy.request.post.PostUpdateRequest;
+import seong.onlinestudy.request.post.PostsGetRequest;
 
 import java.util.ArrayList;
 import java.util.List;
