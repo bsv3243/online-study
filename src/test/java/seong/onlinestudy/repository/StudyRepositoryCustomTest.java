@@ -9,10 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.GroupStudyDto;
 
 import javax.persistence.EntityManager;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,6 +145,31 @@ public class StudyRepositoryCustomTest {
 
         //then
         assertThat(findStudies).containsExactlyInAnyOrderElementsOf(testStudiesInGroup);
+    }
+
+    @Test
+    void findStudiesInGroups() {
+        //given
+        Group testGroup = groups.get(0);
+        List<Group> testGroups = new ArrayList<>();
+        testGroups.add(testGroup);
+
+        //when
+        List<GroupStudyDto> findGroupStudyDtos = studyRepository.findStudiesInGroups(testGroups);
+
+        //then
+        List<Long> findStudyIds = findGroupStudyDtos.stream().map(GroupStudyDto::getStudyId).collect(Collectors.toList());
+        List<Long> targetStudyIds = testGroup.getTickets().stream()
+                .map(ticket -> {
+            StudyTicket studyTicket = (StudyTicket) ticket;
+            return studyTicket.getStudy().getId();
+        })
+                .distinct().
+                collect(Collectors.toList());
+
+        assertThat(findStudyIds).containsExactlyInAnyOrderElementsOf(targetStudyIds);
+
+
     }
 
     private List<Study> getStudiesInGroup(Group testGroup) {

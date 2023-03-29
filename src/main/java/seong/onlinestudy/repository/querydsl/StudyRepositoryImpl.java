@@ -36,12 +36,12 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         study.id,
                         group.id,
                         study.name,
-                        ticket.record.activeTime.sum().as("studyTime")
+                        studyTicket.record.activeTime.sum().as("studyTime")
                 ))
                 .from(study)
                 .join(study.studyTickets, studyTicket)
-                .join(ticket.record, record)
-                .join(ticket.group, group)
+                .join(studyTicket.record, record)
+                .join(studyTicket.group, group)
                 .where(group.in(groups))
                 .groupBy(group.id, study.id)
                 .orderBy(record.activeTime.sum().desc())
