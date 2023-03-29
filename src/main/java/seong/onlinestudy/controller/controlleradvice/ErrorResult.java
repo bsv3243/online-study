@@ -1,4 +1,4 @@
-package seong.onlinestudy.controlleradvice;
+package seong.onlinestudy.controller.controlleradvice;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
