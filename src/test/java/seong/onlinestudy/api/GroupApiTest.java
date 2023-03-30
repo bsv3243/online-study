@@ -1,6 +1,7 @@
 package seong.onlinestudy.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
@@ -99,13 +101,11 @@ public class GroupApiTest {
 
         //when
         ResultActions rs = mvc.perform(post("/api/v1/groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request)))
+                .andExpect(result -> Assertions.assertThat(result.getResolvedException()).isInstanceOf(InvalidSessionException.class));
 
         //then
-        rs
-                .andExpect(status().isCreated())
-                .andDo(print());
     }
 
     @Test
