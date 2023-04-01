@@ -148,6 +148,23 @@ public class StudyRepositoryCustomTest {
     }
 
     @Test
+    void findStudies_검색어조건() {
+        //given
+        Study testStudy = createStudy("뷰");
+        studyRepository.save(testStudy);
+
+        //when
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Study> findStudiesWithPage = studyRepository.findStudies(null, null, "뷰", startTime, endTime, pageRequest);
+
+        //then
+        List<Study> findStudies = findStudiesWithPage.getContent();
+        assertThat(findStudies).contains(testStudy);
+    }
+
+    @Test
     void findStudiesInGroups() {
         //given
         Group testGroup = groups.get(0);

@@ -38,8 +38,13 @@ public class StudyService {
 
     public Page<StudyDto> getStudies(StudiesGetRequest request, Member loginMember) {
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
-        LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(TimeConst.DAY_START);
-        LocalDateTime endTime = startTime.plusDays(request.getDays());
+
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        if(request.getDate() != null) {
+            startTime = request.getDate().atStartOfDay().plusHours(TimeConst.DAY_START);
+            endTime = startTime.plusDays(request.getDays());
+        }
 
         Page<Study> findStudies = studyRepository.findStudies(
                 request.getMemberId(),

@@ -57,8 +57,8 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         memberIdEq(studyTicket.member, memberId),
                         groupIdEq(studyTicket.group, groupId),
                         studyNameContains(search),
-                        studyTicket.startTime.goe(startTime),
-                        studyTicket.startTime.lt(endTime)
+                        startTimeGoe(startTime),
+                        endTimeLt(endTime)
                 )
                 .groupBy(study.id)
                 .orderBy(studyTicket.record.activeTime.sum().desc())
@@ -74,13 +74,21 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         memberIdEq(studyTicket.member, memberId),
                         groupIdEq(studyTicket.group, groupId),
                         studyNameContains(search),
-                        studyTicket.startTime.goe(startTime),
-                        studyTicket.startTime.lt(endTime)
+                        startTimeGoe(startTime),
+                        endTimeLt(endTime)
                 )
                 .fetchOne();
 
 
         return new PageImpl<>(result, pageable, count);
+    }
+
+    private BooleanExpression endTimeLt(LocalDateTime endTime) {
+        return endTime != null ? studyTicket.startTime.lt(endTime) : null;
+    }
+
+    private BooleanExpression startTimeGoe(LocalDateTime startTime) {
+        return startTime != null ? studyTicket.startTime.goe(startTime) : null;
     }
 
     private BooleanExpression studyNameContains(String search) {
