@@ -1,6 +1,8 @@
 package seong.onlinestudy.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seong.onlinestudy.MyUtils.*;
 
+@Slf4j
 @DataJpaTest
 public class PostRepositoryTest {
 
@@ -28,6 +31,8 @@ public class PostRepositoryTest {
     GroupRepository groupRepository;
     @Autowired
     StudyRepository studyRepository;
+    @Autowired
+    PostStudyRepository postStudyRepository;
 
     List<Member> members;
     List<Group> groups;
@@ -131,5 +136,23 @@ public class PostRepositoryTest {
         assertThat(findPost).isEqualTo(post);
         List<Study> findStudies = findPost.getPostStudies().stream().map(PostStudy::getStudy).collect(Collectors.toList());
         assertThat(findStudies).containsExactlyInAnyOrderElementsOf(studies);
+    }
+
+    @Test
+    void deletePost() {
+        //given
+        Post testPost = posts.get(0);
+
+        //when
+        testPost.delete();
+        em.flush();
+        em.clear();
+
+        //then
+        List<Post> findPosts = postRepository.findAll();
+        List<Long> findPostIds = findPosts.stream().map(Post::getId).collect(Collectors.toList());
+        Long testPostId = testPost.getId();
+
+        assertThat(findPostIds).doesNotContain(testPostId);
     }
 }

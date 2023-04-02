@@ -25,7 +25,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds, Boolean deleted) {
+    public Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds) {
 
         OrderSpecifier order = post.createdAt.desc();
 
@@ -35,7 +35,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.comments, comment).fetchJoin()
                 .leftJoin(post.member, member).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
-                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds), isDeletedEq(deleted))
+                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order)
@@ -45,15 +45,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .select(post.count())
                 .from(post)
                 .leftJoin(post.postStudies, postStudy)
-                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds), isDeletedEq(deleted))
+                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
                 .fetchOne();
 
 
         return new PageImpl<>(posts, pageable, count);
-    }
-
-    private BooleanExpression isDeletedEq(boolean isDelete) {
-        return post.isDeleted.eq(isDelete);
     }
 
     private BooleanExpression studyIdIn(List<Long> studyIds) {
