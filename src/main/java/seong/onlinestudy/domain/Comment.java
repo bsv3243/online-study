@@ -1,6 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import org.hibernate.annotations.Where;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Where(clause = "deleted=false")
 @Getter
 public class Comment {
 
@@ -18,7 +20,7 @@ public class Comment {
 
     @Lob
     private String content;
-    private Boolean isDeleted;
+    private Boolean deleted;
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,16 +44,16 @@ public class Comment {
     }
 
     public void delete() {
-        this.isDeleted = true;
+        this.deleted = true;
 
-        this.post.getComments().remove(this);
-        this.post = null;
+//        this.post.getComments().remove(this);
+//        this.post = null;
     }
 
     public static Comment create(CommentCreateRequest request) {
         Comment comment = new Comment();
         comment.content = request.getContent();
-        comment.isDeleted = false;
+        comment.deleted = false;
         comment.createdAt = LocalDateTime.now();
 
         return comment;

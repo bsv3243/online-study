@@ -1,12 +1,10 @@
 package seong.onlinestudy.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import seong.onlinestudy.domain.Comment;
-import seong.onlinestudy.domain.Member;
-import seong.onlinestudy.domain.Post;
-import seong.onlinestudy.domain.PostCategory;
+import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -22,34 +20,51 @@ class CommentRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
+    GroupRepository groupRepository;
+    @Autowired
     PostRepository postRepository;
     @Autowired
     CommentRepository commentRepository;
 
+    List<Member> members;
+    List<Group> groups;
+    List<Post> posts;
+    List<Comment> comments;
+
+    @BeforeEach
+    void init() {
+        members = createMembers(3);
+        groups = createGroups(members,2);
+
+        joinMembersToGroups(members, groups);
+
+        posts = createPosts(members, groups, 3, false);
+        comments = createComments(members, posts, 10, false);
+
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(groups);
+        postRepository.saveAll(posts);
+        commentRepository.saveAll(comments);
+    }
+
     @Test
     void deleteComment() {
-        Member member = createMember("member", "member");
-        memberRepository.save(member);
+        //given
+        Post testPost = posts.get(0);
+        List<Comment> testComments = createComments(members, List.of(testPost), 5, false);
 
-        Post post = createPost("title", "content", PostCategory.CHAT, member);
-        postRepository.save(post);
-
-        Comment comment = createComment("content");
-        comment.setMemberAndPost(member, post);
-
-        List<Comment> comments = createComments(List.of(member), List.of(post), 10, false);
-        em.flush();
+        testPost = postRepository.findById(testPost.getId()).get();
+        assertThat(testPost.getComments()).containsAll(testComments);
 
         //when
-        Comment findComment = commentRepository.findById(comment.getId()).get();
-        findComment.delete();
-        em.flush();
+        for (Comment testComment : testComments) {
+            testComment.delete();
+        }
+        em.clear();
 
         //then
-        Post findPost = postRepository.findById(post.getId()).get();
-        assertThat(findPost.getComments()).containsExactlyInAnyOrderElementsOf(comments);
-        assertThat(findPost.getComments()).doesNotContain(findComment);
-        assertThat(findComment.getPost()).isNull();
+        Post newTestPost = postRepository.findById(testPost.getId()).get();
+        assertThat(newTestPost.getComments()).doesNotContainAnyElementsOf(testComments);
 
     }
 

@@ -121,8 +121,7 @@ class CommentServiceTest {
         Long commentId = commentService.deleteComment(comment.getId(), member);
 
         //then
-        assertThat(post.getComments()).containsExactlyInAnyOrderElementsOf(comments);
-        assertThat(post.getComments()).doesNotContain(comment);
+        assertThat(comment.getDeleted()).isTrue();
 
     }
 }

@@ -15,6 +15,7 @@ import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +23,9 @@ import static seong.onlinestudy.MyUtils.*;
 
 @DataJpaTest
 class CommentRepositoryCustomTest {
+
+    @Autowired
+    EntityManager em;
 
     @Autowired
     MemberRepository memberRepository;
@@ -93,6 +97,26 @@ class CommentRepositoryCustomTest {
         assertThat(findComments.size()).isGreaterThan(0);
         assertThat(findComments).containsExactlyInAnyOrderElementsOf(testComments);
         assertThat(findComments).containsAnyElementsOf(testMemberComments);
+    }
+
+    @Test
+    void findComments_삭제데이터혼합() {
+        //given
+        Member testMember = members.get(0);
+        Post testPost = posts.get(0);
+        List<Comment> testComments = createComments(List.of(testMember), List.of(testPost), 5, false);
+
+        assertThat(testPost.getComments()).containsAll(testComments);
+
+        //when
+        for (Comment testComment : testComments) {
+            testComment.delete();
+        }
+        em.clear();
+
+        //then
+        Post newTestPost = postRepository.findById(testPost.getId()).get();
+        assertThat(newTestPost.getComments()).doesNotContainAnyElementsOf(testComments);
     }
 
 
