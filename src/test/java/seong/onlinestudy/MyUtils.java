@@ -189,7 +189,7 @@ public class MyUtils {
         return comment;
     }
 
-    public static List<Comment> createComments(List<Member> members, List<Post> posts, boolean setId, int endId) {
+    public static List<Comment> createComments(List<Member> members, List<Post> posts, int endId, boolean setId) {
         List<Comment> comments = new ArrayList<>();
         for(int i=0; i<endId; i++) {
             Comment comment = createComment("테스트댓글" + i);

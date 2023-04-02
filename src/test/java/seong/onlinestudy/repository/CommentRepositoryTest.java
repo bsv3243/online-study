@@ -7,9 +7,6 @@ import seong.onlinestudy.domain.Comment;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Post;
 import seong.onlinestudy.domain.PostCategory;
-import seong.onlinestudy.repository.CommentRepository;
-import seong.onlinestudy.repository.MemberRepository;
-import seong.onlinestudy.repository.PostRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -40,7 +37,7 @@ class CommentRepositoryTest {
         Comment comment = createComment("content");
         comment.setMemberAndPost(member, post);
 
-        List<Comment> comments = createComments(List.of(member), List.of(post), false, 10);
+        List<Comment> comments = createComments(List.of(member), List.of(post), 10, false);
         em.flush();
 
         //when

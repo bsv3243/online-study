@@ -1,15 +1,21 @@
 package seong.onlinestudy.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.dto.CommentDto;
 import seong.onlinestudy.exception.InvalidSessionException;
+import seong.onlinestudy.request.CommentsGetRequest;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
 import seong.onlinestudy.service.CommentService;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
 
@@ -32,7 +38,14 @@ public class CommentController {
         return new Result<>("201", commentId);
     }
 
-    @PostMapping("/comment/{commentId}")
+    @GetMapping("/comments")
+    public Result<List<CommentDto>> getComments(@Valid CommentsGetRequest request) {
+        Page<CommentDto> commentsWithPage = commentService.getComments(request);
+
+        return new PageResult<>("200", commentsWithPage.getContent(), commentsWithPage);
+    }
+
+    @PatchMapping("/comment/{commentId}")
     public Result<Long> updateComment(@PathVariable("commentId") Long commentId, CommentUpdateRequest request,
                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
@@ -44,7 +57,7 @@ public class CommentController {
         return new Result<>("200", updateCommentId);
     }
 
-    @PatchMapping("/comment/{commentId}")
+    @DeleteMapping("/comment/{commentId}")
     public Result<Long> deleteComment(@PathVariable("commentId") Long commentId,
                                         @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {

@@ -2,15 +2,19 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.Comment;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Post;
+import seong.onlinestudy.dto.CommentDto;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.CommentRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;
+import seong.onlinestudy.request.CommentsGetRequest;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
 
@@ -73,5 +77,13 @@ public class CommentService {
         comment.delete();
 
         return comment.getId();
+    }
+
+    public Page<CommentDto> getComments(CommentsGetRequest request) {
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+        Page<Comment> commentsWithPage =
+                commentRepository.findComments(request.getMemberId(), request.getPostId(), pageRequest);
+
+        return commentsWithPage.map(CommentDto::from);
     }
 }
