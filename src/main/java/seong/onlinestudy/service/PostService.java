@@ -80,6 +80,7 @@ public class PostService {
         return savedPost.getId();
     }
 
+    @Transactional
     public PostDto getPost(Long postId) {
         Post post = postRepository.findByIdWithMemberAndGroup(postId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
