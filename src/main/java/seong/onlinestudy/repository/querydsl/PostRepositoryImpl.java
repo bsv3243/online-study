@@ -33,6 +33,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .select(post)
                 .from(post)
                 .leftJoin(post.comments, comment).fetchJoin()
+                .leftJoin(comment.member, member).fetchJoin()
                 .leftJoin(post.member, member).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
                 .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
