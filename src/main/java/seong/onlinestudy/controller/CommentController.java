@@ -2,6 +2,7 @@ package seong.onlinestudy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
@@ -27,6 +28,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comments")
+    @ResponseStatus(HttpStatus.CREATED)
     public Result<Long> createComment(@RequestBody @Valid CommentCreateRequest request,
                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
