@@ -14,11 +14,9 @@ public class PostsGetRequest {
     private String search;
     private PostCategory category;
     private List<Long> studyIds;
-    private boolean deleted;
 
     public PostsGetRequest() {
         page = 0;
         size = 10;
-        deleted = false;
     }
 }

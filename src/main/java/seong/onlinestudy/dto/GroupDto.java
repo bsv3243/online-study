@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupCategory;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class GroupDto {
     private String name;
     private int headcount;
     private int memberSize;
-    private String createdAt;
+    private LocalDateTime createdAt;
     private String description;
     private GroupCategory category;
     private List<GroupMemberDto> groupMembers = new ArrayList<>();
@@ -27,7 +28,7 @@ public class GroupDto {
         groupDto.groupId = group.getId();
         groupDto.name = group.getName();
         groupDto.headcount = group.getHeadcount();
-        groupDto.createdAt = group.getCreatedAt().format(DateTimeFormatter.ISO_DATE);
+        groupDto.createdAt = group.getCreatedAt();
         groupDto.description = group.getDescription();
         groupDto.category = group.getCategory();
 

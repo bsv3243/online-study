@@ -2,6 +2,7 @@ package seong.onlinestudy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
@@ -33,6 +34,7 @@ public class PostController {
     }
 
     @PostMapping("/posts")
+    @ResponseStatus(HttpStatus.CREATED)
     public Result<Long> createPost(@RequestBody @Valid PostCreateRequest request,
                                    @SessionAttribute(value = LOGIN_MEMBER, required = false)Member loginMember) {
         if(loginMember == null) {
