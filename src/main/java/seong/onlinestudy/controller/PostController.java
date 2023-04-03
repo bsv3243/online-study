@@ -50,7 +50,7 @@ public class PostController {
         return new Result<>("200", post);
     }
 
-    @PostMapping("/post/{postId}")
+    @PatchMapping("/post/{postId}")
     public Result<Long> updatePost(@PathVariable("postId") Long postId,
                                    @RequestBody @Valid PostUpdateRequest request,
                                    @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
@@ -62,7 +62,7 @@ public class PostController {
         return new Result<>("200", updatePostId);
     }
 
-    @PatchMapping("/post/{postId}")
+    @DeleteMapping("/post/{postId}")
     public Result<String> deletePost(@PathVariable("postId") Long postId,
                                    @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {

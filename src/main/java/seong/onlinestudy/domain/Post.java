@@ -1,6 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import org.hibernate.annotations.Where;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Where(clause = "deleted=false")
 @Getter
 public class Post {
 
@@ -26,7 +28,7 @@ public class Post {
     private PostCategory category;
     private int viewCount;
     private LocalDateTime createdAt;
-    private Boolean isDeleted;
+    private Boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -36,7 +38,7 @@ public class Post {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     List<PostStudy> postStudies = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
@@ -54,22 +56,14 @@ public class Post {
         this.viewCount++;
     }
 
-    /**
-     * 제목, 본문 업데이트
-     * @param request title(제목), content(본문)
-     */
     public void update(PostUpdateRequest request) {
         this.title = request.getTitle();
         this.content = request.getContent();
+        this.category = request.getCategory();
     }
 
-    /**
-     * 게시글 삭제 상태로 변경,
-     * postStudies 리스트 clear
-     */
     public void delete() {
-        this.isDeleted = true;
-        this.postStudies.clear();
+        this.deleted = true;
     }
 
     public static Post createPost(PostCreateRequest request, Member member) {
@@ -79,7 +73,7 @@ public class Post {
         post.category = request.getCategory();
         post.viewCount = 0;
         post.createdAt = LocalDateTime.now();
-        post.isDeleted = false;
+        post.deleted = false;
 
         post.member = member;
         member.getPosts().add(post);

@@ -27,4 +27,6 @@ public interface PostStudyRepository extends JpaRepository<PostStudy, Long> {
     @Query("select ps from PostStudy ps join fetch ps.study s join fetch ps.post p" +
             " where p in :posts")
     List<PostStudy> findStudiesWhereInPosts(@Param("posts") List<Post> posts);
+
+    void deleteAllByPost(Post post);
 }

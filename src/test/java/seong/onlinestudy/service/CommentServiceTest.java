@@ -108,7 +108,7 @@ class CommentServiceTest {
         Post post = createPost("postA", "postA", PostCategory.CHAT, member);
         setField(post, "id", 1L);
 
-        List<Comment> comments = MyUtils.createComments(List.of(member), List.of(post), true, 10);
+        List<Comment> comments = MyUtils.createComments(List.of(member), List.of(post), 10, true);
 
         Comment comment = MyUtils.createComment(content);
         comment.setMemberAndPost(member, post);
@@ -121,8 +121,7 @@ class CommentServiceTest {
         Long commentId = commentService.deleteComment(comment.getId(), member);
 
         //then
-        assertThat(post.getComments()).containsExactlyInAnyOrderElementsOf(comments);
-        assertThat(post.getComments()).doesNotContain(comment);
+        assertThat(comment.getDeleted()).isTrue();
 
     }
 }

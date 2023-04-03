@@ -3,14 +3,18 @@ package seong.onlinestudy.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static seong.onlinestudy.MyUtils.*;
@@ -34,24 +38,29 @@ public class PostRepositoryCustomTest {
     @Autowired
     StudyRepository studyRepository;
 
+    List<Member> members;
+    List<Group> groups;
+    List<Post> posts;
+    List<Study> studies;
+
     @BeforeEach
     void init() {
         query = new JPAQueryFactory(em);
 
-        List<Member> members = createMembers(50, false);
+        members = createMembers(20, false);
         memberRepository.saveAll(members);
 
-        List<Group> groups = createGroups(members, 10, false);
+        groups = createGroups(members, 2, false);
         groupRepository.saveAll(groups);
 
-        List<Post> posts = createPosts(members, groups, 10, false);
+        posts = createPosts(members, groups, 3, false);
         postRepository.saveAll(posts);
 
-        List<Study> studies = createStudies(20, false);
+        studies = createStudies(5, false);
         studyRepository.saveAll(studies);
 
-        for(int i=0; i<20; i++) {
-            PostStudy.create(posts.get(i%10), studies.get(i));
+        for(int i=0; i<studies.size(); i++) {
+            PostStudy.create(posts.get(i%posts.size()), studies.get(i));
         }
     }
 
@@ -91,6 +100,65 @@ public class PostRepositoryCustomTest {
 
         //then
         assertThat(posts).containsAll(postList);
+    }
+
+    @Test
+    @DisplayName("findPosts_검색어 조건")
+    void findPosts_검색어조건() {
+        //given
+        Member testMember = members.get(0);
+        Group testGroup = groups.get(0);
+        Post testPost = createPost("검색", "검색테스트", PostCategory.CHAT, testMember);
+        Post testPost2 = createPost("검검색검", "검색테스트", PostCategory.INFO, testMember);
+        Post testPostNotContain = createPost("테스트", "검색테스트", PostCategory.INFO, testMember);
+        testPost.setGroup(testGroup);
+        testPost2.setGroup(testGroup);
+        testPostNotContain.setGroup(testGroup);
+
+        postRepository.saveAll(List.of(testPost, testPost2, testPostNotContain));
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Post> findPostsWithPage = postRepository.findPostsWithComments(pageRequest, null, "검색", null, null);
+
+        //then
+        List<Post> findPosts = findPostsWithPage.getContent();
+        assertThat(findPosts.size()).isGreaterThan(0);
+
+        assertThat(findPosts).allSatisfy(findPost -> {
+            assertThat(findPost.getTitle()).contains("검색");
+        });
+    }
+
+    @Test
+    @DisplayName("findPosts_게시글, 댓글 삭제 대이터 혼합")
+    void findPosts_삭제데이터혼합() {
+        //given
+        Member testMember = members.get(0);
+        Post testPost = posts.get(0);
+        List<Comment> testComments = createComments(List.of(testMember), posts, 10, false);
+
+        //when
+        testPost.delete();
+        for (Comment testComment : testComments) {
+            testComment.delete();
+        }
+        em.flush();
+        em.clear();
+
+        PageRequest pageRequest = PageRequest.of(0, 30);
+        Page<Post> findPostsWithPage
+                = postRepository.findPostsWithComments(pageRequest, null, null, null, null);
+
+        //then
+        List<Post> findPosts = findPostsWithPage.getContent();
+        List<Long> findPostIds = findPosts.stream().map(Post::getId).collect(Collectors.toList());
+        Long testPostId = testPost.getId();
+
+        assertThat(findPostIds).doesNotContain(testPostId);
+        assertThat(findPosts).allSatisfy(findPost -> {
+            assertThat(findPost.getComments().size()).isEqualTo(0);
+        });
     }
 
     private BooleanExpression studyIdIn(List<Long> studyIds) {

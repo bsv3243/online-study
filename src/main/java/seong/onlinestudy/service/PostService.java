@@ -33,7 +33,7 @@ public class PostService {
         Page<Post> postsWithComments
                 = postRepository.findPostsWithComments(pageRequest,
                 request.getGroupId(), request.getSearch(), request.getCategory(),
-                request.getStudyIds(), request.isDeleted());
+                request.getStudyIds());
 
         List<PostStudy> postStudies = postStudyRepository.findStudiesWhereInPosts(postsWithComments.getContent());
 
@@ -80,6 +80,7 @@ public class PostService {
         return savedPost.getId();
     }
 
+    @Transactional
     public PostDto getPost(Long postId) {
         Post post = postRepository.findByIdWithMemberAndGroup(postId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
@@ -136,6 +137,7 @@ public class PostService {
             throw new PermissionControlException("해당 게시글의 삭제 권한이 없습니다.");
         }
 
+        postStudyRepository.deleteAllByPost(post);
         post.delete();
     }
 }
