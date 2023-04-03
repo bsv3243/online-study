@@ -1,6 +1,7 @@
 package seong.onlinestudy.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
@@ -32,6 +33,7 @@ public class TicketController {
     }
 
     @PostMapping("/tickets")
+    @ResponseStatus(HttpStatus.CREATED)
     public Result<Long> createTicket(@RequestBody @Valid TicketCreateRequest createTicketRequest,
                              @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
 
@@ -44,20 +46,20 @@ public class TicketController {
         return new Result<>("201", ticketId);
     }
 
-    @PostMapping("/ticket/{id}")
-    public Result<Long> expiredTicket(@PathVariable("id") Long ticketId,
+    @PatchMapping("/ticket/{ticketId}")
+    public Result<Long> expiredTicket(@PathVariable("ticketId") Long ticketId,
                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long updateTicketId = ticketService.expireTicket(ticketId, loginMember);
+        Long expiredTicketId = ticketService.expireTicket(ticketId, loginMember);
 
-        return new Result<>("201", updateTicketId);
+        return new Result<>("200", expiredTicketId);
     }
 
-    @GetMapping("/ticket/{id}")
-    public Result<TicketDto> getTicket(@PathVariable("id") Long ticketId) {
+    @GetMapping("/ticket/{ticketId}")
+    public Result<TicketDto> getTicket(@PathVariable("ticketId") Long ticketId) {
         TicketDto ticket = ticketService.getTicket(ticketId);
 
         return new Result<>("200", ticket);
