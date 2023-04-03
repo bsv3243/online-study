@@ -46,7 +46,7 @@ public class CommentController {
     }
 
     @PatchMapping("/comment/{commentId}")
-    public Result<Long> updateComment(@PathVariable("commentId") Long commentId, CommentUpdateRequest request,
+    public Result<Long> updateComment(@PathVariable("commentId") Long commentId, @RequestBody @Valid CommentUpdateRequest request,
                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
