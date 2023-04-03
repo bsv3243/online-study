@@ -53,7 +53,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     private BooleanExpression studyIdIn(List<Long> studyIds) {
-        return studyIds != null ? postStudy.study.id.in(studyIds) : null;
+        return studyIds != null && !studyIds.isEmpty() ? postStudy.study.id.in(studyIds) : null;
     }
 
     private BooleanExpression categoryEq(PostCategory category) {
@@ -61,7 +61,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     private BooleanExpression searchContains(String search) {
-        return search != null ? post.title.contains(search) : null;
+        return search != null && !search.isBlank() ? post.title.contains(search) : null;
     }
 
     private BooleanExpression groupIdEq(Long groupId) {

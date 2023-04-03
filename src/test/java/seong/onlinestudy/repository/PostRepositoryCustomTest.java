@@ -103,6 +103,34 @@ public class PostRepositoryCustomTest {
     }
 
     @Test
+    @DisplayName("findPosts_검색어 조건")
+    void findPosts_검색어조건() {
+        //given
+        Member testMember = members.get(0);
+        Group testGroup = groups.get(0);
+        Post testPost = createPost("검색", "검색테스트", PostCategory.CHAT, testMember);
+        Post testPost2 = createPost("검검색검", "검색테스트", PostCategory.INFO, testMember);
+        Post testPostNotContain = createPost("테스트", "검색테스트", PostCategory.INFO, testMember);
+        testPost.setGroup(testGroup);
+        testPost2.setGroup(testGroup);
+        testPostNotContain.setGroup(testGroup);
+
+        postRepository.saveAll(List.of(testPost, testPost2, testPostNotContain));
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Post> findPostsWithPage = postRepository.findPostsWithComments(pageRequest, null, "검색", null, null);
+
+        //then
+        List<Post> findPosts = findPostsWithPage.getContent();
+        assertThat(findPosts.size()).isGreaterThan(0);
+
+        assertThat(findPosts).allSatisfy(findPost -> {
+            assertThat(findPost.getTitle()).contains("검색");
+        });
+    }
+
+    @Test
     @DisplayName("findPosts_게시글, 댓글 삭제 대이터 혼합")
     void findPosts_삭제데이터혼합() {
         //given
