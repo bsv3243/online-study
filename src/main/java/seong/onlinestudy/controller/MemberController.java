@@ -68,5 +68,19 @@ public class MemberController {
 
         return new Result<>("200", updatedMemberId);
     }
+
+    @DeleteMapping("/member/{memberId}")
+    public Result<Long> deleteMember(@PathVariable Long memberId,
+                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+        if (loginMember == null) {
+            throw new InvalidSessionException("세션이 유효하지 않습니다.");
+        }
+        if(!memberId.equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        memberService.deleteMember(memberId);
+
+        return new Result<>("200", memberId);
     }
 }
