@@ -26,23 +26,14 @@ public class LoginController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public Result<String> login(@RequestBody @Valid LoginRequest loginRequest,
-                                HttpServletRequest request, HttpServletResponse response) {
-
-        /* JWT 사용 로그인
-        String token = "Barer " + loginService.createToken(loginRequest);
-        Cookie cookie = new Cookie("AUTHORIZATION", URLEncoder.encode(token, StandardCharsets.UTF_8));
-        cookie.setHttpOnly(true);
-
-        log.info("토큰이 발급되었습니다. username={}", loginRequest.getUsername());
-        response.addCookie(cookie);
-         */
+                                HttpServletRequest request) {
 
         Member loginMember = loginService.login(loginRequest);
         HttpSession session = request.getSession();
 
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        return new Result<>("200", "ok");
+        return new Result<>("200", "login 성공");
     }
 
     @PostMapping("/logout")
@@ -53,6 +44,6 @@ public class LoginController {
             session.invalidate();
         }
 
-        return new Result<>("200", "ok");
+        return new Result<>("200", "logout 성공");
     }
 }
