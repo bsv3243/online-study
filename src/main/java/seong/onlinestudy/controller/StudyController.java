@@ -14,8 +14,6 @@ import seong.onlinestudy.service.StudyService;
 import javax.validation.Valid;
 import java.util.List;
 
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -31,9 +29,8 @@ public class StudyController {
     }
 
     @GetMapping("/studies")
-    public Result<List<StudyDto>> getStudies(@Valid StudiesGetRequest searchCond,
-                                             @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
-        Page<StudyDto> studiesWithPageInfo = studyService.getStudies(searchCond, loginMember);
+    public Result<List<StudyDto>> getStudies(@Valid StudiesGetRequest searchCond) {
+        Page<StudyDto> studiesWithPageInfo = studyService.getStudies(searchCond);
 
         return new PageResult<>("200", studiesWithPageInfo.getContent(), studiesWithPageInfo);
     }
