@@ -3,34 +3,54 @@ package seong.onlinestudy.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import seong.onlinestudy.MyUtils;
+import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.request.member.MemberCreateRequest;
+import seong.onlinestudy.request.member.MemberDuplicateCheckRequest;
+import seong.onlinestudy.request.member.MemberUpdateRequest;
 import seong.onlinestudy.service.MemberService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
 
+@AutoConfigureRestDocs
 @WebMvcTest(MemberController.class)
 class MemberControllerTest {
 
     @Autowired
     MockMvc mvc;
 
+    @Autowired
     ObjectMapper mapper;
 
     @MockBean
     MemberService memberService;
 
+    MockHttpSession session;
+
     public MemberControllerTest() {
-        this.mapper = new ObjectMapper();
+        session = new MockHttpSession();
     }
 
     @Test
@@ -92,5 +112,155 @@ class MemberControllerTest {
                 .andDo(print());
 
         //then
+    }
+
+    @Test
+    public void createMember() throws Exception {
+        //given
+        MemberCreateRequest request = new MemberCreateRequest();
+        request.setUsername("member"); request.setNickname("member");
+        request.setPassword("member123!");
+
+        //when
+        ResultActions resultActions = mvc.perform(post("/api/v1/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)));
+
+        //then
+        resultActions.andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(document("member-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("username").type(STRING).description("회원 아이디"),
+                                fieldWithPath("password").type(STRING).description("회원 비밀번호"),
+                                fieldWithPath("nickname").type(STRING).description("회원 닉네임").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(NUMBER).description("생성된 회원 엔티티 아이디")
+                        )));
+    }
+
+    @Test
+    public void getMember() throws Exception {
+        //given
+        Member testMember = MyUtils.createMember("member", "member");
+        ReflectionTestUtils.setField(testMember, "id", 1L);
+        MemberDto memberDto = MemberDto.from(testMember);
+
+        session.setAttribute(LOGIN_MEMBER, testMember);
+
+        given(memberService.getMember(any())).willReturn(memberDto);
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/api/v1/member/{memberId}", 1)
+                .session(session));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member-get",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 엔티티 아이디")
+                        ),
+                        responseFields(
+                                beneathPath("data").withSubsectionId("data"),
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디"),
+                                fieldWithPath("username").type(STRING).description("회원 아이디"),
+                                fieldWithPath("nickname").type(STRING).description("회원 닉네임")
+                        )));
+    }
+
+    @Test
+    public void duplicateCheck() throws Exception {
+        //given
+        MemberDuplicateCheckRequest request = new MemberDuplicateCheckRequest();
+        request.setUsername("member");
+
+        //when
+        ResultActions resultActions = mvc.perform(post("/api/v1/members/duplicate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member-duplicate-check",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("username").type(STRING).description("회원 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(BOOLEAN).description("중복되지 않으면 false")
+                        )));
+    }
+
+    @Test
+    public void updateMember() throws Exception {
+        //given
+        MemberUpdateRequest request = new MemberUpdateRequest();
+        request.setNickname("nickname"); request.setPassword("password123!");
+
+        Member testMember = MyUtils.createMember("member", "member");
+        ReflectionTestUtils.setField(testMember, "id", 1L);
+        session.setAttribute(LOGIN_MEMBER, testMember);
+
+        given(memberService.updateMember(any(), any())).willReturn(1L);
+
+        //when
+        ResultActions resultActions = mvc.perform(patch("/api/v1/member/{memberId}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 엔티티 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("password").type(STRING).description("회원 비밀번호").optional(),
+                                fieldWithPath("nickname").type(STRING).description("회원 닉네임").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(NUMBER).description("업데이트된 회원 엔티티 아이디")
+                        )));
+    }
+
+    @Test
+    public void deleteMember() throws Exception {
+        //given
+        Member testMember = MyUtils.createMember("member", "member");
+        ReflectionTestUtils.setField(testMember, "id", 1L);
+        session.setAttribute(LOGIN_MEMBER, testMember);
+
+        //when
+        ResultActions resultActions = mvc.perform(delete("/api/v1/member/{memberId}", 1)
+                .session(session));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(NUMBER).description("삭제된 회원 엔티티 아이디")
+                        )));
     }
 }

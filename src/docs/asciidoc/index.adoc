@@ -4,6 +4,24 @@ endif::[]
 
 = API 문서
 
+== 회원 API
+
+=== `POST /members` - 회원 생성
+
+operation::member-create[snippets='http-request,request-fields,http-response,response-fields']
+
+=== `GET /member/:memberId` - 회원 단건 조회
+
+operation::member-get[snippets='http-request,path-parameters,http-response,response-fields-data']
+
+=== `PATCH /member/:memberId` - 회원 업데이트
+
+operation::member-update[snippets='http-request,request-fields,http-response,response-fields']
+
+=== `DELETE /member/:memberId` - 회원 삭제
+
+operation::member-duplicate-check[snippets='http-request,request-fields,http-response,response-fields']
+
 == 그룹 API
 
 === `GET /groups` - 그룹 목록 조회
