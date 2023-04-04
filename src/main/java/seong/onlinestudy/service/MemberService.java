@@ -20,7 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long addMember(MemberCreateRequest memberCreateRequest) {
+    public Long createMember(MemberCreateRequest memberCreateRequest) {
         memberRepository.findByUsername(memberCreateRequest.getUsername())
                 .ifPresent(member -> {
                     throw new DuplicateElementException("이미 존재하는 아이디입니다.");

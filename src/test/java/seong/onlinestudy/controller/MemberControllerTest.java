@@ -34,14 +34,14 @@ class MemberControllerTest {
     }
 
     @Test
-    void addMember_Success() throws Exception {
+    void createMember_Success() throws Exception {
         //given
         MemberCreateRequest request = new MemberCreateRequest();
         request.setUsername("test123");
         request.setPassword("test123!");
         request.setNickname("test12");
 
-        given(memberService.addMember(any())).willReturn(1L);
+        given(memberService.createMember(any())).willReturn(1L);
         //when
         mvc.perform(post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -54,7 +54,7 @@ class MemberControllerTest {
     }
 
     @Test
-    void addMember_비밀번호검증실패() throws Exception {
+    void createMember_비밀번호검증실패() throws Exception {
         //given
         MemberCreateRequest request = new MemberCreateRequest();
         request.setUsername("test123");
@@ -76,7 +76,7 @@ class MemberControllerTest {
     }
 
     @Test
-    void addMember_모두Null() throws Exception {
+    void createMember_모두Null() throws Exception {
         //given
         MemberCreateRequest request = new MemberCreateRequest();
 
