@@ -137,7 +137,7 @@ public class GroupService {
         Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
-        groupMemberRepository.deleteByMember(member);
+        groupMemberRepository.deleteByGroupAndMember(group, member);
     }
 
     @Transactional

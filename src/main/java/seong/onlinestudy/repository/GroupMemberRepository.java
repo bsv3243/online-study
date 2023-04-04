@@ -18,5 +18,7 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
             " where gm.role='MASTER' and g in :groups")
     List<GroupMember> findGroupMasters(@Param("groups") List<Group> groups);
 
-    void deleteByMember(Member member);
+    void deleteByMemberId(Long memberId);
+
+    void deleteByGroupAndMember(Group group, Member member);
 }

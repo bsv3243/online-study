@@ -7,8 +7,10 @@ import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.InvalidSessionException;
+import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.request.member.MemberCreateRequest;
 import seong.onlinestudy.request.member.MemberDuplicateCheckRequest;
+import seong.onlinestudy.request.member.MemberUpdateRequest;
 import seong.onlinestudy.service.MemberService;
 
 import javax.validation.Valid;
@@ -30,21 +32,55 @@ public class MemberController {
         return new Result<>("201", memberId);
     }
 
-    @GetMapping("/member")
-    public Result<MemberDto> getMember(@SessionAttribute(value = LOGIN_MEMBER, required = false)Member loginMember) {
-        if(loginMember == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+    @GetMapping("/member/{memberId}")
+    public Result<MemberDto> getMember(@PathVariable Long memberId,
+                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
+        if (loginMember == null) {
+            throw new InvalidSessionException("세션이 유효하지 않습니다.");
+        }
+        if(!memberId.equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
         }
 
-        MemberDto member = memberService.getMember(loginMember);
+        MemberDto member = memberService.getMember(memberId);
 
         return new Result<>("200", member);
     }
 
     @PostMapping("/members/duplicate")
-    public Result<String> duplicateCheck(@RequestBody @Valid MemberDuplicateCheckRequest request) {
+    public Result<Boolean> duplicateCheck(@RequestBody @Valid MemberDuplicateCheckRequest request) {
         memberService.duplicateCheck(request);
 
-        return new Result<>("200", "ok");
+        return new Result<>("200", false);
+    }
+
+    @PatchMapping("/member/{memberId}")
+    public Result<Long> updateMember(@PathVariable Long memberId, @RequestBody @Valid MemberUpdateRequest request,
+                                     @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
+        if (loginMember == null) {
+            throw new InvalidSessionException("세션이 유효하지 않습니다.");
+        }
+        if(!memberId.equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        Long updatedMemberId = memberService.updateMember(memberId, request);
+
+        return new Result<>("200", updatedMemberId);
+    }
+
+    @DeleteMapping("/member/{memberId}")
+    public Result<Long> deleteMember(@PathVariable Long memberId,
+                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+        if (loginMember == null) {
+            throw new InvalidSessionException("세션이 유효하지 않습니다.");
+        }
+        if(!memberId.equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        memberService.deleteMember(memberId);
+
+        return new Result<>("200", memberId);
     }
 }
