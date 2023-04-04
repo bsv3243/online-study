@@ -9,6 +9,7 @@ import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.member.MemberCreateRequest;
 import seong.onlinestudy.request.member.MemberDuplicateCheckRequest;
+import seong.onlinestudy.request.member.MemberUpdateRequest;
 
 import java.util.NoSuchElementException;
 
@@ -38,10 +39,21 @@ public class MemberService {
                 });
     }
 
-    public MemberDto getMember(Member loginMember) {
-        Member member = memberRepository.findById(loginMember.getId())
-                .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+    public MemberDto getMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         return MemberDto.from(member);
     }
+
+    @Transactional
+    public Long updateMember(Long memberId, MemberUpdateRequest request) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+        findMember.update(request);
+
+        return findMember.getId();
+    }
+
 }

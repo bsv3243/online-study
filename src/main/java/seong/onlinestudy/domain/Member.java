@@ -33,6 +33,15 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Ticket> tickets = new ArrayList<>();
 
+    public void update(MemberUpdateRequest request) {
+        if (StringUtils.hasText(request.getNickname())) {
+            this.nickname = request.getNickname();
+        }
+        if (StringUtils.hasText(request.getPassword())) {
+            this.password = request.getPassword();
+        }
+    }
+
     public static Member createMember(MemberCreateRequest request) {
         Member member = new Member();
         member.username = request.getUsername();
