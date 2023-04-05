@@ -21,6 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.SessionConst;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.CommentDto;
 import seong.onlinestudy.dto.MemberDto;
@@ -44,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.MyUtils.createMember;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 
 @AutoConfigureRestDocs
@@ -140,8 +142,8 @@ class CommentControllerTest {
                         requestParameters(
                                 parameterWithName("memberId").description("회원 엔티티 아이디").optional(),
                                 parameterWithName("postId").description("게시글 엔티티 아이디").optional(),
-                                parameterWithName("page").description("페이지 번호(기본값: 0)"),
-                                parameterWithName("size").description("페이지 사이즈(기본값: 30)")
+                                parameterWithName("page").attributes(getDefaultValue("0")).description("페이지 번호"),
+                                parameterWithName("size").attributes(getDefaultValue("30")).description("페이지 사이즈")
                         ),
                         responseFields(
                                 beneathPath("data").withSubsectionId("data"),

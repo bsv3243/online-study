@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import seong.onlinestudy.MyUtils;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupCategory;
 import seong.onlinestudy.domain.GroupRole;
@@ -54,6 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static seong.onlinestudy.MyUtils.createMember;
 import static seong.onlinestudy.SessionConst.*;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 import static seong.onlinestudy.domain.GroupCategory.IT;
 
 @AutoConfigureRestDocs
@@ -252,12 +254,15 @@ class GroupControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("page").type(NUMBER).description("페이지(기본값: 0)"),
-                                fieldWithPath("size").type(NUMBER).description("응답 데이터 개수(기본값: 12)"),
+                                fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0")).
+                                        description("페이지"),
+                                fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("12"))
+                                        .description("응답 데이터 개수"),
                                 fieldWithPath("category").type(STRING).description("그룹 카테고리").optional(),
                                 fieldWithPath("search").type(STRING).description("그룹 이름 검색어").optional(),
                                 fieldWithPath("studyIds").type(JsonFieldType.ARRAY).description("스터디 아이디 목록").optional(),
-                                fieldWithPath("orderBy").type(STRING).description("그룹 정렬 순서(기본값: CREATEDAT)")
+                                fieldWithPath("orderBy").type(STRING).attributes(getDefaultValue("CREATEDAT"))
+                                        .description("그룹 정렬 순서")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),

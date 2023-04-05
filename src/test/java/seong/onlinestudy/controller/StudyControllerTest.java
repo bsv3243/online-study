@@ -16,6 +16,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.StudyDto;
 import seong.onlinestudy.request.study.StudiesGetRequest;
@@ -37,6 +38,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDateFormat;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = StudyController.class)
@@ -118,10 +121,13 @@ class StudyControllerTest {
                                 fieldWithPath("name").type(STRING).description("스터디명").optional(),
                                 fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
                                 fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
-                                fieldWithPath("date").type(STRING).description("검색 시작 날짜").optional(),
+                                fieldWithPath("date").type(STRING).attributes(getDateFormat())
+                                        .description("검색 시작 날짜").optional(),
                                 fieldWithPath("days").type(NUMBER).description("검색 일수(범위)").optional(),
-                                fieldWithPath("page").type(NUMBER).description("페이지 번호(기본값: 0)"),
-                                fieldWithPath("size").type(NUMBER).description("페이지 사이즈(기본값: 10)")
+                                fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0"))
+                                        .description("페이지 번호"),
+                                fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("10")).
+                                        description("페이지 사이즈")
                         ),
                         responseFields(
                                 beneathPath("data").withSubsectionId("data"),

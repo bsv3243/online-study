@@ -14,6 +14,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
@@ -40,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.MyUtils.*;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDateFormat;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 @AutoConfigureRestDocs
 @WebMvcTest(TicketController.class)
@@ -101,13 +104,17 @@ class TicketControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("groupId").type(JsonFieldType.NUMBER).description("그룹 엔티티 아이디").optional(),
-                                fieldWithPath("studyId").type(JsonFieldType.NUMBER).description("스터디 엔티티 아이디").optional(),
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 엔티티 아이디").optional(),
-                                fieldWithPath("date").type(JsonFieldType.STRING).description("검색 시작 일자(yyyy-MM-dd)(기본값: 오늘)"),
-                                fieldWithPath("days").type(JsonFieldType.NUMBER).description("검색 할 일수(기본값: 1)"),
-                                fieldWithPath("page").type(JsonFieldType.NUMBER).description("페이지 번호(기본값: 0)"),
-                                fieldWithPath("size").type(JsonFieldType.NUMBER).description("페이지 사이즈(기본값: 30)")
+                                fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
+                                fieldWithPath("studyId").type(NUMBER).description("스터디 엔티티 아이디").optional(),
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
+                                fieldWithPath("date").type(STRING)
+                                        .attributes(getDateFormat()).attributes(getDefaultValue("오늘")).description("검색 시작 일자"),
+                                fieldWithPath("days").type(NUMBER)
+                                        .attributes(getDefaultValue("1")).description("검색 할 일수"),
+                                fieldWithPath("page").type(NUMBER)
+                                        .attributes(getDefaultValue("0")).description("페이지 번호"),
+                                fieldWithPath("size").type(NUMBER).
+                                        attributes(getDefaultValue("30")).description("페이지 사이즈")
                         ),
                         responseFields(
                                 beneathPath("data").withSubsectionId("data"),
@@ -118,9 +125,9 @@ class TicketControllerTest {
     private List<FieldDescriptor> ticketsGetFields() {
         List<FieldDescriptor> description = new ArrayList<>(
                 List.of(
-                        fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 엔티티 아이디"),
-                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임"),
-                        fieldWithPath("studyTime").type(JsonFieldType.NUMBER).description("총 공부 시간(단위: 초)")
+                        fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디"),
+                        fieldWithPath("nickname").type(STRING).description("회원 닉네임"),
+                        fieldWithPath("studyTime").type(NUMBER).description("총 공부 시간(단위: 초)")
                 ));
 
         description.add(subsectionWithPath("activeTicket").type(OBJECT).description("활성화된 티켓"));
@@ -179,11 +186,11 @@ class TicketControllerTest {
 
     private List<FieldDescriptor> ticketField(String path) {
         return List.of(
-                fieldWithPath(path + "ticketId").type(JsonFieldType.NUMBER).description("티켓 엔티티 아이디"),
-                fieldWithPath(path + "status").type(JsonFieldType.STRING).description("티켓 상태"),
-                fieldWithPath(path + "activeTime").type(JsonFieldType.NUMBER).description("만료되기까지 시간(단위: 초)"),
-                fieldWithPath(path + "startTime").type(JsonFieldType.STRING).description("학습 시작 시간"),
-                fieldWithPath(path + "endTime").type(JsonFieldType.STRING)
+                fieldWithPath(path + "ticketId").type(NUMBER).description("티켓 엔티티 아이디"),
+                fieldWithPath(path + "status").type(STRING).description("티켓 상태"),
+                fieldWithPath(path + "activeTime").type(NUMBER).description("만료되기까지 시간(단위: 초)"),
+                fieldWithPath(path + "startTime").type(STRING).description("학습 시작 시간"),
+                fieldWithPath(path + "endTime").type(STRING)
                         .description("학습 종료 시간(expired가 false인 경우 null)").optional(),
                 fieldWithPath(path + "expired").type(JsonFieldType.BOOLEAN).description("티켓 만료 여부")
         );
@@ -191,8 +198,8 @@ class TicketControllerTest {
 
     private List<FieldDescriptor> studyField(String path) {
         return List.of(
-                fieldWithPath(path + "studyId").type(JsonFieldType.NUMBER).description("스터디 엔티티 아이디"),
-                fieldWithPath(path + "name").type(JsonFieldType.STRING).description("스터디 이름")
+                fieldWithPath(path + "studyId").type(NUMBER).description("스터디 엔티티 아이디"),
+                fieldWithPath(path + "name").type(STRING).description("스터디 이름")
         );
     }
 

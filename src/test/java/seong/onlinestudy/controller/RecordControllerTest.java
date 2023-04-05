@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.dto.StudyRecordDto;
@@ -33,6 +34,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDateFormat;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 @WebMvcTest(RecordController.class)
 @AutoConfigureRestDocs
@@ -91,9 +94,11 @@ class RecordControllerTest {
                                         fieldWithPath("memberId").type(NUMBER)
                                                 .description("회원 엔티티 아이디").optional(),
                                         fieldWithPath("startDate").type(STRING)
-                                                .description("조회 시작 일자(yyyy-MM-dd)(기본값: 7일 전"),
+                                                .attributes(getDateFormat()).attributes(getDefaultValue("7일 전"))
+                                                .description("조회 시작 일자"),
                                         fieldWithPath("days").type(NUMBER)
-                                                .description("조회 일 수(기본값: 7)")
+                                                .attributes(getDefaultValue("7"))
+                                                .description("조회 일 수")
                                 ),
                                 responseFields(
                                         fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),

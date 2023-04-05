@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.SessionConst;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.*;
 import seong.onlinestudy.request.post.PostCreateRequest;
@@ -43,6 +44,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 @WebMvcTest(PostController.class)
 @AutoConfigureRestDocs
@@ -99,12 +101,12 @@ class PostControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("page").type(JsonFieldType.NUMBER).description("페이지(기본값: 0)"),
-                                fieldWithPath("size").type(JsonFieldType.NUMBER).description("한 페이지의 사이즈(기본값: 10)"),
-                                fieldWithPath("groupId").type(JsonFieldType.NUMBER).description("그룹 엔티티 아이디").optional(),
-                                fieldWithPath("search").type(JsonFieldType.STRING).description("게시글 제목 대상 검색어").optional(),
-                                fieldWithPath("category").type(JsonFieldType.STRING).description("게시글 카테고리").optional(),
-                                fieldWithPath("studyIds").type(JsonFieldType.ARRAY).description("스터디 엔티티 아이디 목록").optional()
+                                fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0")).description("페이지 번호"),
+                                fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("10")).description("페이지 사이즈"),
+                                fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
+                                fieldWithPath("search").type(STRING).description("게시글 제목 대상 검색어").optional(),
+                                fieldWithPath("category").type(STRING).description("게시글 카테고리").optional(),
+                                fieldWithPath("studyIds").type(ARRAY).description("스터디 엔티티 아이디 목록").optional()
                         ),
                         responseFields(
                                 beneathPath("data").withSubsectionId("data"),
