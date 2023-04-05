@@ -15,6 +15,7 @@ import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.dto.PostStudyDto;
+import seong.onlinestudy.enumtype.PostCategory;
 import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;

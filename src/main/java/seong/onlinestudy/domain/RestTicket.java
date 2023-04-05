@@ -1,6 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import seong.onlinestudy.enumtype.TicketStatus;
 
 import javax.persistence.*;
 

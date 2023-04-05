@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.enumtype.GroupRole;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;

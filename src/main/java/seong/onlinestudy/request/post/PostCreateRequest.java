@@ -1,10 +1,9 @@
 package seong.onlinestudy.request.post;
 
 import lombok.Data;
-import seong.onlinestudy.domain.PostCategory;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data

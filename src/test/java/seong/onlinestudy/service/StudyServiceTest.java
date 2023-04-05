@@ -51,7 +51,7 @@ class StudyServiceTest {
         //when
         StudiesGetRequest request = new StudiesGetRequest();
         request.setName("테스트");
-        Page<StudyDto> findStudies = studyService.getStudies(request, member);
+        Page<StudyDto> findStudies = studyService.getStudies(request);
 
         //then
         assertThat(findStudies.getContent().stream()
@@ -85,7 +85,7 @@ class StudyServiceTest {
         //when
         StudiesGetRequest request = new StudiesGetRequest();
         request.setName("");
-        Page<StudyDto> findStudies = studyService.getStudies(request, member);
+        Page<StudyDto> findStudies = studyService.getStudies(request);
 
         //then
         List<StudyDto> studyDtos = findStudies.getContent();

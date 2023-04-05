@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.TimeConst;
-import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.dto.StudyDto;
 import seong.onlinestudy.exception.DuplicateElementException;
@@ -36,7 +35,7 @@ public class StudyService {
         return study.getId();
     }
 
-    public Page<StudyDto> getStudies(StudiesGetRequest request, Member loginMember) {
+    public Page<StudyDto> getStudies(StudiesGetRequest request) {
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
 
         LocalDateTime startTime = null;

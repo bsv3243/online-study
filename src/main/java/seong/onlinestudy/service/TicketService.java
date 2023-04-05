@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static seong.onlinestudy.domain.TicketStatus.*;
+import static seong.onlinestudy.enumtype.TicketStatus.*;
 
 @Slf4j
 @Service

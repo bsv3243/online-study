@@ -2,6 +2,9 @@ package seong.onlinestudy;
 
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupStudyDto;
+import seong.onlinestudy.enumtype.GroupRole;
+import seong.onlinestudy.enumtype.PostCategory;
+import seong.onlinestudy.enumtype.TicketStatus;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.member.MemberCreateRequest;

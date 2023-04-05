@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -33,6 +34,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .select(post)
                 .from(post)
                 .leftJoin(post.comments, comment).fetchJoin()
+                .leftJoin(comment.member, member).fetchJoin()
                 .leftJoin(post.member, member).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
                 .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))

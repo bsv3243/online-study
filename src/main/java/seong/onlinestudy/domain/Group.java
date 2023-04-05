@@ -1,6 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import seong.onlinestudy.enumtype.GroupCategory;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.group.GroupUpdateRequest;
 

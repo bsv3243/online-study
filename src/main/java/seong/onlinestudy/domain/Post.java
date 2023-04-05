@@ -2,6 +2,7 @@ package seong.onlinestudy.domain;
 
 import lombok.Getter;
 import org.hibernate.annotations.Where;
+import seong.onlinestudy.enumtype.PostCategory;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;
 

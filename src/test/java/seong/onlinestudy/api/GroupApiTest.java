@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static seong.onlinestudy.MyUtils.createGroup;
 import static seong.onlinestudy.MyUtils.createMember;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
-import static seong.onlinestudy.domain.GroupCategory.ETC;
+import static seong.onlinestudy.enumtype.GroupCategory.ETC;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)

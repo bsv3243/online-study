@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.StudyRecordDto;
+import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.record.RecordsGetRequest;
 

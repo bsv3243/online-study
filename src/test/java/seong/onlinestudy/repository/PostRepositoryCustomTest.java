@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import javax.persistence.EntityManager;
 

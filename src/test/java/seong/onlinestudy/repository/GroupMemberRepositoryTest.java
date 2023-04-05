@@ -1,24 +1,19 @@
 package seong.onlinestudy.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupMember;
-import seong.onlinestudy.domain.GroupRole;
+import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.domain.Member;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static seong.onlinestudy.MyUtils.*;
 
 @Slf4j

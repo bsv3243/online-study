@@ -1,10 +1,13 @@
 |===
-|필드명|타입|필수값|설명
+|필드명|타입|필수값|기본값|양식|제약조건|설명
 
 {{#fields}}
 |{{#tableCellContent}}`+{{path}}+`{{/tableCellContent}}
 |{{#tableCellContent}}`+{{type}}+`{{/tableCellContent}}
 |{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#defaultValue}}{{.}}{{/defaultValue}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#format}}{{.}}{{/format}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#constraint}}{{.}}{{/constraint}}{{/tableCellContent}}
 |{{#tableCellContent}}{{description}}{{/tableCellContent}}
 
 {{/fields}}

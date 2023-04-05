@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import seong.onlinestudy.domain.GroupMember;
-import seong.onlinestudy.domain.GroupRole;
+import seong.onlinestudy.enumtype.GroupRole;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @NoArgsConstructor

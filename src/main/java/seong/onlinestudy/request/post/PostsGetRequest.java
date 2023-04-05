@@ -1,7 +1,7 @@
 package seong.onlinestudy.request.post;
 
 import lombok.Data;
-import seong.onlinestudy.domain.PostCategory;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import java.util.List;
 
@@ -14,11 +14,9 @@ public class PostsGetRequest {
     private String search;
     private PostCategory category;
     private List<Long> studyIds;
-    private boolean deleted;
 
     public PostsGetRequest() {
         page = 0;
         size = 10;
-        deleted = false;
     }
 }

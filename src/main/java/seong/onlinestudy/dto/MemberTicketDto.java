@@ -4,7 +4,6 @@ import lombok.Data;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.domain.Ticket;
-import seong.onlinestudy.domain.TicketStatus;
 
 import java.util.ArrayList;
 import java.util.List;

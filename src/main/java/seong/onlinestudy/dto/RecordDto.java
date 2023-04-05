@@ -6,7 +6,6 @@ import lombok.Data;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.domain.Ticket;
-import seong.onlinestudy.domain.TicketStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -7,7 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.request.OrderBy;
+import seong.onlinestudy.enumtype.GroupCategory;
+import seong.onlinestudy.enumtype.OrderBy;
 
 import javax.persistence.EntityManager;
 import java.util.List;

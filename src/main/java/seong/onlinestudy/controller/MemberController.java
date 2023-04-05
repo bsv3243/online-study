@@ -26,8 +26,8 @@ public class MemberController {
 
     @PostMapping("/members")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Result<Long> addMember(@Valid @RequestBody MemberCreateRequest memberCreateRequest) {
-        Long memberId = memberService.addMember(memberCreateRequest);
+    public Result<Long> createMember(@Valid @RequestBody MemberCreateRequest memberCreateRequest) {
+        Long memberId = memberService.createMember(memberCreateRequest);
 
         return new Result<>("201", memberId);
     }

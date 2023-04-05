@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.NoSuchElementException;
 
-import static seong.onlinestudy.domain.GroupRole.*;
+import static seong.onlinestudy.enumtype.GroupRole.*;
 
 @Slf4j
 @Service

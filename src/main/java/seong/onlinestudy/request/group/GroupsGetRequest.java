@@ -1,9 +1,8 @@
 package seong.onlinestudy.request.group;
 
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestParam;
-import seong.onlinestudy.domain.GroupCategory;
-import seong.onlinestudy.request.OrderBy;
+import seong.onlinestudy.enumtype.GroupCategory;
+import seong.onlinestudy.enumtype.OrderBy;
 
 import java.util.List;
 

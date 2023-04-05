@@ -1,6 +1,5 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.request.*;
+import seong.onlinestudy.enumtype.GroupCategory;
+import seong.onlinestudy.enumtype.OrderBy;
 
 import javax.persistence.EntityManager;
 
@@ -25,11 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
 import static seong.onlinestudy.domain.QGroup.group;
-import static seong.onlinestudy.domain.QGroupMember.groupMember;
-import static seong.onlinestudy.domain.QRecord.record;
-import static seong.onlinestudy.domain.QStudy.study;
-import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
-import static seong.onlinestudy.domain.QTicket.ticket;
 
 @Slf4j
 @DataJpaTest
