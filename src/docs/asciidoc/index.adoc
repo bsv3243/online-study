@@ -9,6 +9,13 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
+== 0. 공통 응답
+=== 기본
+operation::common-result[snippets='response-body,response-fields']
+
+=== 페이지 정보 포함
+operation::common-page-result[snippets='response-body,response-fields']
+
 == 1. 회원 API
 
 === 회원 생성
@@ -170,4 +177,16 @@ operation::comment-update[snippets='http-request,request-fields,http-response,re
 
 operation::comment-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
+== #. Enum Type
 
+=== PostCategory
+
+include::{snippets}/post-category/custom-response-fields-post-category.adoc[]
+
+=== GroupCategory
+
+include::{snippets}/group-category/custom-response-fields-group-category.adoc[]
+
+=== OrderBy
+
+include::{snippets}/order-by/custom-response-fields-order-by.adoc[]

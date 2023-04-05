@@ -1,13 +1,23 @@
 package seong.onlinestudy.enumtype;
 
-public enum PostCategory {
+public enum PostCategory implements EnumType {
     INFO("정보"),
     QUESTION("질문"),
     CHAT("잡담");
 
-    private final String description;
+    private final String text;
 
-    PostCategory(String description) {
-        this.description = description;
+    PostCategory(String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String getName() {
+        return this.name();
+    }
+
+    @Override
+    public String getText() {
+        return this.text;
     }
 }

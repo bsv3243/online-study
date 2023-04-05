@@ -155,7 +155,7 @@ class GroupControllerTest {
                         requestFields(
                                 fieldWithPath("name").type(STRING).description("그룹 이름"),
                                 fieldWithPath("headcount").type(NUMBER).description("그룹 인원수"),
-                                fieldWithPath("category").type(STRING).description("그룹 카테고리")
+                                fieldWithPath("category").type(STRING).description("그룹 카테고리(Enum Type)")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
@@ -257,11 +257,11 @@ class GroupControllerTest {
                                         description("페이지"),
                                 fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("12"))
                                         .description("응답 데이터 개수"),
-                                fieldWithPath("category").type(STRING).description("그룹 카테고리").optional(),
+                                fieldWithPath("category").type(STRING).description("그룹 카테고리(Enum Type)").optional(),
                                 fieldWithPath("search").type(STRING).description("그룹 이름 검색어").optional(),
                                 fieldWithPath("studyIds").type(JsonFieldType.ARRAY).description("스터디 아이디 목록").optional(),
                                 fieldWithPath("orderBy").type(STRING).attributes(getDefaultValue("CREATEDAT"))
-                                        .description("그룹 정렬 순서")
+                                        .description("그룹 정렬 순서(Enum Type 탭 참고)")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),

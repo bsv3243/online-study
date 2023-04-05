@@ -101,7 +101,7 @@ class PostControllerTest {
                                 fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("10")).description("페이지 사이즈"),
                                 fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
                                 fieldWithPath("search").type(STRING).description("게시글 제목 대상 검색어").optional(),
-                                fieldWithPath("category").type(STRING).description("게시글 카테고리").optional(),
+                                fieldWithPath("category").type(STRING).description("게시글 카테고리(Enum Type 탭 참고)").optional(),
                                 fieldWithPath("studyIds").type(ARRAY).description("스터디 엔티티 아이디 목록").optional()
                         ),
                         responseFields(
@@ -277,7 +277,7 @@ class PostControllerTest {
                         requestFields(
                                 fieldWithPath("title").type(STRING).description("업데이트할 제목").optional(),
                                 fieldWithPath("content").type(STRING).description("업데이트할 본문").optional(),
-                                fieldWithPath("category").type(STRING).description("업데이트할 카테고리").optional(),
+                                fieldWithPath("category").type(STRING).description("업데이트할 카테고리(Enum Type)").optional(),
                                 fieldWithPath("studyIds").type(ARRAY).description("업데이트할 연관된 스터디 목록").optional()
                         ),
                         responseFields(
