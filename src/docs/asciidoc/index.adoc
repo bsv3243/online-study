@@ -1,7 +1,3 @@
-ifndef::snippets[]
-:snippets: ./build/generated-snippets
-endif::[]
-
 = API 문서
 :doctype: book
 :source-highlighter: highlightjs
