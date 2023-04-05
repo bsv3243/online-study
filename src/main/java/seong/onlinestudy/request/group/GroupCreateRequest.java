@@ -14,7 +14,7 @@ public class GroupCreateRequest {
     @Size(min = 2, max = 20, message = "그룹명은 2자 이상, 20자 이하여야 합니다.")
     private String name;
 
-    @NotNull(message = "그룹명은 2자 이상, 20자 이하여야 합니다.")
+    @NotNull(message = "인원수는 최대 30며까지 가능합니다.")
     @Range(min = 1, max = 30, message = "인원수는 최대 30명까지 가능합니다.")
     private int headcount;
 

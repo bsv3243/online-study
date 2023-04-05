@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import seong.onlinestudy.MyUtils;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.request.member.MemberCreateRequest;
@@ -33,6 +34,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 
 @AutoConfigureRestDocs
 @WebMvcTest(MemberController.class)
@@ -133,9 +135,15 @@ class MemberControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("username").type(STRING).description("회원 아이디"),
-                                fieldWithPath("password").type(STRING).description("회원 비밀번호"),
-                                fieldWithPath("nickname").type(STRING).description("회원 닉네임").optional()
+                                fieldWithPath("username").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자만 가능. 6자 이상, 20자 이하"))
+                                        .description("회원 아이디"),
+                                fieldWithPath("password").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
+                                        .description("회원 비밀번호"),
+                                fieldWithPath("nickname").type(STRING)
+                                        .attributes(getConstraint("2자 이상, 12자 이하"))
+                                        .description("회원 닉네임").optional()
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
@@ -229,8 +237,12 @@ class MemberControllerTest {
                                 parameterWithName("memberId").description("회원 엔티티 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("password").type(STRING).description("회원 비밀번호").optional(),
-                                fieldWithPath("nickname").type(STRING).description("회원 닉네임").optional()
+                                fieldWithPath("password").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
+                                        .description("회원 비밀번호").optional(),
+                                fieldWithPath("nickname").type(STRING)
+                                        .attributes(getConstraint("2자 이상, 12자 이하"))
+                                        .description("회원 닉네임").optional()
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),

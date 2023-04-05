@@ -54,6 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static seong.onlinestudy.MyUtils.createMember;
 import static seong.onlinestudy.SessionConst.*;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 import static seong.onlinestudy.enumtype.GroupCategory.IT;
 
@@ -153,8 +154,10 @@ class GroupControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("name").type(STRING).description("그룹 이름"),
-                                fieldWithPath("headcount").type(NUMBER).description("그룹 인원수"),
+                                fieldWithPath("name").type(STRING).attributes(getConstraint("2자 이상, 20자 이하"))
+                                        .description("그룹 이름"),
+                                fieldWithPath("headcount").type(NUMBER).attributes(getConstraint("1이상, 30이하"))
+                                        .description("그룹 인원수"),
                                 fieldWithPath("category").type(STRING).description("그룹 카테고리(Enum Type)")
                         ),
                         responseFields(
@@ -403,8 +406,10 @@ class GroupControllerTest {
                                 parameterWithName("groupId").description("그룹 엔티티 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("description").type(STRING).description("그룹 설명").optional(),
-                                fieldWithPath("headcount").type(NUMBER).description("그룹 제한 인원 수").optional()
+                                fieldWithPath("description").type(STRING).attributes(getConstraint("최대 100자"))
+                                        .description("그룹 설명").optional(),
+                                fieldWithPath("headcount").type(NUMBER).attributes(getConstraint("1이상, 30이하"))
+                                        .description("그룹 제한 인원 수").optional()
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),

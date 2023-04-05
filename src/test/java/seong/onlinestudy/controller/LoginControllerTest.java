@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.SessionConst;
+import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.request.login.LoginRequest;
 import seong.onlinestudy.service.LoginService;
@@ -29,6 +30,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = LoginController.class)
@@ -71,8 +73,12 @@ class LoginControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("username").type(STRING).description("회원 아이디"),
-                                fieldWithPath("password").type(STRING).description("회원 비밀번호")
+                                fieldWithPath("username").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자만 가능. 6자 이상, 20자 이하"))
+                                        .description("회원 아이디"),
+                                fieldWithPath("password").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자, 특수문자를 포함. 6자 이상, 20자 이하"))
+                                        .description("회원 비밀번호")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
