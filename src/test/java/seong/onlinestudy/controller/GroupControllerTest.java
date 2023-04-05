@@ -20,10 +20,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import seong.onlinestudy.MyUtils;
-import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.GroupCategory;
-import seong.onlinestudy.domain.GroupRole;
+import seong.onlinestudy.enumtype.GroupCategory;
+import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.dto.GroupMemberDto;
@@ -32,7 +31,7 @@ import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.group.GroupUpdateRequest;
 import seong.onlinestudy.request.group.GroupsGetRequest;
-import seong.onlinestudy.request.OrderBy;
+import seong.onlinestudy.enumtype.OrderBy;
 import seong.onlinestudy.service.GroupService;
 
 import java.time.LocalDateTime;
@@ -56,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static seong.onlinestudy.MyUtils.createMember;
 import static seong.onlinestudy.SessionConst.*;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
-import static seong.onlinestudy.domain.GroupCategory.IT;
+import static seong.onlinestudy.enumtype.GroupCategory.IT;
 
 @AutoConfigureRestDocs
 @WebMvcTest(GroupController.class)

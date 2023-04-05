@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import javax.persistence.EntityManager;
 import java.util.List;

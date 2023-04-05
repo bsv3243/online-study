@@ -2,11 +2,9 @@ package seong.onlinestudy.dto;
 
 import lombok.Data;
 import seong.onlinestudy.domain.Post;
-import seong.onlinestudy.domain.PostCategory;
-import seong.onlinestudy.domain.PostStudy;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

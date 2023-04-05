@@ -11,7 +11,7 @@ import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Comment;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Post;
-import seong.onlinestudy.domain.PostCategory;
+import seong.onlinestudy.enumtype.PostCategory;
 import seong.onlinestudy.repository.CommentRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;

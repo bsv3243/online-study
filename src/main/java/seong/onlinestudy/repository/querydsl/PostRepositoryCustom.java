@@ -3,7 +3,7 @@ package seong.onlinestudy.repository.querydsl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import seong.onlinestudy.domain.Post;
-import seong.onlinestudy.domain.PostCategory;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import java.util.List;
 

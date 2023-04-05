@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import seong.onlinestudy.domain.RestTicket;
 import seong.onlinestudy.domain.StudyTicket;
-import seong.onlinestudy.domain.TicketStatus;
+import seong.onlinestudy.enumtype.TicketStatus;
 import seong.onlinestudy.domain.Ticket;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)

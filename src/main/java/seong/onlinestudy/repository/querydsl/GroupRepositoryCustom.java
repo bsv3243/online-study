@@ -3,8 +3,8 @@ package seong.onlinestudy.repository.querydsl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.GroupCategory;
-import seong.onlinestudy.request.OrderBy;
+import seong.onlinestudy.enumtype.GroupCategory;
+import seong.onlinestudy.enumtype.OrderBy;
 
 import java.util.List;
 

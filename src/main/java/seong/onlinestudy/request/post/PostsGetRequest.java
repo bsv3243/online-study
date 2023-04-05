@@ -1,7 +1,7 @@
 package seong.onlinestudy.request.post;
 
 import lombok.Data;
-import seong.onlinestudy.domain.PostCategory;
+import seong.onlinestudy.enumtype.PostCategory;
 
 import java.util.List;
 

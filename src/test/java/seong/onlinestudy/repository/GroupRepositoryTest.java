@@ -14,9 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.enumtype.GroupCategory;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.member.MemberCreateRequest;
-import seong.onlinestudy.request.OrderBy;
+import seong.onlinestudy.enumtype.OrderBy;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,7 +25,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static seong.onlinestudy.domain.GroupRole.*;
+import static seong.onlinestudy.enumtype.GroupRole.*;
 import static seong.onlinestudy.domain.QGroup.group;
 
 @Slf4j

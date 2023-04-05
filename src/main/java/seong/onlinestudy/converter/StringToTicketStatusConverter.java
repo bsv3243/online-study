@@ -1,7 +1,7 @@
 package seong.onlinestudy.converter;
 
 import org.springframework.core.convert.converter.Converter;
-import seong.onlinestudy.domain.TicketStatus;
+import seong.onlinestudy.enumtype.TicketStatus;
 
 public class StringToTicketStatusConverter implements Converter<String, TicketStatus> {
 

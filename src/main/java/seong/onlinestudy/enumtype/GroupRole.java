@@ -1,4 +1,4 @@
-package seong.onlinestudy.domain;
+package seong.onlinestudy.enumtype;
 
 public enum GroupRole {
     MASTER, USER

@@ -2,7 +2,7 @@ package seong.onlinestudy.request.group;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
-import seong.onlinestudy.domain.GroupCategory;
+import seong.onlinestudy.enumtype.GroupCategory;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

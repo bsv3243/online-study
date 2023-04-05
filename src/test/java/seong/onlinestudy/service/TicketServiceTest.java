@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.domain.TicketStatus.*;
+import static seong.onlinestudy.enumtype.TicketStatus.*;
 
 @ExtendWith(MockitoExtension.class)
 class TicketServiceTest {

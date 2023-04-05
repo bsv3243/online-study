@@ -1,7 +1,7 @@
 package seong.onlinestudy.request.ticket;
 
 import lombok.Data;
-import seong.onlinestudy.domain.TicketStatus;
+import seong.onlinestudy.enumtype.TicketStatus;
 
 import javax.validation.constraints.NotNull;
 

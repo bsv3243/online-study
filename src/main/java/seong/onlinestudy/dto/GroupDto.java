@@ -3,10 +3,9 @@ package seong.onlinestudy.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import seong.onlinestudy.domain.Group;
-import seong.onlinestudy.domain.GroupCategory;
+import seong.onlinestudy.enumtype.GroupCategory;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
