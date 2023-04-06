@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -38,6 +39,7 @@ import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 
 @AutoConfigureRestDocs
 @WebMvcTest(MemberController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class MemberControllerTest {
 
     @Autowired
@@ -61,6 +63,7 @@ class MemberControllerTest {
         MemberCreateRequest request = new MemberCreateRequest();
         request.setUsername("test123");
         request.setPassword("test123!");
+        request.setPasswordCheck("test123!");
         request.setNickname("test12");
 
         given(memberService.createMember(any())).willReturn(1L);

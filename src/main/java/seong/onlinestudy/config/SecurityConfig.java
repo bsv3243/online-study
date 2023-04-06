@@ -16,6 +16,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .httpBasic().disable()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/**", "/docs/**").permitAll()
                 .and()
