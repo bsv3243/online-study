@@ -1,17 +1,11 @@
 package seong.onlinestudy.service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.exception.BadCredentialException;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.request.login.LoginRequest;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
