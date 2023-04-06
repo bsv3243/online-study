@@ -28,4 +28,9 @@ public class MemberCreateRequest {
             message = "비밀번호는 영문, 특수문자, 숫자를 포함하여 8자 이상, 20자 이하여야 합니다.")
     private String passwordCheck;
 
+    public void passwordCheck() {
+        if(!password.equals(passwordCheck)) {
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
+    }
 }

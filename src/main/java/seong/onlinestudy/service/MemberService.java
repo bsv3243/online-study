@@ -1,6 +1,7 @@
 package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.domain.Member;
@@ -22,6 +23,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupMemberRepository groupMemberRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public Long createMember(MemberCreateRequest request) {
         memberRepository.findByUsername(request.getUsername())
@@ -29,12 +32,19 @@ public class MemberService {
                     throw new DuplicateElementException("이미 존재하는 아이디입니다.");
                 });
 
-        passwordCheck(request.getPassword(), request.getPasswordCheck());
+        request.passwordCheck();
 
         Member member = Member.createMember(request);
+        passwordToEncoded(member);
+
         memberRepository.save(member);
 
         return member.getId();
+    }
+
+    private void passwordToEncoded(Member member) {
+        String encodedPassword = passwordEncoder.encode(member.getPassword());
+        member.updatePassword(encodedPassword);
     }
 
     @Transactional
@@ -50,15 +60,16 @@ public class MemberService {
 
     private void updatePassword(MemberUpdateRequest request, Member findMember) {
         if(!request.getPasswordNew().isBlank()) {
-            passwordCheck(request.getPasswordNew(), request.getPasswordNewCheck());
-            passwordCheck(request.getPasswordOld(), findMember.getPassword());
+            request.passwordCheck();
+            memberPasswordCheck(request.getPasswordOld(), findMember.getPassword());
 
-            findMember.updatePassword(request.getPasswordNew());
+            String encodedPassword = passwordEncoder.encode(request.getPasswordNew());
+            findMember.updatePassword(encodedPassword);
         }
     }
 
-    private void passwordCheck(String password, String passwordCheck) {
-        if(!password.equals(passwordCheck)) {
+    private void memberPasswordCheck(String password, String encodedPassword) {
+        if(!passwordEncoder.matches(password, encodedPassword)) {
             throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
         }
     }

@@ -1,12 +1,16 @@
 package seong.onlinestudy.service;
 
+import org.apache.logging.log4j.util.StringBuilders;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.StringUtils;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.exception.DuplicateElementException;
@@ -31,6 +35,26 @@ class MemberServiceTest {
 
     @Mock
     MemberRepository memberRepository;
+
+    @Spy
+    PasswordEncoder passwordEncoder;
+
+    public MemberServiceTest() {
+        passwordEncoder = new MockPasswordEncoder();
+    }
+
+    static class MockPasswordEncoder implements PasswordEncoder {
+
+        @Override
+        public String encode(CharSequence rawPassword) {
+            return new StringBuilder(rawPassword).reverse().toString();
+        }
+
+        @Override
+        public boolean matches(CharSequence rawPassword, String encodedPassword) {
+            return encode(rawPassword).equals(encodedPassword);
+        }
+    }
 
     @Test
     void createMember_중복체크() {
