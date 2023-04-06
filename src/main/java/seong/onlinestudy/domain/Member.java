@@ -42,9 +42,10 @@ public class Member {
         if (StringUtils.hasText(request.getNickname())) {
             this.nickname = request.getNickname();
         }
-        if (StringUtils.hasText(request.getPassword())) {
-            this.password = request.getPassword();
-        }
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     public void delete() {

@@ -23,15 +23,44 @@ public class MemberService {
     private final GroupMemberRepository groupMemberRepository;
 
     @Transactional
-    public Long createMember(MemberCreateRequest memberCreateRequest) {
-        memberRepository.findByUsername(memberCreateRequest.getUsername())
+    public Long createMember(MemberCreateRequest request) {
+        memberRepository.findByUsername(request.getUsername())
                 .ifPresent(member -> {
                     throw new DuplicateElementException("이미 존재하는 아이디입니다.");
                 });
-        Member member = Member.createMember(memberCreateRequest);
+
+        passwordCheck(request.getPassword(), request.getPasswordCheck());
+
+        Member member = Member.createMember(request);
         memberRepository.save(member);
 
         return member.getId();
+    }
+
+    @Transactional
+    public Long updateMember(Long memberId, MemberUpdateRequest request) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+        updatePassword(request, findMember);
+        findMember.update(request);
+
+        return findMember.getId();
+    }
+
+    private void updatePassword(MemberUpdateRequest request, Member findMember) {
+        if(!request.getPasswordNew().isBlank()) {
+            passwordCheck(request.getPasswordNew(), request.getPasswordNewCheck());
+            passwordCheck(request.getPasswordOld(), findMember.getPassword());
+
+            findMember.updatePassword(request.getPasswordNew());
+        }
+    }
+
+    private void passwordCheck(String password, String passwordCheck) {
+        if(!password.equals(passwordCheck)) {
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
     }
 
     public void duplicateCheck(MemberDuplicateCheckRequest request) {
@@ -46,16 +75,6 @@ public class MemberService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         return MemberDto.from(member);
-    }
-
-    @Transactional
-    public Long updateMember(Long memberId, MemberUpdateRequest request) {
-        Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-
-        findMember.update(request);
-
-        return findMember.getId();
     }
 
     @Transactional

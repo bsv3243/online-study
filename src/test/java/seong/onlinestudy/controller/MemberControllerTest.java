@@ -120,8 +120,10 @@ class MemberControllerTest {
     public void createMember() throws Exception {
         //given
         MemberCreateRequest request = new MemberCreateRequest();
-        request.setUsername("member"); request.setNickname("member");
+        request.setUsername("member");
+        request.setNickname("member");
         request.setPassword("member123!");
+        request.setPasswordCheck("member123!");
 
         //when
         ResultActions resultActions = mvc.perform(post("/api/v1/members")
@@ -138,13 +140,16 @@ class MemberControllerTest {
                                 fieldWithPath("username").type(STRING)
                                         .attributes(getConstraint("영문, 숫자만 가능. 6자 이상, 20자 이하"))
                                         .description("회원 아이디"),
+                                fieldWithPath("nickname").type(STRING)
+                                        .attributes(getConstraint("2자 이상, 12자 이하"))
+                                        .description("회원 닉네임").optional(),
                                 fieldWithPath("password").type(STRING)
                                         .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
                                         .description("회원 비밀번호"),
-                                fieldWithPath("nickname").type(STRING)
-                                        .attributes(getConstraint("2자 이상, 12자 이하"))
-                                        .description("회원 닉네임").optional()
-                        ),
+                                fieldWithPath("passwordCheck").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
+                                        .description("회원 비밀번호 확인")
+                                ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
                                 fieldWithPath("data").type(NUMBER).description("생성된 회원 엔티티 아이디")
@@ -213,7 +218,10 @@ class MemberControllerTest {
     public void updateMember() throws Exception {
         //given
         MemberUpdateRequest request = new MemberUpdateRequest();
-        request.setNickname("nickname"); request.setPassword("password123!");
+        request.setNickname("nickname");
+        request.setPasswordOld("passwordOld123!");
+        request.setPasswordNew("passwordNew1!");
+        request.setPasswordNewCheck("passwordNew1!");
 
         Member testMember = MyUtils.createMember("member", "member");
         ReflectionTestUtils.setField(testMember, "id", 1L);
@@ -237,12 +245,18 @@ class MemberControllerTest {
                                 parameterWithName("memberId").description("회원 엔티티 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("password").type(STRING)
-                                        .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
-                                        .description("회원 비밀번호").optional(),
                                 fieldWithPath("nickname").type(STRING)
                                         .attributes(getConstraint("2자 이상, 12자 이하"))
-                                        .description("회원 닉네임").optional()
+                                        .description("업데이틀 할 닉네임").optional(),
+                                fieldWithPath("passwordOld").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
+                                        .description("회원 현재 비밀번호").optional(),
+                                fieldWithPath("passwordNew").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
+                                        .description("업데이트 할 비밀번호").optional(),
+                                fieldWithPath("passwordNewCheck").type(STRING)
+                                        .attributes(getConstraint("영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하"))
+                                        .description("업데이트 할 비밀번호 확인").optional()
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
