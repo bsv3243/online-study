@@ -25,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -81,8 +82,10 @@ class LoginControllerTest {
                                         .description("회원 비밀번호")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
-                                fieldWithPath("data").type(STRING).description("login 성공 메시지")
+                                beneathPath("data").withSubsectionId("data"),
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디"),
+                                fieldWithPath("username").type(STRING).description("회원 아이디"),
+                                fieldWithPath("nickname").type(STRING).description("회원 닉네임")
                         )));
     }
 
