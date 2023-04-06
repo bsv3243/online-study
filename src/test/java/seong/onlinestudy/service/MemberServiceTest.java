@@ -111,6 +111,21 @@ class MemberServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
 
         //then
+    }
+    @Test
+    void updateMember_패스워드_null() {
+        //given
+        MemberUpdateRequest request = new MemberUpdateRequest();
+        request.setNickname("닉네임");
 
+        Member testMember = MyUtils.createMember("member", "passwordNotEq");
+        ReflectionTestUtils.setField(testMember, "id", 1L);
+
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(testMember));
+
+        //when
+        Long updateMemberId = memberService.updateMember(1L, request);
+
+        //then
     }
 }

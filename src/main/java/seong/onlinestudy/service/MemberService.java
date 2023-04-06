@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.DuplicateElementException;
@@ -59,7 +60,7 @@ public class MemberService {
     }
 
     private void updatePassword(MemberUpdateRequest request, Member findMember) {
-        if(!request.getPasswordNew().isBlank()) {
+        if(StringUtils.hasText(request.getPasswordNew())) {
             request.passwordCheck();
             memberPasswordCheck(request.getPasswordOld(), findMember.getPassword());
 
