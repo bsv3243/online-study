@@ -180,6 +180,30 @@ public class PostRepositoryCustomTest {
         assertThat(findPosts).containsExactlyInAnyOrderElementsOf(testPosts);
     }
 
+    @Test
+    void findPostsWithComments_그룹삭제() {
+        //given
+        Member testMember = members.get(0);
+        Group testGroup = groups.get(0);
+
+        List<Post> testPosts = createPosts(List.of(testMember), List.of(testGroup), 20, false);
+        postRepository.saveAll(testPosts);
+
+        testGroup.delete();
+        em.flush();
+        em.clear();
+
+        //when
+        Page<Post> postsWithComments = postRepository
+                .findPostsWithComments(null, testGroup.getId(), null, null, null, PageRequest.of(0, 10));
+
+        //then
+        List<Post> findPosts = postsWithComments.getContent();
+        Post findPost = findPosts.get(0);
+
+        assertThat(findPost.getGroup().getId()).isEqualTo(testGroup.getId());
+    }
+
     private BooleanExpression studyIdIn(List<Long> studyIds) {
         return studyIds != null ? postStudy.study.id.in(studyIds) : null;
     }

@@ -179,4 +179,29 @@ public class PostRepositoryTest {
         testMember = memberRepository.findById(testMember.getId()).get();
         assertThat(testMember.getPosts().size()).isEqualTo(0);
     }
+
+    @Test
+    void findPostWhichGroupRemoved() {
+        //given
+        Member testMember = members.get(0);
+        Group testGroup = groups.get(0);
+
+        List<Post> testPosts = createPosts(List.of(testMember), List.of(testGroup), 20, false);
+        postRepository.saveAll(testPosts);
+
+        em.flush();
+
+        //when
+        testGroup.delete();
+        em.flush();
+        em.clear();
+
+        //then
+        Post testPost = testPosts.get(0);
+
+        testPost = postRepository.findById(testPost.getId()).get();
+
+        assertThat(testPost.getGroup().getId()).isEqualTo(testGroup.getId());
+
+    }
 }
