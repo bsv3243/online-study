@@ -19,6 +19,7 @@ import seong.onlinestudy.enumtype.GroupCategory;
 import seong.onlinestudy.enumtype.PostCategory;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;
+import seong.onlinestudy.request.post.PostsDeleteRequest;
 import seong.onlinestudy.request.post.PostsGetRequest;
 import seong.onlinestudy.service.PostService;
 
@@ -99,6 +100,7 @@ class PostControllerTest {
                         requestFields(
                                 fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0")).description("페이지 번호"),
                                 fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("10")).description("페이지 사이즈"),
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
                                 fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
                                 fieldWithPath("search").type(STRING).description("게시글 제목 대상 검색어").optional(),
                                 fieldWithPath("category").type(STRING).description("게시글 카테고리(Enum Type 탭 참고)").optional(),
@@ -304,6 +306,36 @@ class PostControllerTest {
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("postId").description("게시글 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(STRING).description("게시글 삭제 메시지")
+                        )));
+    }
+
+    @Test
+    void deletePosts() throws Exception {
+        //given
+        Member member = MyUtils.createMember("member", "member");
+        session.setAttribute(LOGIN_MEMBER, member);
+
+        PostsDeleteRequest request = new PostsDeleteRequest();
+        request.setMemberId(1L);
+
+        //when
+        ResultActions resultActions = mvc.perform(delete("/api/v1/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("posts-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("memberId").description("회원 엔티티 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),

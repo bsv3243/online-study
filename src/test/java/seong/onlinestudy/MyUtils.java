@@ -41,7 +41,7 @@ public class MyUtils {
     public static List<Group> createGroups(List<Member> members, int endId) {
         List<Group> groups = new ArrayList<>();
         for(int i=0; i<endId; i++) {
-            groups.add(createGroup("테스트그룹" + 1, 30, members.get(i)));
+            groups.add(createGroup("테스트그룹" + 1, 30, members.get(i%members.size())));
         }
         return groups;
     }

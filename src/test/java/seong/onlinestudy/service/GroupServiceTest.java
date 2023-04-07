@@ -107,7 +107,7 @@ class GroupServiceTest {
         setField(memberA, "id", 2L);
 
 
-        given(groupRepository.findById(1L)).willReturn(Optional.of(group));
+        given(groupRepository.findGroupWithMembers(1L)).willReturn(Optional.of(group));
 
         //when
         Long groupId = 1L;
@@ -131,7 +131,7 @@ class GroupServiceTest {
         setField(master, "id", 1L);
         setField(memberA, "id", 2L);
 
-        given(groupRepository.findById(1L)).willReturn(Optional.of(group));
+        given(groupRepository.findGroupWithMembers(1L)).willReturn(Optional.of(group));
 
         //when
         Long groupId = 1L;
@@ -165,7 +165,7 @@ class GroupServiceTest {
 
         PageImpl<Group> testGroupsWtihPage = new PageImpl<>(testGroups, PageRequest.of(0, 5), 3);
 
-        given(groupRepository.findGroups(any(), any(), any(), any(), any()))
+        given(groupRepository.findGroups(any(), any(), any(), any(), any(), any()))
                 .willReturn(testGroupsWtihPage);
         given(studyRepository.findStudiesInGroups(any()))
                 .willReturn(testGroupStudyDtos);

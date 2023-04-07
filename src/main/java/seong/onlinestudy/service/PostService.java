@@ -12,6 +12,7 @@ import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;
+import seong.onlinestudy.request.post.PostsDeleteRequest;
 import seong.onlinestudy.request.post.PostsGetRequest;
 
 import java.util.*;
@@ -31,9 +32,10 @@ public class PostService {
     public Page<PostDto> getPosts(PostsGetRequest request) {
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
         Page<Post> postsWithComments
-                = postRepository.findPostsWithComments(pageRequest,
-                request.getGroupId(), request.getSearch(), request.getCategory(),
-                request.getStudyIds());
+                = postRepository.findPostsWithComments(
+                        request.getMemberId(), request.getGroupId(),
+                        request.getSearch(), request.getCategory(),
+                        request.getStudyIds(), pageRequest);
 
         List<PostStudy> postStudies = postStudyRepository.findStudiesWhereInPosts(postsWithComments.getContent());
 
@@ -139,5 +141,14 @@ public class PostService {
 
         postStudyRepository.deleteAllByPost(post);
         post.delete();
+    }
+
+    @Transactional
+    public void deletePosts(PostsDeleteRequest request, Member loginMember) {
+        if(!request.getMemberId().equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        postRepository.softDeleteAllByMemberId(request.getMemberId());
     }
 }

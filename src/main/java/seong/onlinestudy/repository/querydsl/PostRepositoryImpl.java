@@ -26,32 +26,36 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds) {
+    public Page<Post> findPostsWithComments(Long memberId, Long groupId, String search, PostCategory category, List<Long> studyIds, Pageable pageable) {
 
         OrderSpecifier order = post.createdAt.desc();
 
         List<Post> posts = query
-                .select(post)
+                .select(post).distinct()
                 .from(post)
                 .leftJoin(post.comments, comment).fetchJoin()
                 .leftJoin(comment.member, member).fetchJoin()
                 .leftJoin(post.member, member).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
-                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(memberIdEq(memberId), groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order)
                 .fetch();
 
         Long count = query
-                .select(post.count())
+                .select(post.countDistinct())
                 .from(post)
                 .leftJoin(post.postStudies, postStudy)
-                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(memberIdEq(memberId), groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
                 .fetchOne();
 
 
         return new PageImpl<>(posts, pageable, count);
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return memberId != null ? post.member.id.eq(memberId) : null;
     }
 
     private BooleanExpression studyIdIn(List<Long> studyIds) {

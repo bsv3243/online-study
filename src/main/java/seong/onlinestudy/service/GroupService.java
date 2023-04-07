@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import seong.onlinestudy.controller.GroupsDeleteRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.dto.GroupMemberDto;
@@ -66,8 +67,11 @@ public class GroupService {
     }
 
     public Page<GroupDto> getGroups(GroupsGetRequest request) {
-        Page<Group> groups = groupRepository.findGroups(PageRequest.of(request.getPage(), request.getSize()),
-                request.getCategory(), request.getSearch(), request.getStudyIds(), request.getOrderBy());
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+        Page<Group> groups = groupRepository.findGroups(
+                request.getMemberId(), request.getCategory(),
+                request.getSearch(), request.getStudyIds(),
+                request.getOrderBy(), pageRequest);
 
         List<GroupStudyDto> groupStudies = studyRepository.findStudiesInGroups(groups.getContent());
 
@@ -117,16 +121,19 @@ public class GroupService {
 
     @Transactional
     public void deleteGroup(Long id, Member loginMember) {
-        Group group = groupRepository.findById(id)
+        Group group = groupRepository.findGroupWithMembers(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        GroupMember master = group.getGroupMembers().stream().filter(groupMember ->
-                groupMember.getRole().equals(MASTER)).findFirst().get();
+        GroupMember master = group.getGroupMembers().stream()
+                .filter(groupMember -> groupMember.getRole().equals(MASTER))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("그룹장이 존재하지 않습니다."));
+
         if(!master.getMember().getId().equals(loginMember.getId())) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
-        groupRepository.delete(group);
+        group.delete();
     }
 
     @Transactional
@@ -156,5 +163,23 @@ public class GroupService {
         group.update(request);
 
         return group.getId();
+    }
+
+    @Transactional
+    public void deleteGroups(GroupsDeleteRequest request, Member loginMember) {
+        if(!request.getMemberId().equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        groupRepository.softDeleteAllByMemberIdRoleIsMaster(request.getMemberId());
+    }
+
+    @Transactional
+    public void quitGroups(GroupsDeleteRequest request, Member loginMember) {
+        if(!request.getMemberId().equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        groupMemberRepository.deleteAllByMemberIdRoleIsNotMaster(request.getMemberId());
     }
 }

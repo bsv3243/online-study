@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface GroupRepositoryCustom {
 
-    Page<Group> findGroups(Pageable pageable, GroupCategory category, String search, List<Long> studyIds, OrderBy orderBy);
+    Page<Group> findGroups(Long memberId, GroupCategory category, String search, List<Long> studyIds, OrderBy orderBy, Pageable pageable);
 }

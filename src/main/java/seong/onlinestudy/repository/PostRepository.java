@@ -1,6 +1,7 @@
 package seong.onlinestudy.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.Post;
@@ -20,4 +21,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     @Query("select p from Post p left join fetch p.postStudies ps left join fetch ps.study s where p.id=:postId")
     Optional<Post> findByIdWithStudies(@Param("postId") Long postId);
+
+    @Modifying
+    @Query("update Post p set p.deleted = true" +
+            " where p.member.id = :memberId")
+    void softDeleteAllByMemberId(@Param("memberId") Long memberId);
 }

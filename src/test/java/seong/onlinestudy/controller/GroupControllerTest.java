@@ -260,6 +260,7 @@ class GroupControllerTest {
                                         description("페이지"),
                                 fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("12"))
                                         .description("응답 데이터 개수"),
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
                                 fieldWithPath("category").type(STRING).description("그룹 카테고리(Enum Type)").optional(),
                                 fieldWithPath("search").type(STRING).description("그룹 이름 검색어").optional(),
                                 fieldWithPath("studyIds").type(JsonFieldType.ARRAY).description("스터디 아이디 목록").optional(),
@@ -414,6 +415,68 @@ class GroupControllerTest {
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
                                 fieldWithPath("data").type(NUMBER).description("그룹 엔티티 아이디")
+                        )));
+    }
+
+    @Test
+    @DisplayName("그룹 목록 삭제")
+    void deleteGroups() throws Exception {
+        //given
+        Member loginMember = createMember("member", "member");
+        session.setAttribute(LOGIN_MEMBER, loginMember);
+
+        GroupsDeleteRequest request = new GroupsDeleteRequest();
+        request.setMemberId(1L);
+
+        //when
+        ResultActions result = mvc.perform(delete("/api/v1/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("groups-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(STRING).description("짧은 메시지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("그룹 목록 탈퇴")
+    void quitGroups() throws Exception {
+        //given
+        Member loginMember = createMember("member", "member");
+        session.setAttribute(LOGIN_MEMBER, loginMember);
+
+        GroupsDeleteRequest request = new GroupsDeleteRequest();
+        request.setMemberId(1L);
+
+        //when
+        ResultActions result = mvc.perform(delete("/api/v1/groups/quit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("groups-quit",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(STRING).description("짧은 메시지")
                         )));
     }
 

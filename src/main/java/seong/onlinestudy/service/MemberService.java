@@ -65,6 +65,6 @@ public class MemberService {
 
         findMember.delete();
 
-        groupMemberRepository.deleteByMemberId(memberId);
+        groupMemberRepository.deleteAllByMemberIdRoleIsNotMaster(memberId);
     }
 }

@@ -11,6 +11,7 @@ import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;
+import seong.onlinestudy.request.post.PostsDeleteRequest;
 import seong.onlinestudy.request.post.PostsGetRequest;
 import seong.onlinestudy.service.PostService;
 
@@ -73,5 +74,16 @@ public class PostController {
         postService.deletePost(postId, loginMember);
 
         return new Result<>("200", "delete post");
+    }
+
+    @DeleteMapping("/posts")
+    public Result<String> deletePosts(@RequestBody @Valid PostsDeleteRequest request,
+                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
+        if(loginMember == null) {
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+        }
+        postService.deletePosts(request, loginMember);
+
+        return new Result<>("200", "delete Posts");
     }
 }
