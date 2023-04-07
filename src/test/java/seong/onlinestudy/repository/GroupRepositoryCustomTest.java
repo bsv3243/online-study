@@ -151,18 +151,36 @@ class GroupRepositoryCustomTest {
     }
 
     @Test
-    void findGroups() {
+    void findGroups_페이지정보() {
         //given
-
 
         //when
         PageRequest pageRequest = PageRequest.of(0, 2);
-        Page<Group> findGroupsWithPageInfo = groupRepository.findGroups(null, null, null, null, OrderBy.CREATEDAT, pageRequest);
+        Page<Group> findGroupsWithPageInfo = groupRepository.findGroups(null, null, null,
+                null, OrderBy.CREATEDAT, pageRequest);
 
         //then
         int findTotalPages = findGroupsWithPageInfo.getTotalPages();
         int testTotalPages = groups.size() / 2 + 1;
 
         assertThat(findTotalPages).isEqualTo(testTotalPages);
+    }
+
+    @Test
+    void findGroups_회원조건() {
+        //given
+        Member testMember = members.get(0);
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Group> findGroupsWithPage = groupRepository.findGroups(testMember.getId(), null, null,
+                null, OrderBy.CREATEDAT, pageRequest);
+
+        //then
+        List<Group> findGroups = findGroupsWithPage.getContent();
+        List<Group> testGroups = testMember.getGroupMembers().stream()
+                .map(GroupMember::getGroup).collect(Collectors.toList());
+
+        assertThat(findGroups).containsExactlyInAnyOrderElementsOf(testGroups);
     }
 }

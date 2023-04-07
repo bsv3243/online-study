@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seong.onlinestudy.controller.GroupsDeleteRequest;
+import seong.onlinestudy.request.group.GroupsDeleteRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.dto.GroupMemberDto;

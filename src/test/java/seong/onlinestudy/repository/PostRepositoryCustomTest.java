@@ -162,6 +162,24 @@ public class PostRepositoryCustomTest {
         });
     }
 
+    @Test
+    void findPostsWithComments_회원조건() {
+        //given
+        Member testMember = members.get(0);
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Post> findPostsWithPage = postRepository.findPostsWithComments(
+                testMember.getId(), null, null,
+                null, null, pageRequest);
+
+        //then
+        List<Post> findPosts = findPostsWithPage.getContent();
+        List<Post> testPosts = testMember.getPosts();
+
+        assertThat(findPosts).containsExactlyInAnyOrderElementsOf(testPosts);
+    }
+
     private BooleanExpression studyIdIn(List<Long> studyIds) {
         return studyIds != null ? postStudy.study.id.in(studyIds) : null;
     }
