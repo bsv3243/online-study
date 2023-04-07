@@ -10,7 +10,6 @@ public class PostsGetRequest {
 
     private int page;
     private int size;
-    private Long memberId;
     private Long groupId;
     private String search;
     private PostCategory category;

@@ -26,7 +26,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findPostsWithComments(Long memberId, Long groupId, String search, PostCategory category, List<Long> studyIds, Pageable pageable) {
+    public Page<Post> findPostsWithComments(Pageable pageable, Long groupId, String search, PostCategory category, List<Long> studyIds) {
 
         OrderSpecifier order = post.createdAt.desc();
 
@@ -37,7 +37,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(comment.member, member).fetchJoin()
                 .leftJoin(post.member, member).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
-                .where(memberIdEq(memberId), groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order)
@@ -47,15 +47,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .select(post.count())
                 .from(post)
                 .leftJoin(post.postStudies, postStudy)
-                .where(memberIdEq(memberId), groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
                 .fetchOne();
 
 
         return new PageImpl<>(posts, pageable, count);
-    }
-
-    private BooleanExpression memberIdEq(Long memberId) {
-        return memberId != null ? post.member.id.eq(memberId) : null;
     }
 
     private BooleanExpression studyIdIn(List<Long> studyIds) {

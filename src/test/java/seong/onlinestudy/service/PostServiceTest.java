@@ -138,7 +138,7 @@ class PostServiceTest {
 
 
         List<Post> subList = posts.subList(0, 10);
-        given(postRepository.findPostsWithComments(null, any(), any(), any(), any(), any()))
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any()))
                 .willReturn(new PageImpl<>(subList, PageRequest.of(page, size), posts.size()));
 
         //when
@@ -173,7 +173,7 @@ class PostServiceTest {
 
         PostsGetRequest request = new PostsGetRequest();
 
-        given(postRepository.findPostsWithComments(null, any(), any(), any(), any(), any()))
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any()))
                 .willReturn(new PageImpl<>(posts, PageRequest.of(page, size), posts.size()));
         given(postStudyRepository.findStudiesWhereInPosts(anyList()))
                 .willReturn(postStudies);

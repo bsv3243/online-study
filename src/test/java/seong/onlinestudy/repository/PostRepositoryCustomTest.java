@@ -120,7 +120,7 @@ public class PostRepositoryCustomTest {
 
         //when
         PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<Post> findPostsWithPage = postRepository.findPostsWithComments(null, null, "검색", null, null, pageRequest);
+        Page<Post> findPostsWithPage = postRepository.findPostsWithComments(pageRequest, null, "검색", null, null);
 
         //then
         List<Post> findPosts = findPostsWithPage.getContent();
@@ -149,7 +149,7 @@ public class PostRepositoryCustomTest {
 
         PageRequest pageRequest = PageRequest.of(0, 30);
         Page<Post> findPostsWithPage
-                = postRepository.findPostsWithComments(null, null, null, null, null, pageRequest);
+                = postRepository.findPostsWithComments(pageRequest, null, null, null, null);
 
         //then
         List<Post> findPosts = findPostsWithPage.getContent();

@@ -67,7 +67,7 @@ class PostControllerTest {
     public void getPosts() throws Exception {
         //given
         PostsGetRequest request = new PostsGetRequest();
-        request.setMemberId(1L); request.setGroupId(1L); request.setSearch("검색어");
+        request.setGroupId(1L); request.setSearch("검색어");
         request.setCategory(PostCategory.CHAT); request.setStudyIds(List.of(1L));
 
         Member member = MyUtils.createMember("member", "member");
@@ -101,7 +101,6 @@ class PostControllerTest {
                         requestFields(
                                 fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0")).description("페이지 번호"),
                                 fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("10")).description("페이지 사이즈"),
-                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
                                 fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
                                 fieldWithPath("search").type(STRING).description("게시글 제목 대상 검색어").optional(),
                                 fieldWithPath("category").type(STRING).description("게시글 카테고리(Enum Type 탭 참고)").optional(),
