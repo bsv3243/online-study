@@ -20,6 +20,7 @@ import seong.onlinestudy.request.member.MemberCreateRequest;
 import seong.onlinestudy.enumtype.OrderBy;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 import java.util.List;
@@ -36,6 +37,8 @@ class GroupRepositoryTest {
     GroupRepository groupRepository;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    PostRepository postRepository;
     @Autowired
     EntityManager em;
 
@@ -138,13 +141,28 @@ class GroupRepositoryTest {
 
     }
 
-    private BooleanExpression categoryEq(GroupCategory category) {
-        return category != null ? group.category.eq(category) : null;
+    @Test
+    void deleteGroupAndGetGroupFromPost() {
+        //given
+        Member testMember = members.get(0);
+        Group testGroup = groups.get(0);
+
+        List<Post> testPosts = MyUtils.createPosts(List.of(testMember), List.of(testGroup), 30, false);
+        postRepository.saveAll(testPosts);
+
+        //when
+        testGroup.delete();
+        em.flush();
+        em.clear();
+
+        //then
+        Post findPost = testPosts.get(0);
+        em.merge(findPost);
+
+        assertThat(findPost.getGroup().getId()).isEqualTo(testGroup.getId());
     }
 
-    private BooleanExpression nameContains(String search) {
-        return search != null ? group.name.contains(search) : null;
-    }
+
 
     private Group createGroup(String name, int count, GroupMember groupMember) {
         GroupCreateRequest groupRequest = getGroupCreateRequest(name, count);

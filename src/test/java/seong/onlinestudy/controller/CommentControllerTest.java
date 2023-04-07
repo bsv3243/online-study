@@ -29,6 +29,7 @@ import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.request.CommentsGetRequest;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
+import seong.onlinestudy.request.comment.CommentsDeleteRequest;
 import seong.onlinestudy.service.CommentService;
 
 import java.time.LocalDateTime;
@@ -153,6 +154,7 @@ class CommentControllerTest {
                                 fieldWithPath("content").type(STRING).description("댓글 내용"),
                                 fieldWithPath("createdAt").type(STRING).description("댓글 작성일"),
                                 fieldWithPath("postId").type(NUMBER).description("연관된 게시글 엔티티 아이디"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("댓글 삭제 여부"),
 
                                 subsectionWithPath("member").type(OBJECT).description("댓글 작성자"),
                                 fieldWithPath("member.memberId").type(NUMBER).description("댓글 작성자 엔티티 아이디"),
@@ -220,6 +222,36 @@ class CommentControllerTest {
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
                                 fieldWithPath("data").type(NUMBER).description("삭제된 댓글 엔티티 아이디")
+                        )));
+    }
+
+    @Test
+    void deleteComments() throws Exception {
+        //given
+        CommentsDeleteRequest request = new CommentsDeleteRequest();
+        request.setMemberId(1L);
+
+        Member testMember = createMember("member", "member");
+        session.setAttribute(LOGIN_MEMBER, testMember);
+
+        //when
+        ResultActions resultActions = mvc.perform(post("/api/v1/comments/delete")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("comments-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(STRING).description("삭제 미시지")
                         )));
     }
 }

@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static seong.onlinestudy.domain.QComment.comment;
+import static seong.onlinestudy.domain.QGroup.group;
 import static seong.onlinestudy.domain.QMember.member;
 import static seong.onlinestudy.domain.QPost.post;
 import static seong.onlinestudy.domain.QPostStudy.postStudy;
@@ -36,6 +37,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.comments, comment).fetchJoin()
                 .leftJoin(comment.member, member).fetchJoin()
                 .leftJoin(post.member, member).fetchJoin()
+                .leftJoin(post.group, group).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
                 .where(memberIdEq(memberId), groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
                 .limit(pageable.getPageSize())

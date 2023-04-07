@@ -17,6 +17,7 @@ import seong.onlinestudy.repository.PostRepository;
 import seong.onlinestudy.request.CommentsGetRequest;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
+import seong.onlinestudy.request.comment.CommentsDeleteRequest;
 
 import java.util.NoSuchElementException;
 
@@ -85,5 +86,14 @@ public class CommentService {
                 commentRepository.findComments(request.getMemberId(), request.getPostId(), pageRequest);
 
         return commentsWithPage.map(CommentDto::from);
+    }
+
+    @Transactional
+    public void deleteComments(CommentsDeleteRequest request, Member loginMember) {
+        if(!request.getMemberId().equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        commentRepository.softDeleteAllByMemberId(request.getMemberId());
     }
 }

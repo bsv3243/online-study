@@ -11,6 +11,7 @@ import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.group.GroupUpdateRequest;
+import seong.onlinestudy.request.group.GroupsDeleteRequest;
 import seong.onlinestudy.request.group.GroupsGetRequest;
 import seong.onlinestudy.service.GroupService;
 
@@ -103,7 +104,7 @@ public class GroupController {
         return new Result<>("200", groupId);
     }
 
-    @DeleteMapping("/groups")
+    @PostMapping("/groups/delete")
     public Result<String> deleteGroups(@RequestBody @Valid GroupsDeleteRequest request,
                                        @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {
@@ -115,7 +116,7 @@ public class GroupController {
         return new Result<>("200", "delete groups");
     }
 
-    @DeleteMapping("/groups/quit")
+    @PostMapping("/groups/quit")
     public Result<String> quitGroups(@RequestBody @Valid GroupsDeleteRequest request,
                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {

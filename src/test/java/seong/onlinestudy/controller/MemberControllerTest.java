@@ -187,7 +187,8 @@ class MemberControllerTest {
                                 beneathPath("data").withSubsectionId("data"),
                                 fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디"),
                                 fieldWithPath("username").type(STRING).description("회원 아이디"),
-                                fieldWithPath("nickname").type(STRING).description("회원 닉네임")
+                                fieldWithPath("nickname").type(STRING).description("회원 닉네임"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("회원 삭제여부")
                         )));
     }
 

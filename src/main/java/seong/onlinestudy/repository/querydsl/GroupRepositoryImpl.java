@@ -15,7 +15,6 @@ import java.util.List;
 
 import static seong.onlinestudy.domain.QGroup.*;
 import static seong.onlinestudy.domain.QGroupMember.groupMember;
-import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
 import static seong.onlinestudy.domain.QTicket.ticket;
 
@@ -47,7 +46,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .join(group.groupMembers, groupMember)
                 .leftJoin(group.tickets, ticket)
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
-                .where(memberIdEq(memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
+                .where(memberIdEq(groupMember.member, memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
                 .groupBy(group.id)
                 .orderBy(order)
                 .limit(pageable.getPageSize())
@@ -57,16 +56,17 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
         Long total = query
                 .select(group.countDistinct())
                 .from(group)
+                .join(group.groupMembers, groupMember)
                 .leftJoin(group.tickets, ticket)
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
-                .where(memberIdEq(memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
+                .where(memberIdEq(groupMember.member, memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
                 .fetchOne();
 
         return new PageImpl<>(groups, pageable, total);
     }
 
-    private BooleanExpression memberIdEq(Long memberId) {
-        return memberId != null ? groupMember.member.id.eq(memberId) : null;
+    private BooleanExpression memberIdEq(QMember member, Long memberId) {
+        return memberId != null ? member.id.eq(memberId) : null;
     }
 
     private BooleanExpression studyIdsIn(QStudy study, List<Long> studyIds) {

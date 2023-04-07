@@ -121,7 +121,7 @@ class CommentServiceTest {
         Long commentId = commentService.deleteComment(comment.getId(), member);
 
         //then
-        assertThat(comment.getDeleted()).isTrue();
+        assertThat(comment.isDeleted()).isTrue();
 
     }
 }
