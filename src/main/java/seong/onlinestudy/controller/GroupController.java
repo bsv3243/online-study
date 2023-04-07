@@ -102,4 +102,28 @@ public class GroupController {
 
         return new Result<>("200", groupId);
     }
+
+    @DeleteMapping("/groups")
+    public Result<String> deleteGroups(@RequestBody @Valid GroupsDeleteRequest request,
+                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+        if(loginMember == null) {
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+        }
+
+        groupService.deleteGroups(request, loginMember);
+
+        return new Result<>("200", "delete groups");
+    }
+
+    @DeleteMapping("/groups/quit")
+    public Result<String> quitGroups(@RequestBody @Valid GroupsDeleteRequest request,
+                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+        if(loginMember == null) {
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+        }
+
+        groupService.quitGroups(request, loginMember);
+
+        return new Result<>("200", "quit groups");
+    }
 }

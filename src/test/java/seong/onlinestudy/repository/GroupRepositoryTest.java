@@ -102,17 +102,40 @@ class GroupRepositoryTest {
     }
 
     @Test
-    void getGroups() {
+    void getGroups_페이지정보() {
         //given
         PageRequest request = PageRequest.of(0, groups.size());
 
         //when
-        Page<Group> findGroups = groupRepository.findGroups(request,
-                null, null, null, OrderBy.CREATEDAT);
+        Page<Group> findGroups = groupRepository.findGroups(null, null, null, null, OrderBy.CREATEDAT, request
+        );
 
         //then
         assertThat(findGroups.getContent())
                 .containsExactlyInAnyOrderElementsOf(groups);
+    }
+
+    @Test
+    void deleteAllByMemberId() {
+        //given
+        Member testMember = members.get(0);
+
+        List<Group> testGroups = MyUtils.createGroups(List.of(testMember), 20);
+        groupRepository.saveAll(testGroups);
+
+        //when
+        groupRepository.softDeleteAllByMemberId(testMember.getId());
+        em.clear();
+
+        //then
+        List<Group> findGroups = em.createQuery("select g from Group g where g.id in " +
+                        "(select gm.group.id from GroupMember gm" +
+                        " where gm.member.id = :memberId)", Group.class)
+                .setParameter("memberId", testMember.getId())
+                .getResultList();
+
+        assertThat(findGroups).isEmpty();
+
     }
 
     private BooleanExpression categoryEq(GroupCategory category) {

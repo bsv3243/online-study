@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import seong.onlinestudy.controller.GroupsDeleteRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.dto.GroupMemberDto;
@@ -162,5 +163,23 @@ public class GroupService {
         group.update(request);
 
         return group.getId();
+    }
+
+    @Transactional
+    public void deleteGroups(GroupsDeleteRequest request, Member loginMember) {
+        if(!request.getMemberId().equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        groupRepository.softDeleteAllByMemberId(request.getMemberId());
+    }
+
+    @Transactional
+    public void quitGroups(GroupsDeleteRequest request, Member loginMember) {
+        if(!request.getMemberId().equals(loginMember.getId())) {
+            throw new PermissionControlException("권한이 없습니다.");
+        }
+
+        groupMemberRepository.deleteAllByMemberIdRoleIsNotMaster(request.getMemberId());
     }
 }

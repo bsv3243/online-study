@@ -418,6 +418,68 @@ class GroupControllerTest {
                         )));
     }
 
+    @Test
+    @DisplayName("그룹 목록 삭제")
+    void deleteGroups() throws Exception {
+        //given
+        Member loginMember = createMember("member", "member");
+        session.setAttribute(LOGIN_MEMBER, loginMember);
+
+        GroupsDeleteRequest request = new GroupsDeleteRequest();
+        request.setMemberId(1L);
+
+        //when
+        ResultActions result = mvc.perform(delete("/api/v1/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("groups-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(STRING).description("짧은 메시지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("그룹 목록 탈퇴")
+    void quitGroups() throws Exception {
+        //given
+        Member loginMember = createMember("member", "member");
+        session.setAttribute(LOGIN_MEMBER, loginMember);
+
+        GroupsDeleteRequest request = new GroupsDeleteRequest();
+        request.setMemberId(1L);
+
+        //when
+        ResultActions result = mvc.perform(delete("/api/v1/groups/quit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("groups-quit",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(STRING).description("짧은 메시지")
+                        )));
+    }
+
 
     private GroupDto createTestGroupDto(Group group) {
         GroupDto groupDto = GroupDto.from(group);
