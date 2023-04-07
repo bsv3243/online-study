@@ -325,7 +325,7 @@ class PostControllerTest {
         request.setMemberId(1L);
 
         //when
-        ResultActions resultActions = mvc.perform(delete("/api/v1/posts")
+        ResultActions resultActions = mvc.perform(post("/api/v1/posts/delete")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(request))
                 .session(session));

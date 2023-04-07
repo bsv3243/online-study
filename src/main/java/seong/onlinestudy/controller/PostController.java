@@ -76,7 +76,7 @@ public class PostController {
         return new Result<>("200", "delete post");
     }
 
-    @DeleteMapping("/posts")
+    @PostMapping("/posts/delete")
     public Result<String> deletePosts(@RequestBody @Valid PostsDeleteRequest request,
                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
         if(loginMember == null) {

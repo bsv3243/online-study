@@ -31,6 +31,7 @@ import seong.onlinestudy.dto.GroupStudyDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.group.GroupUpdateRequest;
+import seong.onlinestudy.request.group.GroupsDeleteRequest;
 import seong.onlinestudy.request.group.GroupsGetRequest;
 import seong.onlinestudy.enumtype.OrderBy;
 import seong.onlinestudy.service.GroupService;
@@ -431,7 +432,7 @@ class GroupControllerTest {
         request.setMemberId(1L);
 
         //when
-        ResultActions result = mvc.perform(delete("/api/v1/groups")
+        ResultActions result = mvc.perform(post("/api/v1/groups/delete")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(request))
                 .session(session));
@@ -462,7 +463,7 @@ class GroupControllerTest {
         request.setMemberId(1L);
 
         //when
-        ResultActions result = mvc.perform(delete("/api/v1/groups/quit")
+        ResultActions result = mvc.perform(post("/api/v1/groups/quit")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .session(session));
