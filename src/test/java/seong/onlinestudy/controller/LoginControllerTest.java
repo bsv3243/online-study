@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,6 +36,7 @@ import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = LoginController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class LoginControllerTest {
 
     @Autowired
@@ -81,8 +84,10 @@ class LoginControllerTest {
                                         .description("회원 비밀번호")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
-                                fieldWithPath("data").type(STRING).description("login 성공 메시지")
+                                beneathPath("data").withSubsectionId("data"),
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디"),
+                                fieldWithPath("username").type(STRING).description("회원 아이디"),
+                                fieldWithPath("nickname").type(STRING).description("회원 닉네임")
                         )));
     }
 

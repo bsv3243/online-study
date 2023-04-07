@@ -1,8 +1,10 @@
 package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.DuplicateElementException;
@@ -22,16 +24,55 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupMemberRepository groupMemberRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
-    public Long createMember(MemberCreateRequest memberCreateRequest) {
-        memberRepository.findByUsername(memberCreateRequest.getUsername())
+    public Long createMember(MemberCreateRequest request) {
+        memberRepository.findByUsername(request.getUsername())
                 .ifPresent(member -> {
                     throw new DuplicateElementException("이미 존재하는 아이디입니다.");
                 });
-        Member member = Member.createMember(memberCreateRequest);
+
+        request.passwordCheck();
+
+        Member member = Member.createMember(request);
+        passwordToEncoded(member);
+
         memberRepository.save(member);
 
         return member.getId();
+    }
+
+    private void passwordToEncoded(Member member) {
+        String encodedPassword = passwordEncoder.encode(member.getPassword());
+        member.updatePassword(encodedPassword);
+    }
+
+    @Transactional
+    public Long updateMember(Long memberId, MemberUpdateRequest request) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+        updatePassword(request, findMember);
+        findMember.update(request);
+
+        return findMember.getId();
+    }
+
+    private void updatePassword(MemberUpdateRequest request, Member findMember) {
+        if(StringUtils.hasText(request.getPasswordNew())) {
+            request.passwordCheck();
+            memberPasswordCheck(request.getPasswordOld(), findMember.getPassword());
+
+            String encodedPassword = passwordEncoder.encode(request.getPasswordNew());
+            findMember.updatePassword(encodedPassword);
+        }
+    }
+
+    private void memberPasswordCheck(String password, String encodedPassword) {
+        if(!passwordEncoder.matches(password, encodedPassword)) {
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
     }
 
     public void duplicateCheck(MemberDuplicateCheckRequest request) {
@@ -46,16 +87,6 @@ public class MemberService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         return MemberDto.from(member);
-    }
-
-    @Transactional
-    public Long updateMember(Long memberId, MemberUpdateRequest request) {
-        Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-
-        findMember.update(request);
-
-        return findMember.getId();
     }
 
     @Transactional

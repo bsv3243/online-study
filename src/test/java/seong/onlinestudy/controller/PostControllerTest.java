@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
@@ -43,8 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
-@WebMvcTest(PostController.class)
 @AutoConfigureRestDocs
+@WebMvcTest(PostController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class PostControllerTest {
 
     @Autowired

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.SessionConst;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
+import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.request.login.LoginRequest;
 import seong.onlinestudy.service.LoginService;
 
@@ -25,15 +26,15 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public Result<String> login(@RequestBody @Valid LoginRequest loginRequest,
-                                HttpServletRequest request) {
+    public Result<MemberDto> login(@RequestBody @Valid LoginRequest loginRequest,
+                                   HttpServletRequest request) {
 
         Member loginMember = loginService.login(loginRequest);
         HttpSession session = request.getSession();
 
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        return new Result<>("200", "login 성공");
+        return new Result<>("200", MemberDto.from(loginMember));
     }
 
     @PostMapping("/logout")
