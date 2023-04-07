@@ -120,16 +120,19 @@ public class GroupService {
 
     @Transactional
     public void deleteGroup(Long id, Member loginMember) {
-        Group group = groupRepository.findById(id)
+        Group group = groupRepository.findGroupWithMembers(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        GroupMember master = group.getGroupMembers().stream().filter(groupMember ->
-                groupMember.getRole().equals(MASTER)).findFirst().get();
+        GroupMember master = group.getGroupMembers().stream()
+                .filter(groupMember -> groupMember.getRole().equals(MASTER))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("그룹장이 존재하지 않습니다."));
+
         if(!master.getMember().getId().equals(loginMember.getId())) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
-        groupRepository.delete(group);
+        group.delete();
     }
 
     @Transactional

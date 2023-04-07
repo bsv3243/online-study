@@ -1,6 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
+import org.hibernate.annotations.Where;
 import seong.onlinestudy.enumtype.GroupCategory;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.group.GroupUpdateRequest;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Where(clause = "deleted = false")
 @Table(name = "groups")
 public class Group {
     @Id
@@ -21,6 +23,7 @@ public class Group {
     private String name;
     private int headcount;
     private LocalDateTime createdAt;
+    private boolean deleted;
 
     @Lob
     private String description;
@@ -42,6 +45,10 @@ public class Group {
         groupMember.setGroup(this);
     }
 
+    public void delete() {
+        this.deleted = true;
+    }
+
     public static Group createGroup(GroupCreateRequest createRequest, GroupMember groupMember) {
         Group group = new Group();
         group.name = createRequest.getName();
@@ -49,6 +56,7 @@ public class Group {
         group.headcount = createRequest.getHeadcount();
         group.createdAt = LocalDateTime.now();
         group.addGroupMember(groupMember);
+        group.deleted = false;
 
         return group;
     }
