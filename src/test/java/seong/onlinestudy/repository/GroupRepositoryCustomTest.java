@@ -1,6 +1,5 @@
 package seong.onlinestudy.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.domain.QGroup.group;
 
 @Slf4j
 @DataJpaTest
@@ -89,7 +87,7 @@ class GroupRepositoryCustomTest {
         PageRequest pageRequest = PageRequest.of(0, 5);
 
         Page<Group> findGroupsWithPage = groupRepository.findGroups(
-                pageRequest, category, search, studyIds, orderBy);
+                null, category, search, studyIds, orderBy, pageRequest);
 
         List<Group> findGroups = findGroupsWithPage.getContent();
 
@@ -131,7 +129,7 @@ class GroupRepositoryCustomTest {
         //when
         PageRequest pageRequest = PageRequest.of(0, 5);
         Page<Group> findGroupsWithPage = groupRepository
-                .findGroups(pageRequest, null, null, List.of(testStudy.getId()), OrderBy.CREATEDAT);
+                .findGroups(null, null, null, List.of(testStudy.getId()), OrderBy.CREATEDAT, pageRequest);
         List<Group> findGroups = findGroupsWithPage.getContent();
 
         //then
@@ -152,15 +150,19 @@ class GroupRepositoryCustomTest {
         return filteredTickets;
     }
 
-    private BooleanExpression categoryEq(GroupCategory category) {
-        return category != null ? group.category.eq(category) : null;
-    }
+    @Test
+    void findGroups() {
+        //given
 
-    private BooleanExpression nameContains(String search) {
-        return search != null ? group.name.contains(search) : null;
-    }
 
-    private BooleanExpression studyIdsIn(QStudy studyTicket, List<Long> studyIds) {
-        return studyIds != null && studyIds.size() > 0 ? studyTicket.id.in(studyIds) : null;
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<Group> findGroupsWithPageInfo = groupRepository.findGroups(null, null, null, null, OrderBy.CREATEDAT, pageRequest);
+
+        //then
+        int findTotalPages = findGroupsWithPageInfo.getTotalPages();
+        int testTotalPages = groups.size() / 2 + 1;
+
+        assertThat(findTotalPages).isEqualTo(testTotalPages);
     }
 }

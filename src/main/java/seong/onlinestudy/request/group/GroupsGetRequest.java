@@ -10,6 +10,7 @@ import java.util.List;
 public class GroupsGetRequest {
     private int page;
     private int size;
+    private Long memberId;
     private GroupCategory category;
     private String search;
     private List<Long> studyIds;

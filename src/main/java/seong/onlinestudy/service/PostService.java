@@ -31,9 +31,10 @@ public class PostService {
     public Page<PostDto> getPosts(PostsGetRequest request) {
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
         Page<Post> postsWithComments
-                = postRepository.findPostsWithComments(pageRequest,
-                request.getGroupId(), request.getSearch(), request.getCategory(),
-                request.getStudyIds());
+                = postRepository.findPostsWithComments(
+                        request.getMemberId(), request.getGroupId(),
+                        request.getSearch(), request.getCategory(),
+                        request.getStudyIds(), pageRequest);
 
         List<PostStudy> postStudies = postStudyRepository.findStudiesWhereInPosts(postsWithComments.getContent());
 

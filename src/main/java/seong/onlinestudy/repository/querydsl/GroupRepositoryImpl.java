@@ -28,7 +28,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
     }
 
     @Override
-    public Page<Group> findGroups(Pageable pageable, GroupCategory category, String search, List<Long> studyIds, OrderBy orderBy) {
+    public Page<Group> findGroups(Long memberId, GroupCategory category, String search, List<Long> studyIds, OrderBy orderBy, Pageable pageable) {
 
         OrderSpecifier order;
         switch (orderBy) {
@@ -47,7 +47,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .join(group.groupMembers, groupMember)
                 .leftJoin(group.tickets, ticket)
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
-                .where(categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
+                .where(memberIdEq(memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
                 .groupBy(group.id)
                 .orderBy(order)
                 .limit(pageable.getPageSize())
@@ -55,15 +55,18 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .fetch();
 
         Long total = query
-                .select(group.count())
+                .select(group.countDistinct())
                 .from(group)
                 .leftJoin(group.tickets, ticket)
-                .join(studyTicket).on(studyTicket.eq(ticket))
-                .join(studyTicket.study, study)
-                .where(categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
+                .leftJoin(studyTicket).on(studyTicket.eq(ticket))
+                .where(memberIdEq(memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
                 .fetchOne();
 
         return new PageImpl<>(groups, pageable, total);
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return memberId != null ? groupMember.member.id.eq(memberId) : null;
     }
 
     private BooleanExpression studyIdsIn(QStudy study, List<Long> studyIds) {

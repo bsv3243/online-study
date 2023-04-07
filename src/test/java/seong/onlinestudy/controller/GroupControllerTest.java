@@ -260,6 +260,7 @@ class GroupControllerTest {
                                         description("페이지"),
                                 fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("12"))
                                         .description("응답 데이터 개수"),
+                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
                                 fieldWithPath("category").type(STRING).description("그룹 카테고리(Enum Type)").optional(),
                                 fieldWithPath("search").type(STRING).description("그룹 이름 검색어").optional(),
                                 fieldWithPath("studyIds").type(JsonFieldType.ARRAY).description("스터디 아이디 목록").optional(),

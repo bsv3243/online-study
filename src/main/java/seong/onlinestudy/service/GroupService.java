@@ -66,8 +66,11 @@ public class GroupService {
     }
 
     public Page<GroupDto> getGroups(GroupsGetRequest request) {
-        Page<Group> groups = groupRepository.findGroups(PageRequest.of(request.getPage(), request.getSize()),
-                request.getCategory(), request.getSearch(), request.getStudyIds(), request.getOrderBy());
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+        Page<Group> groups = groupRepository.findGroups(
+                request.getMemberId(), request.getCategory(),
+                request.getSearch(), request.getStudyIds(),
+                request.getOrderBy(), pageRequest);
 
         List<GroupStudyDto> groupStudies = studyRepository.findStudiesInGroups(groups.getContent());
 
