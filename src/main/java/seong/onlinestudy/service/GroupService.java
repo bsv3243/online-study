@@ -171,7 +171,7 @@ public class GroupService {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
-        groupRepository.softDeleteAllByMemberId(request.getMemberId());
+        groupRepository.softDeleteAllByMemberIdRoleIsMaster(request.getMemberId());
     }
 
     @Transactional

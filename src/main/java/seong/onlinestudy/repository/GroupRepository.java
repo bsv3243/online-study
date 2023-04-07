@@ -23,5 +23,5 @@ public interface GroupRepository extends JpaRepository<Group, Long>, GroupReposi
     @Query("update Group g set g.deleted = true" +
             " where g in (select gm.group from GroupMember gm" +
             " where gm.member.id=:memberId and gm.role='MASTER')")
-    void softDeleteAllByMemberId(@Param("memberId") Long memberId);
+    void softDeleteAllByMemberIdRoleIsMaster(@Param("memberId") Long memberId);
 }

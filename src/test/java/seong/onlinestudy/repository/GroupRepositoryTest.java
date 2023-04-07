@@ -124,7 +124,7 @@ class GroupRepositoryTest {
         groupRepository.saveAll(testGroups);
 
         //when
-        groupRepository.softDeleteAllByMemberId(testMember.getId());
+        groupRepository.softDeleteAllByMemberIdRoleIsMaster(testMember.getId());
         em.clear();
 
         //then
