@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
@@ -83,7 +82,7 @@ class CommentRepositoryTest {
         em.clear();
 
         //when
-        commentRepository.deleteAllByMemberId(testMember.getId());
+        commentRepository.softDeleteAllByMemberId(testMember.getId());
         em.flush();
 
         //then
