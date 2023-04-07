@@ -154,6 +154,7 @@ class CommentControllerTest {
                                 fieldWithPath("content").type(STRING).description("댓글 내용"),
                                 fieldWithPath("createdAt").type(STRING).description("댓글 작성일"),
                                 fieldWithPath("postId").type(NUMBER).description("연관된 게시글 엔티티 아이디"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("댓글 삭제 여부"),
 
                                 subsectionWithPath("member").type(OBJECT).description("댓글 작성자"),
                                 fieldWithPath("member.memberId").type(NUMBER).description("댓글 작성자 엔티티 아이디"),

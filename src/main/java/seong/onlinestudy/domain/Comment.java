@@ -20,7 +20,7 @@ public class Comment {
 
     @Lob
     private String content;
-    private Boolean deleted;
+    private boolean deleted;
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,9 +45,6 @@ public class Comment {
 
     public void delete() {
         this.deleted = true;
-
-//        this.post.getComments().remove(this);
-//        this.post = null;
     }
 
     public static Comment create(CommentCreateRequest request) {

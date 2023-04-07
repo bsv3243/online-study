@@ -116,11 +116,13 @@ class PostControllerTest {
                                 fieldWithPath("category").type(STRING).description("게시글 카테고리"),
                                 fieldWithPath("createdAt").type(STRING).description("게시글 생성일"),
                                 fieldWithPath("viewCount").type(NUMBER).description("게시글 조회수"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("게시글 삭제 여부"),
 
                                 subsectionWithPath("member").type(OBJECT).description("게시글 작성자"),
                                 fieldWithPath("member.memberId").type(NUMBER).description("작성자 엔티티 아이디"),
                                 fieldWithPath("member.username").type(STRING).description("작성자 아이디"),
                                 fieldWithPath("member.nickname").type(STRING).description("작성자 닉네임"),
+                                fieldWithPath("member.deleted").type(BOOLEAN).description("작성자 삭제 여부"),
 
                                 subsectionWithPath("group").type(OBJECT).description("게시글 작성 그룹"),
                                 fieldWithPath("group.groupId").type(NUMBER).description("작성 그룹 엔티티 아이디"),
@@ -129,6 +131,7 @@ class PostControllerTest {
                                 fieldWithPath("group.createdAt").type(STRING).description("작성 그룹 생성일"),
                                 fieldWithPath("group.description").type(STRING).description("작성 그룹 설명"),
                                 fieldWithPath("group.category").type(STRING).description("작성 그룹 카테고리"),
+                                fieldWithPath("group.deleted").type(BOOLEAN).description("작성 그룹 삭제 여부"),
 
                                 subsectionWithPath("postStudies").type(ARRAY).description("스터디 태그 목록"),
                                 fieldWithPath("postStudies[].postStudyId").type(NUMBER).description("스터디 태그 엔티티 아이디"),
@@ -140,7 +143,8 @@ class PostControllerTest {
                                 fieldWithPath("comments[].content").type(STRING).description("댓글 내용"),
                                 fieldWithPath("comments[].member").type(OBJECT).description("댓글 작성자"),
                                 fieldWithPath("comments[].createdAt").type(STRING).description("댓글 작성일"),
-                                fieldWithPath("comments[].postId").type(NUMBER).description("게시글 엔티티 아이디")
+                                fieldWithPath("comments[].postId").type(NUMBER).description("게시글 엔티티 아이디"),
+                                fieldWithPath("comments[].deleted").type(BOOLEAN).description("댓글 삭제 여부")
                         )));
     }
 
@@ -223,11 +227,13 @@ class PostControllerTest {
                                 fieldWithPath("category").type(STRING).description("게시글 카테고리"),
                                 fieldWithPath("createdAt").type(STRING).description("게시글 생성일"),
                                 fieldWithPath("viewCount").type(NUMBER).description("게시글 조회수"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("게시글 삭제 여부"),
 
                                 subsectionWithPath("member").type(OBJECT).description("게시글 작성자"),
                                 fieldWithPath("member.memberId").type(NUMBER).description("작성자 엔티티 아이디"),
                                 fieldWithPath("member.username").type(STRING).description("작성자 아이디"),
                                 fieldWithPath("member.nickname").type(STRING).description("작성자 닉네임"),
+                                fieldWithPath("member.deleted").type(BOOLEAN).description("작성자 삭제 여부"),
 
                                 subsectionWithPath("group").type(OBJECT).description("게시글 작성 그룹"),
                                 fieldWithPath("group.groupId").type(NUMBER).description("작성 그룹 엔티티 아이디"),
@@ -236,6 +242,7 @@ class PostControllerTest {
                                 fieldWithPath("group.createdAt").type(STRING).description("작성 그룹 생성일"),
                                 fieldWithPath("group.description").type(STRING).description("작성 그룹 설명"),
                                 fieldWithPath("group.category").type(STRING).description("작성 그룹 카테고리"),
+                                fieldWithPath("group.deleted").type(BOOLEAN).description("작성 그룹 삭제 여부"),
 
                                 subsectionWithPath("postStudies").type(ARRAY).description("스터디 태그 목록"),
                                 fieldWithPath("postStudies[].postStudyId").type(NUMBER).description("스터디 태그 엔티티 아이디"),
@@ -247,7 +254,8 @@ class PostControllerTest {
                                 fieldWithPath("comments[].content").type(STRING).description("댓글 내용"),
                                 fieldWithPath("comments[].member").type(OBJECT).description("댓글 작성자"),
                                 fieldWithPath("comments[].createdAt").type(STRING).description("댓글 작성일"),
-                                fieldWithPath("comments[].postId").type(NUMBER).description("게시글 엔티티 아이디")
+                                fieldWithPath("comments[].postId").type(NUMBER).description("게시글 엔티티 아이디"),
+                                fieldWithPath("comments[].deleted").type(BOOLEAN).description("댓글 삭제 여부")
                         )));
     }
 

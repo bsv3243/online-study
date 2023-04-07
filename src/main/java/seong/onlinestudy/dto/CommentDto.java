@@ -14,6 +14,7 @@ public class CommentDto {
     private MemberDto member;
     private LocalDateTime createdAt;
     private Long postId;
+    private boolean deleted;
 
     public static CommentDto from(Comment comment) {
         CommentDto commentDto = new CommentDto();
@@ -22,6 +23,7 @@ public class CommentDto {
         commentDto.member = MemberDto.from(comment.getMember());
         commentDto.createdAt = comment.getCreatedAt();
         commentDto.postId = comment.getPost().getId();
+        commentDto.deleted = comment.isDeleted();
 
         return commentDto;
     }

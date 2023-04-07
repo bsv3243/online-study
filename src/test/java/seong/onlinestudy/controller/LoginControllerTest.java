@@ -26,8 +26,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,7 +86,8 @@ class LoginControllerTest {
                                 beneathPath("data").withSubsectionId("data"),
                                 fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디"),
                                 fieldWithPath("username").type(STRING).description("회원 아이디"),
-                                fieldWithPath("nickname").type(STRING).description("회원 닉네임")
+                                fieldWithPath("nickname").type(STRING).description("회원 닉네임"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("회원 삭제여부")
                         )));
     }
 

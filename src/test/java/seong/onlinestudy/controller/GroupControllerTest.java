@@ -48,6 +48,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -276,8 +277,8 @@ class GroupControllerTest {
                                 fieldWithPath("number").type(NUMBER).description("현재 페이지 번호"),
                                 fieldWithPath("size").type(NUMBER).description("페이지의 원소 개수"),
                                 fieldWithPath("totalPages").type(NUMBER).description("총 페이지 수"),
-                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 여부"),
-                                fieldWithPath("hasPrevious").type(JsonFieldType.BOOLEAN).description("이전 페이지 여부"),
+                                fieldWithPath("hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                                fieldWithPath("hasPrevious").type(BOOLEAN).description("이전 페이지 여부"),
                                 fieldWithPath("data[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
                                 fieldWithPath("data[].name").type(STRING).description("그룹 이름"),
                                 fieldWithPath("data[].headcount").type(NUMBER).description("그룹 제한 인원 수"),
@@ -285,6 +286,7 @@ class GroupControllerTest {
                                 fieldWithPath("data[].createdAt").type(STRING).description("그룹 생성일"),
                                 fieldWithPath("data[].description").type(STRING).description("그룹 설명"),
                                 fieldWithPath("data[].category").type(STRING).description("그룹 카테고리"),
+                                fieldWithPath("data[].deleted").type(BOOLEAN).description("그룹 삭제여부"),
                                 fieldWithPath("data[].groupMembers").type(JsonFieldType.ARRAY).description("그룹원 목록"),
                                 fieldWithPath("data[].groupMembers[].groupMemberId").type(NUMBER).description("그룹원 엔티티 아이디"),
                                 fieldWithPath("data[].groupMembers[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
@@ -340,6 +342,7 @@ class GroupControllerTest {
                                 fieldWithPath("data.createdAt").type(STRING).description("그룹 생성일"),
                                 fieldWithPath("data.description").type(STRING).description("그룹 설명"),
                                 fieldWithPath("data.category").type(STRING).description("그룹 카테고리"),
+                                fieldWithPath("data.deleted").type(BOOLEAN).description("그룹 사제 여부"),
                                 fieldWithPath("data.groupMembers").type(JsonFieldType.ARRAY).description("그룹원 목록"),
                                 fieldWithPath("data.groupMembers[].groupMemberId").type(NUMBER).description("그룹원 엔티티 아이디"),
                                 fieldWithPath("data.groupMembers[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),

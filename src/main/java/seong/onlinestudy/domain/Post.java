@@ -29,7 +29,7 @@ public class Post {
     private PostCategory category;
     private int viewCount;
     private LocalDateTime createdAt;
-    private Boolean deleted;
+    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

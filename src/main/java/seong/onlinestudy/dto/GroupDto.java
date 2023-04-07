@@ -16,6 +16,7 @@ public class GroupDto {
     private String name;
     private int headcount;
     private int memberSize;
+    private boolean deleted;
     private LocalDateTime createdAt;
     private String description;
     private GroupCategory category;
@@ -27,6 +28,7 @@ public class GroupDto {
         groupDto.groupId = group.getId();
         groupDto.name = group.getName();
         groupDto.headcount = group.getHeadcount();
+        groupDto.deleted = group.isDeleted();
         groupDto.createdAt = group.getCreatedAt();
         groupDto.description = group.getDescription();
         groupDto.category = group.getCategory();

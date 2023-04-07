@@ -18,6 +18,7 @@ public class PostDto {
     private PostCategory category;
     private LocalDateTime createdAt;
     private int viewCount;
+    private boolean deleted;
     private MemberDto member;
     private GroupDto group;
     private List<PostStudyDto> postStudies = new ArrayList<>();
@@ -31,6 +32,7 @@ public class PostDto {
         postDto.category = post.getCategory();
         postDto.createdAt = post.getCreatedAt();
         postDto.viewCount = post.getViewCount();
+        postDto.deleted = post.isDeleted();
         postDto.member = MemberDto.from(post.getMember());
 
         if(post.getGroup() != null) {
