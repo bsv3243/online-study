@@ -8,8 +8,7 @@ import org.springframework.util.StringUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.DuplicateElementException;
-import seong.onlinestudy.repository.GroupMemberRepository;
-import seong.onlinestudy.repository.MemberRepository;
+import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.member.MemberCreateRequest;
 import seong.onlinestudy.request.member.MemberDuplicateCheckRequest;
 import seong.onlinestudy.request.member.MemberUpdateRequest;
@@ -23,6 +22,9 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final GroupRepository groupRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -94,8 +96,13 @@ public class MemberService {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회웝입니다."));
 
-        findMember.delete();
-
+        //티켓과 기록은 남겨둠
+        //그룹장인 그룹은 삭제, 그룹원인 그룹은 탈퇴, 게시글 삭제, 댓글 삭제
         groupMemberRepository.deleteAllByMemberIdRoleIsNotMaster(memberId);
+        groupRepository.softDeleteAllByMemberIdRoleIsMaster(memberId);
+        postRepository.softDeleteAllByMemberId(memberId);
+        commentRepository.softDeleteAllByMemberId(memberId);
+
+        findMember.delete();
     }
 }
