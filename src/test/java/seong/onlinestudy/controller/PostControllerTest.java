@@ -19,6 +19,7 @@ import seong.onlinestudy.enumtype.GroupCategory;
 import seong.onlinestudy.enumtype.PostCategory;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;
+import seong.onlinestudy.request.post.PostsDeleteRequest;
 import seong.onlinestudy.request.post.PostsGetRequest;
 import seong.onlinestudy.service.PostService;
 
@@ -305,6 +306,36 @@ class PostControllerTest {
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("postId").description("게시글 엔티티 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
+                                fieldWithPath("data").type(STRING).description("게시글 삭제 메시지")
+                        )));
+    }
+
+    @Test
+    void deletePosts() throws Exception {
+        //given
+        Member member = MyUtils.createMember("member", "member");
+        session.setAttribute(LOGIN_MEMBER, member);
+
+        PostsDeleteRequest request = new PostsDeleteRequest();
+        request.setMemberId(1L);
+
+        //when
+        ResultActions resultActions = mvc.perform(delete("/api/v1/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request))
+                .session(session));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("posts-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("memberId").description("회원 엔티티 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),

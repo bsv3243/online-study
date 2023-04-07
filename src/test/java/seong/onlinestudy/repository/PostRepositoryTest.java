@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.enumtype.PostCategory;
 
 import javax.persistence.EntityManager;
@@ -154,5 +155,28 @@ public class PostRepositoryTest {
         Long testPostId = testPost.getId();
 
         assertThat(findPostIds).doesNotContain(testPostId);
+    }
+
+    @Test
+    void deleteAllByMemberId() {
+        //given
+        Member testMember = members.get(0);
+
+        Group testGroup = createGroup("group", 30, testMember);
+        groupRepository.save(testGroup);
+
+        List<Post> posts = createPosts(List.of(testMember), List.of(testGroup), 30, false);
+        postRepository.saveAll(posts);
+
+        assertThat(testMember.getPosts().size()).isGreaterThanOrEqualTo(30);
+
+        //when
+        postRepository.softDeleteAllByMemberId(testMember.getId());
+        em.flush();
+        em.clear();
+
+        //then
+        testMember = memberRepository.findById(testMember.getId()).get();
+        assertThat(testMember.getPosts().size()).isEqualTo(0);
     }
 }
