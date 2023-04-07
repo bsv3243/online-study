@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 
 import javax.persistence.EntityManager;
@@ -66,6 +67,28 @@ class CommentRepositoryTest {
         Post newTestPost = postRepository.findById(testPost.getId()).get();
         assertThat(newTestPost.getComments()).doesNotContainAnyElementsOf(testComments);
 
+    }
+
+    @Test
+    void deleteAllByMemberId() {
+        //given
+        Member testMember = members.get(0);
+        Post testPost = posts.get(0);
+
+        List<Comment> testComments = createComments(List.of(testMember), List.of(testPost), 20, false);
+        commentRepository.saveAll(testComments);
+
+        assertThat(testMember.getComments().size()).isGreaterThanOrEqualTo(20);
+        em.flush();
+        em.clear();
+
+        //when
+        commentRepository.deleteAllByMemberId(testMember.getId());
+        em.flush();
+
+        //then
+        testMember = memberRepository.findById(testMember.getId()).get();
+        assertThat(testMember.getComments().size()).isEqualTo(0);
     }
 
 }

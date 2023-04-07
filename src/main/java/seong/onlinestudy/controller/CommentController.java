@@ -12,6 +12,7 @@ import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.CommentsGetRequest;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
+import seong.onlinestudy.request.comment.CommentsDeleteRequest;
 import seong.onlinestudy.service.CommentService;
 
 import javax.validation.Valid;
@@ -69,5 +70,17 @@ public class CommentController {
         Long deleteCommentId = commentService.deleteComment(commentId, loginMember);
 
         return new Result<>("200", deleteCommentId);
+    }
+
+    @PostMapping("/comments/delete")
+    public Result<String> deleteComments(@RequestBody @Valid CommentsDeleteRequest request,
+                                         @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
+        if (loginMember == null) {
+            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
+        }
+
+        commentService.deleteComments(request, loginMember);
+
+        return new Result<>("200", "delete comments");
     }
 }
