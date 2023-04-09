@@ -39,7 +39,7 @@ operation::member-duplicate-check[snippets='http-request,request-fields,http-res
 === 로그인
 `POST /login`
 
-operation::login[snippets='http-request,request-fields,http-response,response-fields']
+operation::login[snippets='http-request,request-fields,http-response,response-fields-data']
 
 === 로그아웃
 `POST /logout`
@@ -82,6 +82,16 @@ operation::group-join[snippets='http-request,path-parameters,http-response,respo
 `POST /group/:groupId/quit`
 
 operation::group-quit[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== 그룹 일괄 탈퇴
+`POST /groups/quit`
+
+operation::groups-quit[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 그룹 일괄 삭제
+`POST /groups/quit`
+
+operation::groups-quit[snippets='http-request,request-fields,http-response,response-fields']
 
 == 4. 학습 API
 
@@ -151,6 +161,11 @@ operation::post-update[snippets='http-request,path-parameters,request-fields,htt
 
 operation::post-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
+=== 게시글 일괄 삭제
+`POST /posts/delete`
+
+operation::posts-delete[snippets='http-request,request-fields,http-response,response-fields']
+
 == 8. 댓글 API
 
 === 댓글 생성
@@ -172,6 +187,11 @@ operation::comment-update[snippets='http-request,request-fields,http-response,re
 `DELETE /comment/:commentId`
 
 operation::comment-delete[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== 댓글 일괄 삭제
+`POST /comments/delete`
+
+operation::comments-delete[snippets='http-request,request-fields,http-response,response-fields']
 
 == #. Enum Type
 
