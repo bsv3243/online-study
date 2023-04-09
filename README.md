@@ -7,6 +7,15 @@ https://github.com/hseong3243/online-study-front
 ## API 문서
 https://studybread.shop/docs/index.html
 
+## 기술 스택
++ Frontend
+  + Vue.js
++ Backend
+  + Java
+  + Spring MVC
+  + Spring Data JPA
+  + Spring Rest Docs
+
 ## DB
 ![online_study_db](https://user-images.githubusercontent.com/48748265/230788665-8867772b-3ead-473e-9981-2d8518e1c858.png)
 
