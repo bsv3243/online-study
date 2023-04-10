@@ -5,7 +5,7 @@ https://github.com/hseong3243/online-study_old <br/>
 https://github.com/hseong3243/online-study-front
 
 ## URL
-
+https://studybread.shop
 
 ## API 문서
 https://studybread.shop/docs/index.html
