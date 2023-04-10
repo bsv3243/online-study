@@ -4,9 +4,6 @@ https://github.com/hseong3243/online-study_old <br/>
 프론트엔드 저장소는 다음 링크를 참조해주세요. <br/>
 https://github.com/hseong3243/online-study-front
 
-## URL
-https://studybread.shop
-
 ## API 문서
 https://studybread.shop/docs/index.html
 
