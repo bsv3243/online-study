@@ -89,7 +89,7 @@ operation::group-quit[snippets='http-request,path-parameters,http-response,respo
 operation::groups-quit[snippets='http-request,request-fields,http-response,response-fields']
 
 === 그룹 일괄 삭제
-`POST /groups/quit`
+`POST /groups/delete`
 
 operation::groups-quit[snippets='http-request,request-fields,http-response,response-fields']
 
