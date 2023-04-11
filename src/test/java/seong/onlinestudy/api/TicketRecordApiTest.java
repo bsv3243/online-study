@@ -32,7 +32,7 @@ import static seong.onlinestudy.MyUtils.*;
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class RecordApiTest {
+public class TicketRecordApiTest {
 
     @Autowired
     MockMvc mvc;
@@ -71,7 +71,7 @@ public class RecordApiTest {
         ticketRepository.saveAll(tickets);
 
         for(int i=0; i<20; i++) {
-            tickets.get(i).expiredAndUpdateRecord();
+            tickets.get(i).expireAndCreateRecord();
         }
 
     }

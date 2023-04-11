@@ -25,10 +25,10 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
 
 @ExtendWith(MockitoExtension.class)
-class RecordServiceTest {
+class TicketRecordServiceTest {
 
     @InjectMocks
-    RecordService recordService;
+    TicketRecordService ticketRecordService;
 
     @Mock
     TicketRepository ticketRepository;
@@ -53,8 +53,8 @@ class RecordServiceTest {
 
         for (StudyTicket studyTicket : studyTickets) {
             if(studyTicket.isExpired()) {
-                setField(studyTicket.getRecord(), "activeTime", 1000L);
-                setField(studyTicket.getRecord(), "expiredTime", studyTicket.getStartTime().plusSeconds(1000));
+                setField(studyTicket.getTicketRecord(), "activeTime", 1000L);
+                setField(studyTicket.getTicketRecord(), "expiredTime", studyTicket.getStartTime().plusSeconds(1000));
             }
         }
     }
@@ -69,7 +69,7 @@ class RecordServiceTest {
         RecordsGetRequest request = new RecordsGetRequest();
         request.setStartDate(LocalDate.now());
         request.setDays(1);
-        List<StudyRecordDto> studyRecords = recordService.getRecords(request, members.get(0));
+        List<StudyRecordDto> studyRecords = ticketRecordService.getRecords(request, members.get(0));
 
         //then
         assertThat(studyRecords.size()).isEqualTo(studies.size());
@@ -90,7 +90,9 @@ class RecordServiceTest {
 
         long testStudyTime = 0;
         for (StudyTicket targetTestStudyTicket : targetTestStudyTickets) {
-            testStudyTime += targetTestStudyTicket.getRecord().getActiveTime();
+            if(targetTestStudyTicket.isExpired()) {
+                testStudyTime += targetTestStudyTicket.getTicketRecord().getActiveTime();
+            }
         }
         return testStudyTime;
     }
@@ -106,7 +108,7 @@ class RecordServiceTest {
         //when
         RecordsGetRequest request = new RecordsGetRequest();
         request.setStudyId(studies.get(0).getId());
-        List<StudyRecordDto> records = recordService.getRecords(request, members.get(0));
+        List<StudyRecordDto> records = ticketRecordService.getRecords(request, members.get(0));
 
         //then
         assertThat(records).allSatisfy(studyRecordDto -> {
@@ -141,7 +143,7 @@ class RecordServiceTest {
         //when
         RecordsGetRequest request = new RecordsGetRequest();
         request.setStudyId(groups.get(0).getId());
-        List<StudyRecordDto> records = recordService.getRecords(request, members.get(0));
+        List<StudyRecordDto> records = ticketRecordService.getRecords(request, members.get(0));
 
         //then
         List<Long> testTargetStudyIds = tickets.stream()

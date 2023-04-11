@@ -117,8 +117,8 @@ class TicketServiceTest {
 
         //then
         assertThat(ticket.isExpired()).isTrue();
-        assertThat(ticket.getRecord().getExpiredTime()).isNotNull();
-        assertThat(ticket.getRecord().getActiveTime()).isGreaterThan(0);
+        assertThat(ticket.getTicketRecord().getExpiredTime()).isNotNull();
+        assertThat(ticket.getTicketRecord().getActiveTime()).isGreaterThan(0);
     }
 
     @Test

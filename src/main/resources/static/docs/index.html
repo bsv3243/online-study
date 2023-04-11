@@ -1448,7 +1448,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 761
+Content-Length: 760
 
 {
   "code" : "200",
@@ -1458,7 +1458,7 @@ Content-Length: 761
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-10T08:46:19.3352096",
+    "createdAt" : "2023-04-11T19:04:31.3114637",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1467,7 +1467,7 @@ Content-Length: 761
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-10T08:46:19.3352096",
+      "joinedAt" : "2023-04-11T19:04:31.312464",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -1701,7 +1701,7 @@ Content-Length: 655
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-10T08:46:19.3913238",
+    "createdAt" : "2023-04-11T19:04:31.3770646",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1710,7 +1710,7 @@ Content-Length: 655
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-10T08:46:19.3913238",
+      "joinedAt" : "2023-04-11T19:04:31.3770646",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -2478,7 +2478,7 @@ Content-Length: 49
 <div class="sect2">
 <h3 id="_그룹_일괄_삭제"><a class="link" href="#_그룹_일괄_삭제">그룹 일괄 삭제</a></h3>
 <div class="paragraph">
-<p><code>POST /groups/quit</code></p>
+<p><code>POST /groups/delete</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_일괄_삭제_http_request"><a class="link" href="#_그룹_일괄_삭제_http_request">HTTP request</a></h4>
@@ -2706,7 +2706,7 @@ Host: localhost:8080
   "name" : "스터디명",
   "memberId" : 1,
   "groupId" : 1,
-  "date" : "2023-04-10",
+  "date" : "2023-04-11",
   "days" : 7,
   "page" : 0,
   "size" : 10
@@ -3008,7 +3008,7 @@ Host: localhost:8080
   "groupId" : 1,
   "studyId" : 1,
   "memberId" : 1,
-  "date" : "2023-04-10",
+  "date" : "2023-04-11",
   "days" : 1,
   "page" : 0,
   "size" : 30
@@ -3126,7 +3126,7 @@ Content-Length: 1007
       "ticketId" : 3,
       "status" : "STUDY",
       "activeTime" : 0,
-      "startTime" : "2023-04-10T08:46:23.4224696",
+      "startTime" : "2023-04-11T19:04:35.1256265",
       "expired" : false,
       "study" : {
         "studyId" : 1,
@@ -3137,8 +3137,8 @@ Content-Length: 1007
       "ticketId" : 1,
       "status" : "STUDY",
       "activeTime" : 3600,
-      "startTime" : "2023-04-10T08:46:23.4224696",
-      "endTime" : "2023-04-10T09:46:23.4224696",
+      "startTime" : "2023-04-11T19:04:35.1256265",
+      "endTime" : "2023-04-11T20:04:35.1256265",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -3148,8 +3148,8 @@ Content-Length: 1007
       "ticketId" : 2,
       "status" : "STUDY",
       "activeTime" : 500,
-      "startTime" : "2023-04-10T08:46:23.4224696",
-      "endTime" : "2023-04-10T08:54:43.4224696",
+      "startTime" : "2023-04-11T19:04:35.1256265",
+      "endTime" : "2023-04-11T19:12:55.1256265",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -3335,7 +3335,7 @@ Content-Length: 259
     "ticketId" : 1,
     "status" : "STUDY",
     "activeTime" : 0,
-    "startTime" : "2023-04-10T08:46:23.4453632",
+    "startTime" : "2023-04-11T19:04:35.1516585",
     "expired" : false,
     "study" : {
       "studyId" : 1,
@@ -3518,7 +3518,7 @@ Host: localhost:8080
   "studyId" : 1,
   "groupId" : 1,
   "memberId" : 1,
-  "startDate" : "2023-04-10",
+  "startDate" : "2023-04-11",
   "days" : 7
 }</code></pre>
 </div>
@@ -3614,9 +3614,9 @@ Content-Length: 333
     "studyName" : "스터디",
     "memberCount" : 1,
     "records" : [ {
-      "date" : "2023-04-10",
-      "startTime" : "2023-04-10T07:46:22.1746732",
-      "endTime" : "2023-04-10T09:46:22.1746732",
+      "date" : "2023-04-11",
+      "startTime" : "2023-04-11T18:04:38.2224506",
+      "endTime" : "2023-04-11T20:04:38.2224506",
       "studyTime" : 0,
       "memberCount" : 1
     } ]
@@ -3839,7 +3839,7 @@ Content-Length: 1239
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-10T08:46:21.5521756",
+    "createdAt" : "2023-04-11T19:04:33.7147622",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -3854,7 +3854,7 @@ Content-Length: 1239
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-10T08:46:21.5521756",
+      "createdAt" : "2023-04-11T19:04:33.7147622",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -3874,7 +3874,7 @@ Content-Length: 1239
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-10T08:46:21.5521756",
+      "createdAt" : "2023-04-11T19:04:33.7147622",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -4117,7 +4117,7 @@ Content-Length: 1133
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-10T08:46:21.5011706",
+    "createdAt" : "2023-04-11T19:04:33.6467423",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -4132,7 +4132,7 @@ Content-Length: 1133
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-10T08:46:21.5011706",
+      "createdAt" : "2023-04-11T19:04:33.6467423",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -4152,7 +4152,7 @@ Content-Length: 1133
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-10T08:46:21.5011706",
+      "createdAt" : "2023-04-11T19:04:33.6467423",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -5012,7 +5012,7 @@ Content-Length: 430
       "nickname" : "member",
       "deleted" : false
     },
-    "createdAt" : "2023-04-10T08:46:18.5253421",
+    "createdAt" : "2023-04-11T19:04:30.4108106",
     "postId" : 1,
     "deleted" : false
   } ],
@@ -5508,7 +5508,7 @@ Content-Length: 53
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-04-10 08:46:05 +0900
+Last updated 2023-04-11 19:02:05 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

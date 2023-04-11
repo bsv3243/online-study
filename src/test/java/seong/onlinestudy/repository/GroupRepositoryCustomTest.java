@@ -105,7 +105,9 @@ class GroupRepositoryCustomTest {
             for (Group group : findGroups) {
                 long studyTime = 0L;
                 for (Ticket groupTicket : group.getTickets()) {
-                    studyTime += groupTicket.getRecord().getActiveTime();
+                    if(groupTicket.isExpired()) {
+                        studyTime += groupTicket.getTicketRecord().getActiveTime();
+                    }
                 }
 
                 studyTimes.add(studyTime);

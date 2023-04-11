@@ -29,8 +29,8 @@ public class RecordDto {
         if(startTime.isAfter(ticket.getStartTime())) {
             startTime = ticket.getStartTime();
         }
-        if(ticket.isExpired() && endTime.isBefore(ticket.getRecord().getExpiredTime())) {
-            endTime = ticket.getRecord().getExpiredTime();
+        if(ticket.isExpired() && endTime.isBefore(ticket.getTicketRecord().getExpiredTime())) {
+            endTime = ticket.getTicketRecord().getExpiredTime();
         }
     }
 
@@ -38,7 +38,7 @@ public class RecordDto {
         startTime = ticket.getStartTime();
 
         if(ticket.isExpired()) {
-            endTime = ticket.getRecord().getExpiredTime();
+            endTime = ticket.getTicketRecord().getExpiredTime();
         } else {
             endTime = startTime;
         }
@@ -51,7 +51,10 @@ public class RecordDto {
     public void addStudyTime(Ticket ticket) {
         if(ticket instanceof StudyTicket) {
             memberCounter.add(ticket.getMember());
-            studyTime += ticket.getRecord().getActiveTime();
+
+            if(ticket.isExpired()) {
+                studyTime += ticket.getTicketRecord().getActiveTime();
+            }
         }
     }
 
@@ -69,11 +72,13 @@ public class RecordDto {
     public static RecordDto from(Ticket ticket) {
         RecordDto recordDto = new RecordDto();
         recordDto.date = ticket.getDateBySetting();
-        recordDto.studyTime = ticket.getRecord().getActiveTime();
+        recordDto.studyTime = 0;
         recordDto.memberCount = 1;
-
         recordDto.memberCounter.add(ticket.getMember());
 
+        if(ticket.isExpired()) {
+            recordDto.studyTime = ticket.getTicketRecord().getActiveTime();
+        }
         recordDto.setStartAndEndTime(ticket);
 
         return recordDto;

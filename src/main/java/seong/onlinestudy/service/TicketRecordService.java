@@ -19,7 +19,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class RecordService {
+public class TicketRecordService {
 
     private final TicketRepository ticketRepository;
 

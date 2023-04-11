@@ -72,7 +72,7 @@ public class TicketService {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
-        findTicket.expiredAndUpdateRecord();
+        findTicket.expireAndCreateRecord();
 
         return findTicket.getId();
     }

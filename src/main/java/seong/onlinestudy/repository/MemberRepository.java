@@ -27,7 +27,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m" +
             " join m.tickets t" +
-            " join t.record r" +
+            " join t.ticketRecord r" +
             " where t.startTime >= :startTime and t.startTime < :endTime" +
             " group by m.id" +
             " order by sum(r.activeTime) desc ")
