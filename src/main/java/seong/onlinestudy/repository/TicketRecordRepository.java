@@ -1,29 +1,9 @@
 package seong.onlinestudy.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.TicketRecord;
+import seong.onlinestudy.repository.jdbctemplate.JdbcTicketRecordRepository;
 
-import java.time.LocalDateTime;
-import java.util.List;
+public interface TicketRecordRepository extends JpaRepository<TicketRecord, Long>, JdbcTicketRecordRepository {
 
-public interface TicketRecordRepository extends JpaRepository<TicketRecord, Long> {
-
-    /**
-     * 만료되지 않은 Ticket 들의 TicketRecord 에 대해서 expiredTime, activeTime 을 업데이트 한다.
-     * @param expiredTime 만료 시간
-     * @param expiredTimeToSeconds 만료 시간의 유닉스 타임
-     * @param ticketIds 만료되지 않은 Ticket 들의 id
-     */
-    @Modifying
-    @Query(value = "update Ticket_Record r" +
-            " set r.expired_time=:expiredTime," +
-            " r.active_time=:expiredTimeToSeconds - datediff('second', '1970-01-01', (" +
-            "select t.start_time from Ticket t where t.ticket_record_id=r.ticket_record_id))" +
-            " where r.ticket_record_id in (select t.ticket_record_id from Ticket t where t.ticket_id in :ticketIds)", nativeQuery = true)
-    void updateRecordsWhereExpiredFalse(@Param("expiredTime")LocalDateTime expiredTime,
-                                        @Param("expiredTimeToSeconds") long expiredTimeToSeconds,
-                                        @Param("ticketIds") List<Long> ticketIds);
 }

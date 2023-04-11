@@ -1,19 +1,17 @@
 package seong.onlinestudy.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 import seong.onlinestudy.domain.*;
-import seong.onlinestudy.enumtype.GroupRole;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static seong.onlinestudy.MyUtils.*;
@@ -37,67 +35,38 @@ class TicketRecordRepositoryTest {
     TicketRecordRepository ticketRecordRepository;
 
     @Test
-    void updateRecordsWhereExpiredFalse() {
+    @DisplayName("티켓 일괄 만료 후, 티켓 기록 일괄 생성")
+    void batchInsertUsingJdbcTemplate() {
         //given
-        List<Member> members = createMembers(20);
-        List<Group> groups = createGroups(members, 2);
-        List<Study> studies = createStudies(2);
-        for(int i=2; i<20; i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-            groups.get(i % groups.size()).addGroupMember(groupMember);
-        }
-        List<Ticket> tickets = new ArrayList<>();
-        for(int i=0; i<20; i++) {
-            Ticket ticket = createStudyTicket(members.get(i),
-                    groups.get(i % groups.size()), studies.get(i % studies.size())
-            );
+        Member testMember = createMember("member", "member");
+        Group testGroup = createGroup("group", 30, testMember);
+        Study testStudy = createStudy("study");
 
-            ReflectionTestUtils.setField(ticket, "startTime", LocalDateTime.now().plusMinutes(i));
-
-            tickets.add(ticket);
+        List<Ticket> testStudyTickets = new ArrayList<>();
+        for(int i=0; i<50; i++) {
+            Ticket studyTicket = StudyTicket.createStudyTicket(testMember, testGroup, testStudy);
+            testStudyTickets.add(studyTicket);
         }
 
-        memberRepository.saveAll(members);
-        groupRepository.saveAll(groups);
-        studyRepository.saveAll(studies);
-        ticketRepository.saveAll(tickets);
+        memberRepository.save(testMember);
+        groupRepository.save(testGroup);
+        studyRepository.save(testStudy);
+        ticketRepository.saveAll(testStudyTickets);
+
+        em.flush();
 
         //when
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        ZoneOffset offset = ZoneOffset.of("+00:00");
-        List<Long> studyIds = tickets.stream().map(Ticket::getId).collect(Collectors.toList());
-        em.clear();
-        em.flush();
-        ticketRecordRepository.updateRecordsWhereExpiredFalse(endTime, endTime.toEpochSecond(offset),
-                studyIds);
+        ticketRepository.expireTicketsWhereExpiredFalse();
+        ticketRecordRepository.insertTicketRecords(testStudyTickets);
 
         //then
-        Ticket ticket = tickets.stream().findAny().get();
-        LocalDateTime startTime = ticket.getStartTime();
+        List<TicketRecord> findTicketRecords = ticketRecordRepository.findAll();
 
-        List<TicketRecord> ticketRecords = ticketRecordRepository.findAll();
-        ReflectionTestUtils.setField(ticketRecords.get(0), "expiredTime", endTime);
-
-        log.info("활성화된 시간={}", ticketRecords.stream().map(TicketRecord::getActiveTime).collect(Collectors.toList()));
-
-        assertThat(ticketRecords).allSatisfy(record -> {
-            LocalDateTime expiredTime = record.getExpiredTime();
-            assertLocalDateTimeEquals(endTime, expiredTime);
+        assertThat(findTicketRecords.size()).isEqualTo(50);
+        assertThat(findTicketRecords).allSatisfy(ticketRecord -> {
+            assertThat(ticketRecord.getId()).isNotNull();
+            assertThat(ticketRecord.getExpiredTime()).isAfterOrEqualTo(ticketRecord.getTicket().getStartTime());
+            assertThat(ticketRecord.getActiveTime()).isGreaterThanOrEqualTo(0);
         });
-    }
-
-    private void assertLocalDateTimeEquals(LocalDateTime target, LocalDateTime source) {
-        assertThat(source.getYear())
-                .isEqualTo(target.getYear());
-        assertThat(source.getMonth())
-                .isEqualTo(target.getMonth());
-        assertThat(source.getDayOfMonth())
-                .isEqualTo(target.getDayOfMonth());
-        assertThat(source.getHour())
-                .isEqualTo(target.getHour());
-        assertThat(source.getMinute())
-                .isEqualTo(target.getMinute());
-        assertThat(source.getSecond())
-                .isEqualTo(target.getSecond());
     }
 }
