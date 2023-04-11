@@ -35,7 +35,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 order = groupMember.count().desc();
                 break;
             case TIME:
-                order = ticket.record.activeTime.sum().desc();
+                order = ticket.ticketRecord.activeTime.sum().desc();
                 break;
             default:
                 order = group.createdAt.desc();

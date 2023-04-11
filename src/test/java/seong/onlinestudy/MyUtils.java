@@ -68,8 +68,8 @@ public class MyUtils {
     }
 
     public static void setTicketEnd(Ticket ticket, long seconds) {
-        setField(ticket.getRecord(), "activeTime", seconds);
-        setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(seconds));
+        setField(ticket.getTicketRecord(), "activeTime", seconds);
+        setField(ticket.getTicketRecord(), "expiredTime", ticket.getStartTime().plusSeconds(seconds));
     }
 
     public static Study createStudy(String name) {
@@ -276,8 +276,8 @@ public class MyUtils {
         }
         for (Ticket ticket : tickets) {
             setField(ticket, "expired", true);
-            setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
-            setField(ticket.getRecord(), "activeTime", studyTime);
+            setField(ticket.getTicketRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
+            setField(ticket.getTicketRecord(), "activeTime", studyTime);
         }
         return tickets;
     }
@@ -291,7 +291,7 @@ public class MyUtils {
 
     public static void expireTicket(Ticket ticket, int studyTime) {
         ticket.expiredAndUpdateRecord();
-        setField(ticket.getRecord(), "activeTime", studyTime);
-        setField(ticket.getRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
+        setField(ticket.getTicketRecord(), "activeTime", studyTime);
+        setField(ticket.getTicketRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
     }
 }

@@ -13,12 +13,11 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
-import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.request.record.RecordsGetRequest;
-import seong.onlinestudy.service.RecordService;
+import seong.onlinestudy.service.TicketRecordService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,9 +38,9 @@ import static seong.onlinestudy.docs.DocumentFormatGenerator.getDateFormat;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 @AutoConfigureRestDocs
-@WebMvcTest(RecordController.class)
+@WebMvcTest(TicketRecordController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class RecordControllerTest {
+class TicketRecordControllerTest {
 
     @Autowired
     MockMvc mvc;
@@ -51,12 +50,12 @@ class RecordControllerTest {
 
     MockHttpSession session;
 
-    public RecordControllerTest() {
+    public TicketRecordControllerTest() {
         this.session = new MockHttpSession();
     }
 
     @MockBean
-    RecordService recordService;
+    TicketRecordService ticketRecordService;
 
     @Test
     @DisplayName("공부 기록 목록 조회")
@@ -73,7 +72,7 @@ class RecordControllerTest {
 
         StudyRecordDto studyRecord = createStudyRecordDto(record);
 
-        given(recordService.getRecords(any(), any())).willReturn(List.of(studyRecord));
+        given(ticketRecordService.getRecords(any(), any())).willReturn(List.of(studyRecord));
 
         //when
         ResultActions resultActions = mvc.perform(get("/api/v1/records")
@@ -85,7 +84,7 @@ class RecordControllerTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("records-get",
+                        document("ticket-records-get",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(

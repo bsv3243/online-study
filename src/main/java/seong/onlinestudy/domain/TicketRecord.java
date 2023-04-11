@@ -8,19 +8,19 @@ import java.time.ZoneOffset;
 
 @Entity
 @Getter
-public class Record {
+public class TicketRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "record_id")
+    @Column(name = "ticket_record_id")
     private Long id;
 
     private LocalDateTime expiredTime;
     private long activeTime;
 
-    public static Record create() {
+    public static TicketRecord create() {
 
-        return new Record();
+        return new TicketRecord();
     }
 
     public void update(Ticket ticket) {

@@ -30,8 +30,8 @@ public abstract class Ticket {
     private Group group;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "record_id")
-    private Record record;
+    @JoinColumn(name = "ticket_record_id")
+    private TicketRecord ticketRecord;
 
     protected Ticket() {
     }
@@ -41,8 +41,8 @@ public abstract class Ticket {
         this.setMember(member);
         this.setGroup(group);
 
-        Record record = Record.create();
-        this.setRecord(record);
+        TicketRecord ticketRecord = TicketRecord.create();
+        this.setTicketRecord(ticketRecord);
     }
 
     public void setMember(Member member) {
@@ -55,8 +55,8 @@ public abstract class Ticket {
         group.getTickets().add(this);
     }
 
-    public void setRecord(Record record) {
-        this.record = record;
+    public void setTicketRecord(TicketRecord ticketRecord) {
+        this.ticketRecord = ticketRecord;
     }
 
     public LocalDate getDateBySetting() {
@@ -69,6 +69,6 @@ public abstract class Ticket {
 
     public void expiredAndUpdateRecord() {
         expired = true;
-        record.update(this);
+        ticketRecord.update(this);
     }
 }

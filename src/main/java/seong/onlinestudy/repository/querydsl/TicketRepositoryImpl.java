@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static seong.onlinestudy.domain.QMember.member;
-import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
 import static seong.onlinestudy.domain.QTicket.ticket;
+import static seong.onlinestudy.domain.QTicketRecord.ticketRecord;
 
 public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicketRepositoryCustom{
 
@@ -27,7 +27,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
         List<Ticket> findTickets = query
                 .selectFrom(ticket)
                 .join(ticket.member, member).fetchJoin()
-                .join(ticket.record, record).fetchJoin()
+                .join(ticket.ticketRecord, ticketRecord).fetchJoin()
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
                 .where(
                         memberIdsIn(ticket.member, memberIds),
@@ -47,7 +47,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
         List<Ticket> findTickets = query
                 .selectFrom(ticket)
                 .join(ticket.member, member).fetchJoin()
-                .join(ticket.record, record).fetchJoin()
+                .join(ticket.ticketRecord, ticketRecord).fetchJoin()
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
                 .where(
                         memberIdEq(ticket.member, memberId),
@@ -68,7 +68,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
                 .selectFrom(studyTicket)
                 .join(studyTicket.member, member).fetchJoin()
                 .join(studyTicket.study, study).fetchJoin()
-                .join(studyTicket.record, record).fetchJoin()
+                .join(studyTicket.ticketRecord, ticketRecord).fetchJoin()
                 .where(
                         memberIdEq(studyTicket.member, memberId),
                         groupIdEq(studyTicket.group, groupId),

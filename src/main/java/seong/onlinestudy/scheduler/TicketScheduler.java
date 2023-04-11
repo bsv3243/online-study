@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import seong.onlinestudy.domain.Ticket;
-import seong.onlinestudy.repository.RecordRepository;
+import seong.onlinestudy.repository.TicketRecordRepository;
 import seong.onlinestudy.repository.TicketRepository;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class TicketScheduler {
 
     private final TicketRepository ticketRepository;
-    private final RecordRepository recordRepository;
+    private final TicketRecordRepository ticketRecordRepository;
 
     @Scheduled(cron = "50 59 4 * * *")
     public void expiredTicketsAndUpdateRecords() {
@@ -30,7 +30,7 @@ public class TicketScheduler {
         List<Long> studyIdsNotExpired = ticketsNotExpired.stream()
                 .map(Ticket::getId).collect(Collectors.toList());
 
-        recordRepository.updateRecordsWhereExpiredFalse(endTime,
+        ticketRecordRepository.updateRecordsWhereExpiredFalse(endTime,
                 endTime.toEpochSecond(offset),
                 studyIdsNotExpired);
 

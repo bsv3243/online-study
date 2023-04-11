@@ -9,7 +9,7 @@ import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.request.record.RecordsGetRequest;
-import seong.onlinestudy.service.RecordService;
+import seong.onlinestudy.service.TicketRecordService;
 
 import javax.validation.Valid;
 
@@ -20,14 +20,14 @@ import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class RecordController {
+public class TicketRecordController {
 
-    private final RecordService recordService;
+    private final TicketRecordService ticketRecordService;
 
     @GetMapping("/records")
     public Result<List<StudyRecordDto>> getRecords(@Valid RecordsGetRequest request,
                                                    @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
-        List<StudyRecordDto> records = recordService.getRecords(request, loginMember);
+        List<StudyRecordDto> records = ticketRecordService.getRecords(request, loginMember);
 
         return new Result<>("200", records);
     }

@@ -20,7 +20,7 @@ import static seong.onlinestudy.MyUtils.*;
 
 @Slf4j
 @DataJpaTest
-class RecordRepositoryTest {
+class TicketRecordRepositoryTest {
 
     @Autowired
     EntityManager em;
@@ -34,7 +34,7 @@ class RecordRepositoryTest {
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
-    RecordRepository recordRepository;
+    TicketRecordRepository ticketRecordRepository;
 
     @Test
     void updateRecordsWhereExpiredFalse() {
@@ -68,19 +68,19 @@ class RecordRepositoryTest {
         List<Long> studyIds = tickets.stream().map(Ticket::getId).collect(Collectors.toList());
         em.clear();
         em.flush();
-        recordRepository.updateRecordsWhereExpiredFalse(endTime, endTime.toEpochSecond(offset),
+        ticketRecordRepository.updateRecordsWhereExpiredFalse(endTime, endTime.toEpochSecond(offset),
                 studyIds);
 
         //then
         Ticket ticket = tickets.stream().findAny().get();
         LocalDateTime startTime = ticket.getStartTime();
 
-        List<Record> records = recordRepository.findAll();
-        ReflectionTestUtils.setField(records.get(0), "expiredTime", endTime);
+        List<TicketRecord> ticketRecords = ticketRecordRepository.findAll();
+        ReflectionTestUtils.setField(ticketRecords.get(0), "expiredTime", endTime);
 
-        log.info("활성화된 시간={}", records.stream().map(Record::getActiveTime).collect(Collectors.toList()));
+        log.info("활성화된 시간={}", ticketRecords.stream().map(TicketRecord::getActiveTime).collect(Collectors.toList()));
 
-        assertThat(records).allSatisfy(record -> {
+        assertThat(ticketRecords).allSatisfy(record -> {
             LocalDateTime expiredTime = record.getExpiredTime();
             assertLocalDateTimeEquals(endTime, expiredTime);
         });

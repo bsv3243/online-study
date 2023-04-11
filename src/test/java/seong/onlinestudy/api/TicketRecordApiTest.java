@@ -32,7 +32,7 @@ import static seong.onlinestudy.MyUtils.*;
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class RecordApiTest {
+public class TicketRecordApiTest {
 
     @Autowired
     MockMvc mvc;

@@ -29,7 +29,7 @@ public class MemberTicketDto {
             if (ticket.isExpired()) {
                 memberTicket.expiredTickets.add(ticketDto);
                 if(ticket instanceof StudyTicket)
-                    memberTicket.studyTime += ticket.getRecord().getActiveTime();
+                    memberTicket.studyTime += ticket.getTicketRecord().getActiveTime();
             } else {
                 memberTicket.activeTicket = ticketDto;
             }

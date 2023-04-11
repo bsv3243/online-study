@@ -15,10 +15,10 @@ import java.util.List;
 
 import static seong.onlinestudy.domain.QGroup.group;
 import static seong.onlinestudy.domain.QMember.member;
-import static seong.onlinestudy.domain.QRecord.record;
 import static seong.onlinestudy.domain.QStudy.study;
 import static seong.onlinestudy.domain.QStudyTicket.studyTicket;
 import static seong.onlinestudy.domain.QTicket.ticket;
+import static seong.onlinestudy.domain.QTicketRecord.ticketRecord;
 
 public class StudyRepositoryImpl implements StudyRepositoryCustom{
 
@@ -36,15 +36,15 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         study.id,
                         group.id,
                         study.name,
-                        studyTicket.record.activeTime.sum().as("studyTime")
+                        studyTicket.ticketRecord.activeTime.sum().as("studyTime")
                 ))
                 .from(study)
                 .join(study.studyTickets, studyTicket)
-                .join(studyTicket.record, record)
+                .join(studyTicket.ticketRecord, ticketRecord)
                 .join(studyTicket.group, group)
                 .where(group.in(groups))
                 .groupBy(group.id, study.id)
-                .orderBy(record.activeTime.sum().desc())
+                .orderBy(ticketRecord.activeTime.sum().desc())
                 .fetch();
     }
 
@@ -61,7 +61,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         endTimeLt(endTime)
                 )
                 .groupBy(study.id)
-                .orderBy(studyTicket.record.activeTime.sum().desc())
+                .orderBy(studyTicket.ticketRecord.activeTime.sum().desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
