@@ -71,7 +71,7 @@ public class TicketRecordApiTest {
         ticketRepository.saveAll(tickets);
 
         for(int i=0; i<20; i++) {
-            tickets.get(i).expiredAndUpdateRecord();
+            tickets.get(i).expireAndCreateRecord();
         }
 
     }

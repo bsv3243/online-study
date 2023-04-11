@@ -68,6 +68,8 @@ public class MyUtils {
     }
 
     public static void setTicketEnd(Ticket ticket, long seconds) {
+        ticket.expireAndCreateRecord();
+
         setField(ticket.getTicketRecord(), "activeTime", seconds);
         setField(ticket.getTicketRecord(), "expiredTime", ticket.getStartTime().plusSeconds(seconds));
     }
@@ -235,7 +237,7 @@ public class MyUtils {
             //회원의 활성 상태 티켓이 존재한다면 만료시킨다.
             if(memberActiveTicket.containsKey(targetMember)) {
                 Ticket activeTicket = memberActiveTicket.get(targetMember);
-                activeTicket.expiredAndUpdateRecord();
+                activeTicket.expireAndCreateRecord();
             }
             memberActiveTicket.put(targetMember, ticket);
         }
@@ -285,12 +287,12 @@ public class MyUtils {
 
     public static void expireTickets(List<Ticket> tickets) {
         for (Ticket ticket : tickets) {
-            ticket.expiredAndUpdateRecord();
+            ticket.expireAndCreateRecord();
         }
     }
 
     public static void expireTicket(Ticket ticket, int studyTime) {
-        ticket.expiredAndUpdateRecord();
+        ticket.expireAndCreateRecord();
         setField(ticket.getTicketRecord(), "activeTime", studyTime);
         setField(ticket.getTicketRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
     }

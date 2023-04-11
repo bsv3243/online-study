@@ -26,7 +26,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
      */
     @Query("select t from Ticket t" +
             " join t.member m on m = :member" +
-            " join fetch t.ticketRecord r" +
+            " left join fetch t.ticketRecord r" +
             " where t.startTime >= :startTime and t.startTime < :endTime")
     List<Ticket> findTickets(@Param("member") Member member,
                              @Param("startTime") LocalDateTime startTime,
@@ -41,7 +41,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
      */
     @Query("select t from Ticket t" +
             " join fetch t.member m" +
-            " join fetch t.ticketRecord r" +
+            " left join fetch t.ticketRecord r" +
             " join m.groupMembers gm on gm.group.id = :groupId" +
             " where t.startTime >= :startTime and t.startTime < :endTime" +
             " order by t.member.id")

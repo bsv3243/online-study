@@ -90,7 +90,9 @@ class TicketRecordServiceTest {
 
         long testStudyTime = 0;
         for (StudyTicket targetTestStudyTicket : targetTestStudyTickets) {
-            testStudyTime += targetTestStudyTicket.getTicketRecord().getActiveTime();
+            if(targetTestStudyTicket.isExpired()) {
+                testStudyTime += targetTestStudyTicket.getTicketRecord().getActiveTime();
+            }
         }
         return testStudyTime;
     }

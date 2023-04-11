@@ -18,16 +18,32 @@ public class TicketRecord {
     private LocalDateTime expiredTime;
     private long activeTime;
 
+    @OneToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
+
     public static TicketRecord create() {
 
         return new TicketRecord();
     }
 
-    public void update(Ticket ticket) {
-        LocalDateTime expiredTime = LocalDateTime.now();
-        ZoneOffset offset = ZoneOffset.of("+09:00");
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+        ticket.setTicketRecord(this);
+    }
 
-        this.expiredTime = expiredTime;
-        this.activeTime = expiredTime.toEpochSecond(offset) - ticket.getStartTime().toEpochSecond(offset);
+    public static TicketRecord create(Ticket ticket) {
+        TicketRecord record = new TicketRecord();
+
+        ZoneOffset offset = ZoneOffset.of("+09:00");
+        LocalDateTime expiredTime = LocalDateTime.now();
+        LocalDateTime startTime = ticket.getStartTime();
+
+        record.expiredTime = expiredTime;
+        record.activeTime = expiredTime.toEpochSecond(offset) - startTime.toEpochSecond(offset);
+
+        record.setTicket(ticket);
+
+        return record;
     }
 }

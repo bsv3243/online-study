@@ -26,10 +26,11 @@ public class TicketDto {
         TicketDto ticketDto = new TicketDto();
         ticketDto.ticketId = ticket.getId();
         ticketDto.expired = ticket.isExpired();
-        ticketDto.activeTime = ticket.getTicketRecord().getActiveTime();
+        ticketDto.activeTime = 0L;
         ticketDto.startTime = ticket.getStartTime();
         if(ticket.isExpired()) {
             ticketDto.endTime = ticket.getTicketRecord().getExpiredTime();
+            ticketDto.activeTime = ticket.getTicketRecord().getActiveTime();
         }
 
         if(ticket instanceof StudyTicket) {

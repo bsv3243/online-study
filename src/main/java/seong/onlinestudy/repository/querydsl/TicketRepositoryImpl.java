@@ -27,7 +27,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
         List<Ticket> findTickets = query
                 .selectFrom(ticket)
                 .join(ticket.member, member).fetchJoin()
-                .join(ticket.ticketRecord, ticketRecord).fetchJoin()
+                .leftJoin(ticket.ticketRecord, ticketRecord).fetchJoin()
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
                 .where(
                         memberIdsIn(ticket.member, memberIds),
@@ -47,7 +47,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
         List<Ticket> findTickets = query
                 .selectFrom(ticket)
                 .join(ticket.member, member).fetchJoin()
-                .join(ticket.ticketRecord, ticketRecord).fetchJoin()
+                .leftJoin(ticket.ticketRecord, ticketRecord).fetchJoin()
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
                 .where(
                         memberIdEq(ticket.member, memberId),
@@ -68,7 +68,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
                 .selectFrom(studyTicket)
                 .join(studyTicket.member, member).fetchJoin()
                 .join(studyTicket.study, study).fetchJoin()
-                .join(studyTicket.ticketRecord, ticketRecord).fetchJoin()
+                .leftJoin(studyTicket.ticketRecord, ticketRecord).fetchJoin()
                 .where(
                         memberIdEq(studyTicket.member, memberId),
                         groupIdEq(studyTicket.group, groupId),

@@ -29,8 +29,8 @@ public abstract class Ticket {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "ticket_record_id")
+    @OneToOne(mappedBy = "ticket", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private TicketRecord ticketRecord;
 
     protected Ticket() {
@@ -40,9 +40,6 @@ public abstract class Ticket {
         this.startTime = LocalDateTime.now();
         this.setMember(member);
         this.setGroup(group);
-
-        TicketRecord ticketRecord = TicketRecord.create();
-        this.setTicketRecord(ticketRecord);
     }
 
     public void setMember(Member member) {
@@ -67,8 +64,9 @@ public abstract class Ticket {
         }
     }
 
-    public void expiredAndUpdateRecord() {
+    public void expireAndCreateRecord() {
         expired = true;
-        ticketRecord.update(this);
+
+        TicketRecord.create(this);
     }
 }

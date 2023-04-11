@@ -51,7 +51,10 @@ public class RecordDto {
     public void addStudyTime(Ticket ticket) {
         if(ticket instanceof StudyTicket) {
             memberCounter.add(ticket.getMember());
-            studyTime += ticket.getTicketRecord().getActiveTime();
+
+            if(ticket.isExpired()) {
+                studyTime += ticket.getTicketRecord().getActiveTime();
+            }
         }
     }
 
@@ -69,11 +72,13 @@ public class RecordDto {
     public static RecordDto from(Ticket ticket) {
         RecordDto recordDto = new RecordDto();
         recordDto.date = ticket.getDateBySetting();
-        recordDto.studyTime = ticket.getTicketRecord().getActiveTime();
+        recordDto.studyTime = 0;
         recordDto.memberCount = 1;
-
         recordDto.memberCounter.add(ticket.getMember());
 
+        if(ticket.isExpired()) {
+            recordDto.studyTime = ticket.getTicketRecord().getActiveTime();
+        }
         recordDto.setStartAndEndTime(ticket);
 
         return recordDto;
