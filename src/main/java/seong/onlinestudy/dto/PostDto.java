@@ -40,6 +40,7 @@ public class PostDto {
         }
 
         postDto.comments = post.getComments().stream()
+                .filter(comment -> !comment.isDeleted())
                 .map(CommentDto::from).collect(Collectors.toList());
 
         return postDto;
