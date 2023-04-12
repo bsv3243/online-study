@@ -1,23 +1,24 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+    password: test1234
 
   h2:
     console:
       enabled: true
 
   jpa:
-    database: h2
+    database: mysql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     open-in-view: false
-    show-sql: true
     properties:
       hibernate:
         default_batch_fetch_size: 300
+        format_sql: true
+    show-sql: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
