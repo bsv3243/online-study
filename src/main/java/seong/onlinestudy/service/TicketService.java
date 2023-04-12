@@ -6,16 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seong.onlinestudy.TimeConst;
-import seong.onlinestudy.repository.MemberRepository;
+import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.ticket.TicketGetRequest;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.DuplicateElementException;
 import seong.onlinestudy.exception.PermissionControlException;
-import seong.onlinestudy.repository.GroupRepository;
-import seong.onlinestudy.repository.StudyRepository;
-import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.ticket.TicketCreateRequest;
 
 import java.time.LocalDateTime;
@@ -34,6 +31,7 @@ public class TicketService {
     private final StudyRepository studyRepository;
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
+    private final TicketRecordRepository ticketRecordRepository;
 
     @Transactional
     public Long createTicket(TicketCreateRequest request, Member loginMember) {
@@ -148,5 +146,15 @@ public class TicketService {
         }
 
         return memberTicketDtos;
+    }
+
+    @Transactional
+    public void expireTicketsNotExpired() {
+        List<Ticket> ticketsNotExpired = ticketRepository.findTicketsByExpiredFalse();
+
+        ticketRecordRepository.insertTicketRecords(ticketsNotExpired);
+        int updateCount = ticketRepository.expireTicketsWhereExpiredFalse();
+
+        log.info("{}개의 유효한 티켓의 상태가 종료 상태로 변경되었습니다.", updateCount);
     }
 }
