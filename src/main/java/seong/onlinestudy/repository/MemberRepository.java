@@ -22,13 +22,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
      * @return Member 리스트를 반환
      */
     @Query("select m from Member m" +
-            " join m.groupMembers gm on gm.group.id = :groupId")
+            " join m.groupMembers gm on gm.group.id = :groupId and m.deleted=false")
     List<Member> findMembersInGroup(@Param("groupId") Long groupId);
 
     @Query("select m from Member m" +
             " join m.tickets t" +
             " join t.ticketRecord r" +
-            " where t.startTime >= :startTime and t.startTime < :endTime" +
+            " where t.startTime >= :startTime and t.startTime < :endTime and m.deleted=false" +
             " group by m.id" +
             " order by sum(r.activeTime) desc ")
     Page<Member> findMembersOrderByStudyTime(@Param("startTime") LocalDateTime startTime,

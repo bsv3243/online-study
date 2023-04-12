@@ -16,7 +16,7 @@ public interface GroupRepository extends JpaRepository<Group, Long>, GroupReposi
      * @param groupId
      * @return GroupMember, Member 를 페치 조인한 리스트를 반환
      */
-    @Query("select g from Group g join fetch g.groupMembers gm join fetch gm.member where g.id=:groupId")
+    @Query("select g from Group g join fetch g.groupMembers gm join fetch gm.member where g.id=:groupId and g.deleted=false")
     Optional<Group> findGroupWithMembers(@Param("groupId") Long groupId);
 
     @Modifying
