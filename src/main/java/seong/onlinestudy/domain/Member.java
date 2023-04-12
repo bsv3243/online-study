@@ -57,6 +57,7 @@ public class Member {
         member.username = request.getUsername();
         member.password = request.getPassword();
         member.nickname = request.getNickname();
+        member.createdAt = LocalDateTime.now();
         member.deleted = false;
 
         return member;
