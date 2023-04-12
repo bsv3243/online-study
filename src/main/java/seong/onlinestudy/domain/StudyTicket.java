@@ -8,7 +8,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @DiscriminatorValue(TicketStatus.Values.STUDY)
-@PrimaryKeyJoinColumn(name = "study_ticket_id")
 public class StudyTicket extends Ticket{
 
     @ManyToOne(fetch = FetchType.EAGER)
