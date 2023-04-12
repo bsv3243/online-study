@@ -17,6 +17,6 @@ https://studybread.shop/docs/index.html
   + Spring Rest Docs
 
 ## DB
-![online_study_db](https://user-images.githubusercontent.com/48748265/230788665-8867772b-3ead-473e-9981-2d8518e1c858.png)
+![온라인스터디DB(수정)](https://user-images.githubusercontent.com/48748265/231474247-4c115009-a513-4981-9cc7-db57eb3d085e.png)
 
-+ Ticket, StudyTicket, RestTicket 테이블의 경우 반정규화하였으며, Ticket 테이블의 ticket_status 컬럼에 의해 테이블을 구분합니다.
++ Ticket, StudyTicket, RestTicket 3개의 테이블이 있었으나, 조인횟수를 줄이기 위해 JPA의 단일 테이블 전략을 사용하며 Ticket 테이블의 ticket_status 컬럼에 의해 테이블이 구분됩니다.
