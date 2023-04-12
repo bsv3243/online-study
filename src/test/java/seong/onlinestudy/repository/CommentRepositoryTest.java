@@ -87,7 +87,9 @@ class CommentRepositoryTest {
 
         //then
         testMember = memberRepository.findById(testMember.getId()).get();
-        assertThat(testMember.getComments().size()).isEqualTo(0);
+        assertThat(testMember.getComments()).allSatisfy(findComment -> {
+            assertThat(findComment.isDeleted()).isTrue();
+        });
     }
 
 }

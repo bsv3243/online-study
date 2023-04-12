@@ -151,10 +151,11 @@ public class PostRepositoryTest {
 
         //then
         List<Post> findPosts = postRepository.findAll();
-        List<Long> findPostIds = findPosts.stream().map(Post::getId).collect(Collectors.toList());
         Long testPostId = testPost.getId();
 
-        assertThat(findPostIds).doesNotContain(testPostId);
+        assertThat(findPosts).anySatisfy(findPost -> {
+            assertThat(findPost.isDeleted()).isTrue();
+        });
     }
 
     @Test
@@ -177,7 +178,10 @@ public class PostRepositoryTest {
 
         //then
         testMember = memberRepository.findById(testMember.getId()).get();
-        assertThat(testMember.getPosts().size()).isEqualTo(0);
+        assertThat(testMember.getPosts()).allSatisfy(findPost -> {
+                    assertThat(findPost.isDeleted()).isTrue();
+                }
+        );
     }
 
     @Test
