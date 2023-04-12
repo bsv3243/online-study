@@ -8,7 +8,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @DiscriminatorValue(TicketStatus.Values.REST)
-@PrimaryKeyJoinColumn(name = "rest_ticket_id")
 public class RestTicket extends Ticket {
 
     protected RestTicket() {

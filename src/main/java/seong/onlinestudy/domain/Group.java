@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Where(clause = "deleted = false")
-@Table(name = "groups")
+@Table(name = "study_group")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
