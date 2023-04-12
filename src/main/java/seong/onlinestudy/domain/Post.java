@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Where(clause = "deleted=false")
 @Getter
 public class Post {
 
