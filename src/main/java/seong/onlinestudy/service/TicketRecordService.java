@@ -36,21 +36,19 @@ public class TicketRecordService {
         List<StudyTicket> findTickets = ticketRepository
                 .findStudyTickets(request.getMemberId(), request.getGroupId(), request.getStudyId(), startTime, endTime);
 
-        Map<Study, List<Ticket>> ticketsGroupByStudy = getTicketsGroupByStudy(findTickets);
+        List<StudyRecordDto> studyRecordDtos = getStudyRecordDtos(request, findTickets);
 
-        List<StudyRecordDto> studyRecordDtos = new ArrayList<>();
-        //스터디별로 분류된 Ticket 을 대상으로 한다.
-        for (Study study : ticketsGroupByStudy.keySet()) {
-            List<Ticket> filteredTickets = ticketsGroupByStudy.get(study);
-
-            Map<LocalDate, RecordDto> recordsGroupByDate = getRecordsGroupByDate(filteredTickets);
-
-            StudyRecordDto studyRecord = getStudyRecordWithRecords(recordsGroupByDate, request, study);
-            studyRecordDtos.add(studyRecord);
-        }
         return studyRecordDtos;
     }
 
+    private List<StudyRecordDto> getStudyRecordDtos(RecordsGetRequest request, List<StudyTicket> findTickets) {
+        Map<Study, List<Ticket>> ticketsGroupByStudy = getTicketsGroupByStudy(findTickets);
+
+        List<StudyRecordDto> studyRecordDtos = createStudyRecordsFromTickets(ticketsGroupByStudy, request);
+        return studyRecordDtos;
+    }
+
+    //스터디 별로 티켓을 분류한다.
     private Map<Study, List<Ticket>> getTicketsGroupByStudy(List<StudyTicket> findTickets) {
         Map<Study, List<Ticket>> ticketsGroupByStudy = new HashMap<>();
         for (StudyTicket findTicket : findTickets) {
@@ -63,24 +61,41 @@ public class TicketRecordService {
         return ticketsGroupByStudy;
     }
 
+    private List<StudyRecordDto> createStudyRecordsFromTickets(Map<Study, List<Ticket>> ticketsGroupByStudy,
+                                                               RecordsGetRequest request) {
+        List<StudyRecordDto> studyRecordDtos = new ArrayList<>();
+        for (Study study : ticketsGroupByStudy.keySet()) {
+            List<Ticket> filteredTickets = ticketsGroupByStudy.get(study);
+
+            //스터디별로 분류된 Ticket 들을 발행된 date 에 따라 하나의 RecordDto 로 뭉친다.
+            Map<LocalDate, RecordDto> recordsGroupByDate = getRecordsGroupByDate(filteredTickets);
+
+            //date 별로 뭉쳐진 RecordDto 들을 data 로 가지는 studyRecord 를 만든다.
+            StudyRecordDto studyRecord = createStudyRecord(study, recordsGroupByDate, request);
+            studyRecordDtos.add(studyRecord);
+        }
+        return studyRecordDtos;
+    }
+
     private Map<LocalDate, RecordDto> getRecordsGroupByDate(List<Ticket> filteredTickets) {
         Map<LocalDate, RecordDto> recordsGroupByDate = new HashMap<>();
         for (Ticket ticket : filteredTickets) {
-            LocalDate ticketDate = ticket.getDateBySetting();
+            LocalDate publishDate = ticket.getDateBySetting();
 
-            RecordDto recordDto = recordsGroupByDate.getOrDefault(ticketDate, RecordDto.from(ticket));
+            RecordDto recordDto = recordsGroupByDate.getOrDefault(publishDate, RecordDto.from(ticket));
             if(recordsGroupByDate.containsValue(recordDto)) { //새롭게 만든 recordDto 가 아닐 때
                 recordDto.addStudyTime(ticket);
                 recordDto.compareStartAndEndTime(ticket);
             }
 
-            recordsGroupByDate.put(ticketDate, recordDto);
+            recordsGroupByDate.put(publishDate, recordDto);
         }
         return recordsGroupByDate;
     }
 
-    private StudyRecordDto getStudyRecordWithRecords(Map<LocalDate, RecordDto> recordsGroupByDate,
-                                                     RecordsGetRequest request, Study study) {
+    private StudyRecordDto createStudyRecord(Study study,
+                                             Map<LocalDate, RecordDto> recordsGroupByDate,
+                                             RecordsGetRequest request) {
         StudyRecordDto studyRecord = StudyRecordDto.from(study);
         for(int i = 0; i< request.getDays(); i++) {
             LocalDate startDate = request.getStartDate().plusDays(i);
