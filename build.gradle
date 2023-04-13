@@ -61,6 +61,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+//*-plain.jar 생성 안 함
+jar {
+    enabled = false
+}
+
 //spring rest docs
 ext {
     snippetsDir = file('build/generated-snippets')
