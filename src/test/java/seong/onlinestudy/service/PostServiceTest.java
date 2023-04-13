@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.CommentDto;
 import seong.onlinestudy.dto.PostDto;
 import seong.onlinestudy.dto.PostStudyDto;
 import seong.onlinestudy.enumtype.PostCategory;
@@ -27,8 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static seong.onlinestudy.MyUtils.*;
@@ -149,6 +149,44 @@ class PostServiceTest {
 
         List<PostDto> content = postDtos.getContent();
         assertThat(content).containsExactlyInAnyOrderElementsOf(postDtoList);
+    }
+
+    @Test
+    @DisplayName("게시글 목록 조회(soft delete 된 댓글과 혼합")
+    void getPosts_withDeletedComments() {
+        //given
+        PostsGetRequest request = new PostsGetRequest();
+
+        List<Comment> testComments = createComments(members, posts, 30, true);
+        List<Comment> testCommentsDeleted = createComments(members, posts, 30, true);
+
+        for (Comment comment : testCommentsDeleted) {
+            comment.delete();
+        }
+
+        assertThat(posts).allSatisfy(post -> {
+            assertThat(post.getComments()).anySatisfy(comment -> {
+                assertThat(comment.isDeleted()).isTrue();
+            });
+        });
+
+        given(postRepository.findPostsWithComments(any(), any(), any(), any(), any(), any()))
+                .willReturn(new PageImpl<>(posts));
+        given(postStudyRepository.findStudiesWhereInPosts(any()))
+                .willReturn(List.of());
+
+        //when
+        Page<PostDto> postsWithPage = postService.getPosts(request);
+
+        //then
+        List<PostDto> findPosts = postsWithPage.getContent();
+
+        assertThat(findPosts).allSatisfy(findPost -> {
+            assertThat(findPost.getComments()).allSatisfy(commentDto -> {
+                assertThat(commentDto.isDeleted()).isFalse();
+            });
+        });
+
     }
 
     @Test

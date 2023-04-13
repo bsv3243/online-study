@@ -39,7 +39,12 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.member, member).fetchJoin()
                 .leftJoin(post.group, group).fetchJoin()
                 .leftJoin(post.postStudies, postStudy)
-                .where(memberIdEq(memberId), groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(memberIdEq(memberId),
+                        groupIdEq(groupId),
+                        searchContains(search),
+                        categoryEq(category),
+                        studyIdIn(studyIds),
+                        post.deleted.isFalse())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order)
@@ -49,7 +54,12 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .select(post.countDistinct())
                 .from(post)
                 .leftJoin(post.postStudies, postStudy)
-                .where(memberIdEq(memberId), groupIdEq(groupId), searchContains(search), categoryEq(category), studyIdIn(studyIds))
+                .where(memberIdEq(memberId),
+                        groupIdEq(groupId),
+                        searchContains(search),
+                        categoryEq(category),
+                        studyIdIn(studyIds),
+                        post.deleted.isFalse())
                 .fetchOne();
 
 

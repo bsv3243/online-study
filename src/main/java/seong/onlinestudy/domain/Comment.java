@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Where(clause = "deleted=false")
 @Getter
 public class Comment {
 

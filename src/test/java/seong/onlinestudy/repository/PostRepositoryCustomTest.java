@@ -158,7 +158,10 @@ public class PostRepositoryCustomTest {
 
         assertThat(findPostIds).doesNotContain(testPostId);
         assertThat(findPosts).allSatisfy(findPost -> {
-            assertThat(findPost.getComments().size()).isEqualTo(0);
+            assertThat(findPost.isDeleted()).isFalse();
+            assertThat(findPost.getComments()).allSatisfy(findComment -> {
+                assertThat(findComment.isDeleted()).isTrue();
+            });
         });
     }
 

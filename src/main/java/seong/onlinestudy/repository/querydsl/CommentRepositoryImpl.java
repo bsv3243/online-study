@@ -32,7 +32,9 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
                 .from(comment)
                 .join(comment.member, member).fetchJoin()
                 .join(comment.post, post).fetchJoin()
-                .where(memberIdEq(member, memberId), postIdEq(post, postId))
+                .where(memberIdEq(member, memberId),
+                        postIdEq(post, postId),
+                        comment.deleted.isFalse())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
@@ -40,7 +42,9 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
         Long count = query
                 .select(comment.id.count())
                 .from(comment)
-                .where(memberIdEq(comment.member, memberId), postIdEq(comment.post, postId))
+                .where(memberIdEq(comment.member, memberId),
+                        postIdEq(comment.post, postId),
+                        comment.deleted.isFalse())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchOne();

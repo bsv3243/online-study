@@ -16,10 +16,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
      * @param postId Post 엔티티의 Id
      * @return Member, Group 과 페치 조인한 Post 엔티티 1개 반환
      */
-    @Query("select p from Post p left join fetch p.member m left join fetch p.group g where p.id=:postId")
+    @Query("select p from Post p left join fetch p.member m left join fetch p.group g where p.id=:postId and p.deleted=false")
     Optional<Post> findByIdWithMemberAndGroup(@Param("postId") Long postId);
 
-    @Query("select p from Post p left join fetch p.postStudies ps left join fetch ps.study s where p.id=:postId")
+    @Query("select p from Post p left join fetch p.postStudies ps left join fetch ps.study s where p.id=:postId and p.deleted=false")
     Optional<Post> findByIdWithStudies(@Param("postId") Long postId);
 
     @Modifying

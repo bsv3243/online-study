@@ -13,7 +13,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Where(clause = "deleted = false")
 @Table(name = "study_group")
 public class Group {
     @Id

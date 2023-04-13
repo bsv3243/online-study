@@ -46,7 +46,11 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .join(group.groupMembers, groupMember)
                 .leftJoin(group.tickets, ticket)
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
-                .where(memberIdEq(groupMember.member, memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
+                .where(memberIdEq(groupMember.member, memberId),
+                        categoryEq(category),
+                        nameContains(search),
+                        studyIdsIn(studyTicket.study, studyIds),
+                        group.deleted.isFalse())
                 .groupBy(group.id)
                 .orderBy(order)
                 .limit(pageable.getPageSize())
@@ -59,7 +63,11 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
                 .join(group.groupMembers, groupMember)
                 .leftJoin(group.tickets, ticket)
                 .leftJoin(studyTicket).on(studyTicket.eq(ticket))
-                .where(memberIdEq(groupMember.member, memberId), categoryEq(category), nameContains(search), studyIdsIn(studyTicket.study, studyIds))
+                .where(memberIdEq(groupMember.member, memberId),
+                        categoryEq(category),
+                        nameContains(search),
+                        studyIdsIn(studyTicket.study, studyIds),
+                        group.deleted.isFalse())
                 .fetchOne();
 
         return new PageImpl<>(groups, pageable, total);

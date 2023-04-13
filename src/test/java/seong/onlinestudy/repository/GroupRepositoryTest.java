@@ -137,8 +137,9 @@ class GroupRepositoryTest {
                 .setParameter("memberId", testMember.getId())
                 .getResultList();
 
-        assertThat(findGroups).isEmpty();
-
+        assertThat(findGroups).allSatisfy(findGroup -> {
+            assertThat(findGroup.isDeleted()).isTrue();
+        });
     }
 
     @Test
