@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.Result;
-import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.exception.InvalidSessionException;
@@ -35,25 +34,25 @@ public class TicketController {
     @PostMapping("/tickets")
     @ResponseStatus(HttpStatus.CREATED)
     public Result<Long> createTicket(@RequestBody @Valid TicketCreateRequest createTicketRequest,
-                             @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
+                             @SessionAttribute(name = LOGIN_MEMBER, required = false) Long loginMemberId) {
 
-        if(loginMember == null) {
+        if(loginMemberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long ticketId = ticketService.createTicket(createTicketRequest, loginMember);
+        Long ticketId = ticketService.createTicket(createTicketRequest, loginMemberId);
 
         return new Result<>("201", ticketId);
     }
 
     @PatchMapping("/ticket/{ticketId}")
     public Result<Long> expiredTicket(@PathVariable("ticketId") Long ticketId,
-                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if(loginMember == null) {
+                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Long loginMemberId) {
+        if(loginMemberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long expiredTicketId = ticketService.expireTicket(ticketId, loginMember);
+        Long expiredTicketId = ticketService.expireTicket(ticketId, loginMemberId);
 
         return new Result<>("200", expiredTicketId);
     }

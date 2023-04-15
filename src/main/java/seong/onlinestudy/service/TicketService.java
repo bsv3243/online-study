@@ -34,8 +34,8 @@ public class TicketService {
     private final TicketRecordRepository ticketRecordRepository;
 
     @Transactional
-    public Long createTicket(TicketCreateRequest request, Member loginMember) {
-        Member findMember = memberRepository.findById(loginMember.getId())
+    public Long createTicket(TicketCreateRequest request, Long loginMemberId) {
+        Member findMember = memberRepository.findById(loginMemberId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
         Study findStudy = studyRepository.findById(request.getStudyId())
@@ -61,12 +61,12 @@ public class TicketService {
     }
 
     @Transactional
-    public Long expireTicket(Long ticketId, Member loginMember) {
+    public Long expireTicket(Long ticketId, Long loginMemberId) {
         Ticket findTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 티켓입니다."));
 
         //티켓의 회원 ID와 일치하지 않으면
-        if(!findTicket.getMember().getId().equals(loginMember.getId())) {
+        if(!findTicket.getMember().getId().equals(loginMemberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 

@@ -59,8 +59,8 @@ public class PostService {
     }
 
     @Transactional
-    public Long createPost(PostCreateRequest request, Member loginMember) {
-        Member member = memberRepository.findById(loginMember.getId())
+    public Long createPost(PostCreateRequest request, Long loginMemberId) {
+        Member member = memberRepository.findById(loginMemberId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
         Post post = Post.createPost(request, member);
@@ -105,12 +105,12 @@ public class PostService {
     }
 
     @Transactional
-    public Long updatePost(Long postId, PostUpdateRequest request, Member loginMember) {
+    public Long updatePost(Long postId, PostUpdateRequest request, Long loginMemberId) {
         Post post = postRepository.findByIdWithStudies(postId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
         //Post 를 생성한 회원과 로그인한 회원 정보가 일치하지 않으면
-        if(!post.getMember().getId().equals(loginMember.getId())) {
+        if(!post.getMember().getId().equals(loginMemberId)) {
             throw new PermissionControlException("해당 게시글의 수정 권한이 없습니다.");
         }
 
@@ -134,11 +134,11 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, Member loginMember) {
+    public void deletePost(Long postId, Long loginMemberId) {
         Post post = postRepository.findByIdWithStudies(postId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
-        if (!post.getMember().getId().equals(loginMember.getId())) {
+        if (!post.getMember().getId().equals(loginMemberId)) {
             throw new PermissionControlException("해당 게시글의 삭제 권한이 없습니다.");
         }
 
@@ -147,8 +147,8 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePosts(PostsDeleteRequest request, Member loginMember) {
-        if(!request.getMemberId().equals(loginMember.getId())) {
+    public void deletePosts(PostsDeleteRequest request, Long loginMemberId) {
+        if(!request.getMemberId().equals(loginMemberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 

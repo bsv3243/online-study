@@ -7,7 +7,6 @@ import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.request.record.RecordsGetRequest;
-import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.domain.Ticket;
 import seong.onlinestudy.dto.StudyRecordDto;
@@ -23,10 +22,10 @@ public class TicketRecordService {
 
     private final TicketRepository ticketRepository;
 
-    public List<StudyRecordDto> getRecords(RecordsGetRequest request, Member loginMember) {
-        if(loginMember != null) {
+    public List<StudyRecordDto> getRecords(RecordsGetRequest request, Long loginMemberId) {
+        if(loginMemberId != null) {
             //요청 조건 중 memberId가 있을 경우 로그인한 회원의 id 와 비교
-            if (request.getMemberId() != null && !loginMember.getId().equals(request.getMemberId())) {
+            if (request.getMemberId() != null && !loginMemberId.equals(request.getMemberId())) {
                 throw new PermissionControlException("권한이 없습니다.");
             }
         }

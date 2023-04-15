@@ -32,8 +32,8 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long createComment(CommentCreateRequest request, Member loginMember) {
-        Member member = memberRepository.findById(loginMember.getId())
+    public Long createComment(CommentCreateRequest request, Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
         Post post = postRepository.findById(request.getPostId())
@@ -48,12 +48,12 @@ public class CommentService {
     }
 
     @Transactional
-    public Long updateComment(Long commentId, CommentUpdateRequest request, Member loginMember) {
+    public Long updateComment(Long commentId, CommentUpdateRequest request, Long memberId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다."));
 
         //작성자 정보가 같지 않으면
-        if (!comment.getMember().getId().equals(loginMember.getId())) {
+        if (!comment.getMember().getId().equals(memberId)) {
             throw new PermissionControlException("댓글 수정 권한이 없습니다.");
         }
 
@@ -67,11 +67,11 @@ public class CommentService {
     }
 
     @Transactional
-    public Long deleteComment(Long commentId, Member loginMember) {
+    public Long deleteComment(Long commentId, Long memberId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다."));
 
-        if(!comment.getMember().getId().equals(loginMember.getId())) {
+        if(!comment.getMember().getId().equals(memberId)) {
             throw new PermissionControlException("댓글 삭제 권한이 없습니다.");
         }
 
@@ -89,8 +89,8 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComments(CommentsDeleteRequest request, Member loginMember) {
-        if(!request.getMemberId().equals(loginMember.getId())) {
+    public void deleteComments(CommentsDeleteRequest request, Long memberId) {
+        if(!request.getMemberId().equals(memberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 

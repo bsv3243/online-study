@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import seong.onlinestudy.controller.response.Result;
-import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.request.record.RecordsGetRequest;
 import seong.onlinestudy.service.TicketRecordService;
@@ -26,8 +25,8 @@ public class TicketRecordController {
 
     @GetMapping("/records")
     public Result<List<StudyRecordDto>> getRecords(@Valid RecordsGetRequest request,
-                                                   @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
-        List<StudyRecordDto> records = ticketRecordService.getRecords(request, loginMember);
+                                                   @SessionAttribute(value = LOGIN_MEMBER, required = false) Long loginMemberId) {
+        List<StudyRecordDto> records = ticketRecordService.getRecords(request, loginMemberId);
 
         return new Result<>("200", records);
     }

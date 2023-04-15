@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.Result;
-import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.exception.PermissionControlException;
@@ -34,11 +33,11 @@ public class MemberController {
 
     @GetMapping("/member/{memberId}")
     public Result<MemberDto> getMember(@PathVariable Long memberId,
-                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
-        if (loginMember == null) {
+                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Long sessionMemberId) {
+        if (sessionMemberId == null) {
             throw new InvalidSessionException("세션이 유효하지 않습니다.");
         }
-        if(!memberId.equals(loginMember.getId())) {
+        if(!memberId.equals(sessionMemberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
@@ -56,11 +55,11 @@ public class MemberController {
 
     @PatchMapping("/member/{memberId}")
     public Result<Long> updateMember(@PathVariable Long memberId, @RequestBody @Valid MemberUpdateRequest request,
-                                     @SessionAttribute(value = LOGIN_MEMBER, required = false) Member loginMember) {
-        if (loginMember == null) {
+                                     @SessionAttribute(value = LOGIN_MEMBER, required = false) Long sessionMemberId) {
+        if (sessionMemberId == null) {
             throw new InvalidSessionException("세션이 유효하지 않습니다.");
         }
-        if(!memberId.equals(loginMember.getId())) {
+        if(!memberId.equals(sessionMemberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
@@ -71,11 +70,11 @@ public class MemberController {
 
     @DeleteMapping("/member/{memberId}")
     public Result<Long> deleteMember(@PathVariable Long memberId,
-                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if (loginMember == null) {
+                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Long sessiongMemberId) {
+        if (sessiongMemberId == null) {
             throw new InvalidSessionException("세션이 유효하지 않습니다.");
         }
-        if(!memberId.equals(loginMember.getId())) {
+        if(!memberId.equals(sessiongMemberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
