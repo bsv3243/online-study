@@ -166,7 +166,7 @@ class MemberControllerTest {
         ReflectionTestUtils.setField(testMember, "id", 1L);
         MemberDto memberDto = MemberDto.from(testMember);
 
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         given(memberService.getMember(any())).willReturn(memberDto);
 
@@ -229,7 +229,7 @@ class MemberControllerTest {
 
         Member testMember = MyUtils.createMember("member", "member");
         ReflectionTestUtils.setField(testMember, "id", 1L);
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         given(memberService.updateMember(any(), any())).willReturn(1L);
 
@@ -273,7 +273,7 @@ class MemberControllerTest {
         //given
         Member testMember = MyUtils.createMember("member", "member");
         ReflectionTestUtils.setField(testMember, "id", 1L);
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions resultActions = mvc.perform(delete("/api/v1/member/{memberId}", 1)

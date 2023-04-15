@@ -214,7 +214,7 @@ class TicketControllerTest {
         request.setStatus(TicketStatus.STUDY);
 
         Member testMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions resultActions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/tickets")
@@ -243,7 +243,7 @@ class TicketControllerTest {
     void expiredTicket() throws Exception {
         //given
         Member testMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions resultActions = mvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/ticket/{ticketId}", 1L)

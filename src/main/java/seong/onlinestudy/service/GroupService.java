@@ -35,8 +35,8 @@ public class GroupService {
     private final GroupMemberRepository groupMemberRepository;
 
     @Transactional
-    public Long createGroup(GroupCreateRequest createRequest, Member member) {
-        Member findMember = memberRepository.findById(member.getId())
+    public Long createGroup(GroupCreateRequest createRequest, Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
         GroupMember groupMember = GroupMember.createGroupMember(findMember, MASTER);
@@ -49,8 +49,8 @@ public class GroupService {
     }
 
     @Transactional
-    public Long joinGroup(Long groupId, Member member) {
-        Member findMember = memberRepository.findById(member.getId())
+    public Long joinGroup(Long groupId, Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
         Group group = groupRepository.findById(groupId)
@@ -117,7 +117,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void deleteGroup(Long id, Member loginMember) {
+    public void deleteGroup(Long id, Long memberId) {
         Group group = groupRepository.findGroupWithMembers(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
@@ -126,7 +126,7 @@ public class GroupService {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("그룹장이 존재하지 않습니다."));
 
-        if(!master.getMember().getId().equals(loginMember.getId())) {
+        if(!master.getMember().getId().equals(memberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
@@ -134,18 +134,18 @@ public class GroupService {
     }
 
     @Transactional
-    public void quitGroup(Long groupId, Member loginMember) {
+    public void quitGroup(Long groupId, Long memberId) {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
-        Member member = memberRepository.findById(loginMember.getId())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
         groupMemberRepository.deleteByGroupAndMember(group, member);
     }
 
     @Transactional
-    public Long updateGroup(Long id, GroupUpdateRequest request, Member loginMember) {
+    public Long updateGroup(Long id, GroupUpdateRequest request, Long memberId) {
         Group group = groupRepository.findGroupWithMembers(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
@@ -153,7 +153,7 @@ public class GroupService {
                 .filter(groupMember -> groupMember.getRole().equals(MASTER)).findFirst()
                 .orElseThrow(() -> new RuntimeException("그룹장은 반드시 존재해야합니다."));
 
-        if (!master.getMember().getId().equals(loginMember.getId())) {
+        if (!master.getMember().getId().equals(memberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
@@ -163,8 +163,8 @@ public class GroupService {
     }
 
     @Transactional
-    public void deleteGroups(GroupsDeleteRequest request, Member loginMember) {
-        if(!request.getMemberId().equals(loginMember.getId())) {
+    public void deleteGroups(GroupsDeleteRequest request, Long memberId) {
+        if(!request.getMemberId().equals(memberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 
@@ -172,8 +172,8 @@ public class GroupService {
     }
 
     @Transactional
-    public void quitGroups(GroupsDeleteRequest request, Member loginMember) {
-        if(!request.getMemberId().equals(loginMember.getId())) {
+    public void quitGroups(GroupsDeleteRequest request, Long memberId) {
+        if(!request.getMemberId().equals(memberId)) {
             throw new PermissionControlException("권한이 없습니다.");
         }
 

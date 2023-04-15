@@ -32,7 +32,7 @@ public class LoginController {
         Member loginMember = loginService.login(loginRequest);
         HttpSession session = request.getSession();
 
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember.getId());
 
         return new Result<>("200", MemberDto.from(loginMember));
     }

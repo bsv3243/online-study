@@ -61,7 +61,7 @@ class CommentServiceTest {
         given(postRepository.findById(any())).willReturn(Optional.of(post));
 
         //when
-        Long commentId = commentService.createComment(request, member);
+        Long commentId = commentService.createComment(request, member.getId());
 
         //then
         assertThat(post.getComments().size()).isEqualTo(1);
@@ -90,7 +90,7 @@ class CommentServiceTest {
         given(commentRepository.findById(any())).willReturn(Optional.of(comment));
 
         //when
-        Long updateCommentId = commentService.updateComment(comment.getId(), request, member);
+        Long updateCommentId = commentService.updateComment(comment.getId(), request, member.getId());
 
         //then
         assertThat(comment.getContent()).isEqualTo(request.getContent());
@@ -118,7 +118,7 @@ class CommentServiceTest {
         assertThat(post.getComments()).contains(comment);
 
         //when
-        Long commentId = commentService.deleteComment(comment.getId(), member);
+        Long commentId = commentService.deleteComment(comment.getId(), member.getId());
 
         //then
         assertThat(comment.isDeleted()).isTrue();

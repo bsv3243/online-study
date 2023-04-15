@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
-import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.group.GroupCreateRequest;
@@ -31,12 +30,12 @@ public class GroupController {
     @PostMapping("/groups")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Result<Long> createGroup(@RequestBody @Valid GroupCreateRequest createRequest,
-                                    @SessionAttribute(name = LOGIN_MEMBER, required = false)Member loginMember) {
-        if(loginMember == null) {
+                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
+        if(memberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long groupId = groupService.createGroup(createRequest, loginMember);
+        Long groupId = groupService.createGroup(createRequest, memberId);
 
         return new Result<>("201", groupId);
     }
@@ -44,24 +43,24 @@ public class GroupController {
     @PostMapping("/group/{groupId}/join")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Result<Long> joinGroup(@PathVariable Long groupId,
-                          @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if(loginMember == null) {
+                          @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
+        if(memberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long joinedGroupId = groupService.joinGroup(groupId, loginMember);
+        Long joinedGroupId = groupService.joinGroup(groupId, memberId);
 
         return new Result<>("201", joinedGroupId);
     }
 
     @PostMapping("/group/{groupId}/quit")
     public Result<String> quitGroup(@PathVariable Long groupId,
-                                  @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if(loginMember == null) {
+                                  @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
+        if(memberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        groupService.quitGroup(groupId, loginMember);
+        groupService.quitGroup(groupId, memberId);
 
         return new Result<>("200", "ok");
     }
@@ -82,11 +81,11 @@ public class GroupController {
 
     @DeleteMapping("/group/{id}")
     public Result<String> deleteGroup(@PathVariable Long id,
-                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if(loginMember == null) {
+                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
+        if(memberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
-        groupService.deleteGroup(id, loginMember);
+        groupService.deleteGroup(id, memberId);
 
         return new Result<>("200", "deleted");
     }
@@ -94,36 +93,36 @@ public class GroupController {
     @PostMapping("/group/{id}")
     public Result<Long> updateGroup(@PathVariable Long id,
                                     @RequestBody @Valid GroupUpdateRequest request,
-                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if(loginMember == null) {
+                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
+        if(memberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        Long groupId = groupService.updateGroup(id, request, loginMember);
+        Long groupId = groupService.updateGroup(id, request, memberId);
 
         return new Result<>("200", groupId);
     }
 
     @PostMapping("/groups/delete")
     public Result<String> deleteGroups(@RequestBody @Valid GroupsDeleteRequest request,
-                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if(loginMember == null) {
+                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
+        if(memberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        groupService.deleteGroups(request, loginMember);
+        groupService.deleteGroups(request, memberId);
 
         return new Result<>("200", "delete groups");
     }
 
     @PostMapping("/groups/quit")
     public Result<String> quitGroups(@RequestBody @Valid GroupsDeleteRequest request,
-                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Member loginMember) {
-        if(loginMember == null) {
+                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
+        if(memberId == null) {
             throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
         }
 
-        groupService.quitGroups(request, loginMember);
+        groupService.quitGroups(request, memberId);
 
         return new Result<>("200", "quit groups");
     }

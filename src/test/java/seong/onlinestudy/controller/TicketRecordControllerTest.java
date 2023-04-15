@@ -66,7 +66,7 @@ class TicketRecordControllerTest {
         request.setStudyId(1L); request.setGroupId(1L); request.setMemberId(1L);
 
         Member loginMember = MyUtils.createMember("member", "memberPassword");
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         RecordDto record = createRecordDto();
 

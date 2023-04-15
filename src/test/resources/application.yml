@@ -4,15 +4,19 @@ spring:
     url: jdbc:h2:mem:db
     username: sa
     password:
-
   h2:
     console:
       enabled: true
+  redis:
+    host: localhost
+    port: 6379
+  session:
+    store-type: none
 
   jpa:
     database: h2
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     open-in-view: false
     properties:
       hibernate:

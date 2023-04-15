@@ -90,7 +90,7 @@ class TicketServiceTest {
         TicketCreateRequest request = new TicketCreateRequest();
         request.setStatus(STUDY); request.setGroupId(group.getId()); request.setStudyId(study.getId());
 
-        Long ticketId = ticketService.createTicket(request, member);
+        Long ticketId = ticketService.createTicket(request, member.getId());
 
         //then
     }
@@ -113,7 +113,7 @@ class TicketServiceTest {
 
         //when
         Thread.sleep(1000); // ticket.record 의 activeTime 을 조절하기 위해 1초동안 쓰레드를 중지한다.
-        Long ticketId = ticketService.expireTicket(ticket.getId(), member);
+        Long ticketId = ticketService.expireTicket(ticket.getId(), member.getId());
 
         //then
         assertThat(ticket.isExpired()).isTrue();
@@ -142,7 +142,7 @@ class TicketServiceTest {
         //when
 
         //then
-        assertThatThrownBy(() -> ticketService.expireTicket(ticket.getId(), memberB))
+        assertThatThrownBy(() -> ticketService.expireTicket(ticket.getId(), memberB.getId()))
                 .isInstanceOf(PermissionControlException.class);
     }
 

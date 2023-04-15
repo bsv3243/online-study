@@ -97,7 +97,7 @@ class LoginControllerTest {
         Member loginMember = MyUtils.createMember("member", "member");
         ReflectionTestUtils.setField(loginMember, "id", 1L);
 
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions resultActions = mvc.perform(post("/api/v1/logout")
