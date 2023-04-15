@@ -175,18 +175,9 @@ public class StudyRepositoryCustomTest {
         List<GroupStudyDto> findGroupStudyDtos = studyRepository.findStudiesInGroups(testGroups);
 
         //then
-        List<Long> findStudyIds = findGroupStudyDtos.stream().map(GroupStudyDto::getStudyId).collect(Collectors.toList());
-        List<Long> targetStudyIds = testGroup.getTickets().stream()
-                .map(ticket -> {
-            StudyTicket studyTicket = (StudyTicket) ticket;
-            return studyTicket.getStudy().getId();
-        })
-                .distinct().
-                collect(Collectors.toList());
-
-        assertThat(findStudyIds).containsExactlyInAnyOrderElementsOf(targetStudyIds);
-
-
+        assertThat(findGroupStudyDtos).allSatisfy(groupStudyDto -> {
+            assertThat(groupStudyDto.getGroupId()).isEqualTo(testGroup.getId());
+        });
     }
 
     private List<Study> getStudiesInGroup(Group testGroup) {

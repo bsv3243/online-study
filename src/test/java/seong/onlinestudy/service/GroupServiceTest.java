@@ -68,7 +68,7 @@ class GroupServiceTest {
         given(groupRepository.findById(1L)).willReturn(Optional.of(group));
 
         //when
-        Long groupId = groupService.joinGroup(1L, memberA);
+        Long groupId = groupService.joinGroup(1L, memberA.getId());
 
         //then
         Group findGroup = groupRepository.findById(1L).get();
@@ -86,7 +86,7 @@ class GroupServiceTest {
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
 
         //when
-        groupService.createGroup(request, member);
+        groupService.createGroup(request, member.getId());
 
         //then
     }
@@ -111,7 +111,7 @@ class GroupServiceTest {
 
         //when
         Long groupId = 1L;
-        groupService.deleteGroup(groupId, master);
+        groupService.deleteGroup(groupId, master.getId());
 
         //then
     }
@@ -137,7 +137,7 @@ class GroupServiceTest {
         Long groupId = 1L;
 
         //then
-        assertThatThrownBy(() -> groupService.deleteGroup(groupId, memberA))
+        assertThatThrownBy(() -> groupService.deleteGroup(groupId, memberA.getId()))
                 .isInstanceOf(PermissionControlException.class);
     }
 
@@ -236,7 +236,7 @@ class GroupServiceTest {
         request.setHeadcount(20);
 
         //when
-        Long groupId = groupService.updateGroup(1L, request, member);
+        Long groupId = groupService.updateGroup(1L, request, member.getId());
 
         //then
         assertThat(group.getHeadcount()).isEqualTo(20);
@@ -263,7 +263,7 @@ class GroupServiceTest {
         request.setHeadcount(20);
 
         //when
-        assertThatThrownBy(() -> groupService.updateGroup(1L, request, members.get(0)))
+        assertThatThrownBy(() -> groupService.updateGroup(1L, request, members.get(0).getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

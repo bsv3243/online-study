@@ -69,7 +69,7 @@ public class GroupApiTest {
         Member member = Member.createMember(request);
         memberRepository.save(member);
 
-        session.setAttribute(LOGIN_MEMBER, member);
+        session.setAttribute(LOGIN_MEMBER, member.getId());
     }
 
     @Test

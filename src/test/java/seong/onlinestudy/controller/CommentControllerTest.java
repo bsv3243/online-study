@@ -78,9 +78,9 @@ class CommentControllerTest {
         request.setPostId(1L);
 
         Member testMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
-        given(commentService.createComment(request, testMember)).willReturn(1L);
+        given(commentService.createComment(any(), any())).willReturn(1L);
 
         //when
         ResultActions resultActions = mvc.perform(post("/api/v1/comments")
@@ -170,7 +170,7 @@ class CommentControllerTest {
         request.setContent("댓글 내용");
 
         Member testMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         given(commentService.updateComment(any(), any(), any())).willReturn(1L);
 
@@ -202,7 +202,7 @@ class CommentControllerTest {
     void deleteComment() throws Exception {
         //given
         Member testMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         given(commentService.deleteComment(any(), any())).willReturn(1L);
 
@@ -232,7 +232,7 @@ class CommentControllerTest {
         request.setMemberId(1L);
 
         Member testMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions resultActions = mvc.perform(post("/api/v1/comments/delete")

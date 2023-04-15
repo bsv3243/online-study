@@ -91,8 +91,8 @@ class GroupControllerTest {
 
         Member member = createMember("mebmer", "member");
 
-        session.setAttribute(LOGIN_MEMBER, member);
-        given(groupService.createGroup(groupRequest, member)).willReturn(1L);
+        session.setAttribute(LOGIN_MEMBER, 1L);
+        given(groupService.createGroup(any(), any())).willReturn(1L);
 
         //when
         ResultActions result = mvc.perform(post("/api/v1/groups")
@@ -141,9 +141,9 @@ class GroupControllerTest {
         GroupCreateRequest request = new GroupCreateRequest();
         request.setName("groupName"); request.setHeadcount(30); request.setCategory(IT);
         Member loginMember = createMember("memberA", "memberPassword");
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
-        given(groupService.createGroup(request, loginMember)).willReturn(1L);
+        given(groupService.createGroup(any(), any())).willReturn(1L);
 
         //when
         ResultActions result = mvc.perform(post("/api/v1/groups")
@@ -175,9 +175,9 @@ class GroupControllerTest {
     public void joinGroup() throws Exception {
         //given
         Member loginMember = createMember("memberA", "memberPassword");
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
-        given(groupService.joinGroup(1L, loginMember)).willReturn(1L);
+        given(groupService.joinGroup(any(), any())).willReturn(1L);
 
         //when
         ResultActions result = mvc.perform(post("/api/v1/group/{groupId}/join", 1L)
@@ -203,7 +203,7 @@ class GroupControllerTest {
     public void quitGroup() throws Exception {
         //given
         Member loginMember = createMember("memberA", "memberPassword");
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions result = mvc.perform(post("/api/v1/group/{groupId}/quit", 1L)
@@ -365,7 +365,7 @@ class GroupControllerTest {
         //given
         Member loginMember = createMember("member", "member");
 
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions result = mvc.perform(delete("/api/v1/group/{groupId}", 1L)
@@ -392,7 +392,7 @@ class GroupControllerTest {
         //given
         Member loginMember = createMember("member", "member");
 
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         GroupUpdateRequest request = new GroupUpdateRequest();
         request.setDescription("그룹 설명"); request.setHeadcount(30);
@@ -429,7 +429,7 @@ class GroupControllerTest {
     void deleteGroups() throws Exception {
         //given
         Member loginMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         GroupsDeleteRequest request = new GroupsDeleteRequest();
         request.setMemberId(1L);
@@ -460,7 +460,7 @@ class GroupControllerTest {
     void quitGroups() throws Exception {
         //given
         Member loginMember = createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         GroupsDeleteRequest request = new GroupsDeleteRequest();
         request.setMemberId(1L);

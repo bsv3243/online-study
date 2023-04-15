@@ -159,9 +159,9 @@ class PostControllerTest {
         request.setGroupId(1L);
 
         Member testMember = MyUtils.createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
-        given(postService.createPost(request, testMember)).willReturn(1L);
+        given(postService.createPost(any(), anyLong())).willReturn(1L);
 
         //when
         ResultActions resultActions = mvc.perform(post("/api/v1/posts")
@@ -269,7 +269,7 @@ class PostControllerTest {
         request.setStudyIds(List.of(1L, 2L));
 
         Member testMember = MyUtils.createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, testMember);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions resultActions = mvc.perform(patch("/api/v1/post/{postId}", 1)
@@ -302,7 +302,7 @@ class PostControllerTest {
     public void deletePost() throws Exception {
         //given
         Member member = MyUtils.createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, member);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
         ResultActions resultActions = mvc.perform(delete("/api/v1/post/{postId}", 1)
@@ -327,7 +327,7 @@ class PostControllerTest {
     void deletePosts() throws Exception {
         //given
         Member member = MyUtils.createMember("member", "member");
-        session.setAttribute(LOGIN_MEMBER, member);
+        session.setAttribute(LOGIN_MEMBER, 1L);
 
         PostsDeleteRequest request = new PostsDeleteRequest();
         request.setMemberId(1L);

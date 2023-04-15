@@ -87,7 +87,7 @@ class PostServiceTest {
         given(postRepository.save(any())).willReturn(testPost);
 
         //when
-        Long postId = postService.createPost(request, testMember);
+        Long postId = postService.createPost(request, testMember.getId());
 
         //then
     }
@@ -264,7 +264,7 @@ class PostServiceTest {
         given(studyRepository.findAllById(any())).willReturn(newStudies);
 
         //when
-        Long updatePostId = postService.updatePost(postId, request, loginMember);
+        Long updatePostId = postService.updatePost(postId, request, loginMember.getId());
 
         //then
         assertThat(post.getTitle()).isEqualTo(request.getTitle());
