@@ -10,6 +10,8 @@ spring:
     port: 6379
   session:
     store-type: redis
+  kafka:
+    bootstrap-servers: 10.178.0.11:9092
 
   jpa:
     database: mysql
@@ -19,7 +21,6 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 300
-        format_sql: true
     show-sql: true
   mvc:
     pathmatch:

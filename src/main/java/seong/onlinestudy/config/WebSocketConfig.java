@@ -1,4 +1,4 @@
-package seong.onlinestudy;
+package seong.onlinestudy.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
