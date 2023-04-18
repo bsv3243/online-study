@@ -20,17 +20,17 @@ operation::common-page-result[snippets='response-body,response-fields']
 operation::member-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 회원 단건 조회
-`GET /api/v1/member/:memberId`
+`GET /api/v1/members/:memberId`
 
 operation::member-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
 === 회원 업데이트
-`PATCH /api/v1/member/:memberId`
+`PATCH /api/v1/members/:memberId`
 
 operation::member-update[snippets='http-request,request-fields,http-response,response-fields']
 
 === 회원 삭제
-`DELETE /api/v1/member/:memberId`
+`DELETE /api/v1/members/:memberId`
 
 operation::member-duplicate-check[snippets='http-request,request-fields,http-response,response-fields']
 
@@ -54,7 +54,7 @@ operation::logout[snippets='http-request,http-response,response-fields']
 operation::groups-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 그룹 단건 조회
-`GET /api/v1/group/:groupId`
+`GET /api/v1/groups/:groupId`
 
 operation::group-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
@@ -64,22 +64,22 @@ operation::group-get[snippets='http-request,path-parameters,http-response,respon
 operation::group-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 그룹 업데이트
-`POST /api/v1/group/:groupId`
+`POST /api/v1/groups/:groupId`
 
 operation::group-update[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === 그룹 삭제
-`DELETE /api/v1/group/:groupId`
+`DELETE /api/v1/groups/:groupId`
 
 operation::group-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
 === 그룹 가입
-`POST /api/v1/group/:groupId/join`
+`POST /api/v1/groups/:groupId/join`
 
 operation::group-join[snippets='http-request,path-parameters,http-response,response-fields']
 
 === 그룹 탈퇴
-`POST /api/v1/group/:groupId/quit`
+`POST /api/v1/groups/:groupId/quit`
 
 operation::group-quit[snippets='http-request,path-parameters,http-response,response-fields']
 
@@ -118,12 +118,12 @@ operation::ticket-create[snippets='http-request,request-fields,http-response,res
 operation::tickets-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 학습 티켓 단건 조회
-`GET /api/v1/ticket/:ticketId`
+`GET /api/v1/tickets/:ticketId`
 
 operation::ticket-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
 === 학습 티켓 만료
-`PATCH /api/v1/ticket/:ticketId`
+`PATCH /api/v1/tickets/:ticketId`
 
 operation::ticket-expire[snippets='http-request,path-parameters,http-response,response-fields']
 
@@ -142,7 +142,7 @@ operation::ticket-records-get[snippets='http-request,request-parameters,http-res
 operation::posts-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 게시글 단건 조회
-`GET /api/v1/post/:postId`
+`GET /api/v1/posts/:postId`
 
 operation::post-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
@@ -152,12 +152,12 @@ operation::post-get[snippets='http-request,path-parameters,http-response,respons
 operation::post-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 게시글 업데이트
-`PATCH /api/v1/post/:postId`
+`PATCH /api/v1/posts/:postId`
 
 operation::post-update[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === 게시글 삭제
-`DELETE /api/v1/post/:postId`
+`DELETE /api/v1/posts/:postId`
 
 operation::post-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
@@ -179,12 +179,12 @@ operation::comment-create[snippets='http-request,request-fields,http-response,re
 operation::comments-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 댓글 업데이트
-`UPDATE /api/v1/comment/:commentId`
+`UPDATE /api/v1/comments/:commentId`
 
 operation::comment-update[snippets='http-request,request-fields,http-response,response-fields']
 
 === 댓글 삭제
-`DELETE /api/v1/comment/:commentId`
+`DELETE /api/v1/comments/:commentId`
 
 operation::comment-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
