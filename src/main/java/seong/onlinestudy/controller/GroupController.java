@@ -40,7 +40,7 @@ public class GroupController {
         return new Result<>("201", groupId);
     }
 
-    @PostMapping("/group/{groupId}/join")
+    @PostMapping("/groups/{groupId}/join")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Result<Long> joinGroup(@PathVariable Long groupId,
                           @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
@@ -53,7 +53,7 @@ public class GroupController {
         return new Result<>("201", joinedGroupId);
     }
 
-    @PostMapping("/group/{groupId}/quit")
+    @PostMapping("/groups/{groupId}/quit")
     public Result<String> quitGroup(@PathVariable Long groupId,
                                   @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
         if(memberId == null) {
@@ -72,14 +72,14 @@ public class GroupController {
         return new PageResult<>("200", groupsWithPageInfo.getContent(), groupsWithPageInfo);
     }
 
-    @GetMapping("/group/{id}")
+    @GetMapping("/groups/{id}")
     public Result<GroupDto> getGroup(@PathVariable Long id) {
         GroupDto group = groupService.getGroup(id);
 
         return new Result<>("200", group);
     }
 
-    @DeleteMapping("/group/{id}")
+    @DeleteMapping("/groups/{id}")
     public Result<String> deleteGroup(@PathVariable Long id,
                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
         if(memberId == null) {
@@ -90,7 +90,7 @@ public class GroupController {
         return new Result<>("200", "deleted");
     }
 
-    @PostMapping("/group/{id}")
+    @PostMapping("/groups/{id}")
     public Result<Long> updateGroup(@PathVariable Long id,
                                     @RequestBody @Valid GroupUpdateRequest request,
                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {

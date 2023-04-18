@@ -164,7 +164,7 @@ class TicketControllerTest {
         given(ticketService.getTicket(anyLong())).willReturn(testTicketDto);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api/v1/ticket/{ticketId}", 1));
+        ResultActions resultActions = mvc.perform(get("/api/v1/tickets/{ticketId}", 1));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -250,7 +250,7 @@ class TicketControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions resultActions = mvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/ticket/{ticketId}", 1L)
+        ResultActions resultActions = mvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/tickets/{ticketId}", 1L)
                 .session(session));
 
         //then

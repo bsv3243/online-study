@@ -31,7 +31,7 @@ public class MemberController {
         return new Result<>("201", memberId);
     }
 
-    @GetMapping("/member/{memberId}")
+    @GetMapping("/members/{memberId}")
     public Result<MemberDto> getMember(@PathVariable Long memberId,
                                        @SessionAttribute(value = LOGIN_MEMBER, required = false) Long sessionMemberId) {
         if (sessionMemberId == null) {
@@ -53,7 +53,7 @@ public class MemberController {
         return new Result<>("200", false);
     }
 
-    @PatchMapping("/member/{memberId}")
+    @PatchMapping("/members/{memberId}")
     public Result<Long> updateMember(@PathVariable Long memberId, @RequestBody @Valid MemberUpdateRequest request,
                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Long sessionMemberId) {
         if (sessionMemberId == null) {
@@ -68,7 +68,7 @@ public class MemberController {
         return new Result<>("200", updatedMemberId);
     }
 
-    @DeleteMapping("/member/{memberId}")
+    @DeleteMapping("/members/{memberId}")
     public Result<Long> deleteMember(@PathVariable Long memberId,
                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Long sessiongMemberId) {
         if (sessiongMemberId == null) {

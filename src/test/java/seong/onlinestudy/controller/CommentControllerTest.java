@@ -175,7 +175,7 @@ class CommentControllerTest {
         given(commentService.updateComment(any(), any(), any())).willReturn(1L);
 
         //when
-        ResultActions resultActions = mvc.perform(patch("/api/v1/comment/{commentId}", 1L)
+        ResultActions resultActions = mvc.perform(patch("/api/v1/comments/{commentId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .session(session));
@@ -207,7 +207,7 @@ class CommentControllerTest {
         given(commentService.deleteComment(any(), any())).willReturn(1L);
 
         //when
-        ResultActions resultActions = mvc.perform(delete("/api/v1/comment/{commentId}", 1L)
+        ResultActions resultActions = mvc.perform(delete("/api/v1/comments/{commentId}", 1L)
                 .session(session));
 
         //then

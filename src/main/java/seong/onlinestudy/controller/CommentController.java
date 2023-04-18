@@ -47,7 +47,7 @@ public class CommentController {
         return new PageResult<>("200", commentsWithPage.getContent(), commentsWithPage);
     }
 
-    @PatchMapping("/comment/{commentId}")
+    @PatchMapping("/comments/{commentId}")
     public Result<Long> updateComment(@PathVariable("commentId") Long commentId, @RequestBody @Valid CommentUpdateRequest request,
                                       @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
         if (memberId == null) {
@@ -59,7 +59,7 @@ public class CommentController {
         return new Result<>("200", updateCommentId);
     }
 
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public Result<Long> deleteComment(@PathVariable("commentId") Long commentId,
                                         @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
         if (memberId == null) {

@@ -212,7 +212,7 @@ class PostControllerTest {
         given(postService.getPost(anyLong())).willReturn(postDto);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api/v1/post/{postId}", 1));
+        ResultActions resultActions = mvc.perform(get("/api/v1/posts/{postId}", 1));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -276,7 +276,7 @@ class PostControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions resultActions = mvc.perform(patch("/api/v1/post/{postId}", 1)
+        ResultActions resultActions = mvc.perform(patch("/api/v1/posts/{postId}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .session(session));
@@ -309,7 +309,7 @@ class PostControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions resultActions = mvc.perform(delete("/api/v1/post/{postId}", 1)
+        ResultActions resultActions = mvc.perform(delete("/api/v1/posts/{postId}", 1)
                 .session(session));
 
         //then

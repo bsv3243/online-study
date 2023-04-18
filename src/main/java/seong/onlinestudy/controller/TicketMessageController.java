@@ -29,12 +29,12 @@ public class TicketMessageController {
     private final TicketService ticketService;
     private final TicketMessageService ticketMessageService;
 
-    @MessageMapping("/group/{id}")
+    @MessageMapping("/groups/{id}")
     public void sendTicket(@DestinationVariable("id") Long groupId, TicketMessage ticketMessage) {
         Ticket ticket = ticketRepository.findById(ticketMessage.getTicketId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 티켓입니다."));
 
-        template.convertAndSend("/sub/group/"+groupId, TicketDto.from(ticket));
+        template.convertAndSend("/sub/groups/"+groupId, TicketDto.from(ticket));
     }
 
     @MessageMapping("/groups")
@@ -43,6 +43,6 @@ public class TicketMessageController {
 
         MemberTicketDto memberTicket = ticketMessageService.getMemberTicket(ticketMessage);
 
-        template.convertAndSend("/sub/group/"+ticketMessage.getGroupId(), new Result<>("200", memberTicket));
+        template.convertAndSend("/sub/groups/"+ticketMessage.getGroupId(), new Result<>("200", memberTicket));
     }
 }

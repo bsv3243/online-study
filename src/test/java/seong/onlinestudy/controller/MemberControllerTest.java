@@ -171,7 +171,7 @@ class MemberControllerTest {
         given(memberService.getMember(any())).willReturn(memberDto);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api/v1/member/{memberId}", 1)
+        ResultActions resultActions = mvc.perform(get("/api/v1/members/{memberId}", 1)
                 .session(session));
 
         //then
@@ -234,7 +234,7 @@ class MemberControllerTest {
         given(memberService.updateMember(any(), any())).willReturn(1L);
 
         //when
-        ResultActions resultActions = mvc.perform(patch("/api/v1/member/{memberId}", 1)
+        ResultActions resultActions = mvc.perform(patch("/api/v1/members/{memberId}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .session(session));
@@ -276,7 +276,7 @@ class MemberControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions resultActions = mvc.perform(delete("/api/v1/member/{memberId}", 1)
+        ResultActions resultActions = mvc.perform(delete("/api/v1/members/{memberId}", 1)
                 .session(session));
 
         //then

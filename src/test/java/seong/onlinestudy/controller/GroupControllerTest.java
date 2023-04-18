@@ -181,7 +181,7 @@ class GroupControllerTest {
         given(groupService.joinGroup(any(), any())).willReturn(1L);
 
         //when
-        ResultActions result = mvc.perform(post("/api/v1/group/{groupId}/join", 1L)
+        ResultActions result = mvc.perform(post("/api/v1/groups/{groupId}/join", 1L)
                 .session(session));
 
         //then
@@ -207,7 +207,7 @@ class GroupControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions result = mvc.perform(post("/api/v1/group/{groupId}/quit", 1L)
+        ResultActions result = mvc.perform(post("/api/v1/groups/{groupId}/quit", 1L)
                 .session(session));
 
         //then
@@ -318,7 +318,7 @@ class GroupControllerTest {
         given(groupService.getGroup(anyLong())).willReturn(groupDto);
 
         //when
-        ResultActions result = mvc.perform(get("/api/v1/group/{groupId}", 1L));
+        ResultActions result = mvc.perform(get("/api/v1/groups/{groupId}", 1L));
 
         //then
         result.andExpect(status().isOk())
@@ -364,7 +364,7 @@ class GroupControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions result = mvc.perform(delete("/api/v1/group/{groupId}", 1L)
+        ResultActions result = mvc.perform(delete("/api/v1/groups/{groupId}", 1L)
                 .session(session));
 
         //then
@@ -394,7 +394,7 @@ class GroupControllerTest {
         request.setDescription("그룹 설명"); request.setHeadcount(30);
 
         //when
-        ResultActions result = mvc.perform(post("/api/v1/group/{groupId}", 1L)
+        ResultActions result = mvc.perform(post("/api/v1/groups/{groupId}", 1L)
                 .session(session)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)));
