@@ -654,7 +654,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_회원_생성"><a class="link" href="#_회원_생성">회원 생성</a></h3>
 <div class="paragraph">
-<p><code>POST /members</code></p>
+<p><code>POST /api/v1/members</code></p>
 </div>
 <div class="sect3">
 <h4 id="_회원_생성_http_request"><a class="link" href="#_회원_생성_http_request">HTTP request</a></h4>
@@ -788,7 +788,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_회원_단건_조회"><a class="link" href="#_회원_단건_조회">회원 단건 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /member/:memberId</code></p>
+<p><code>GET /api/v1/member/:memberId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_회원_단건_조회_http_request"><a class="link" href="#_회원_단건_조회_http_request">HTTP request</a></h4>
@@ -887,7 +887,7 @@ Content-Length: 142
 <div class="sect2">
 <h3 id="_회원_업데이트"><a class="link" href="#_회원_업데이트">회원 업데이트</a></h3>
 <div class="paragraph">
-<p><code>PATCH /member/:memberId</code></p>
+<p><code>PATCH /api/v1/member/:memberId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_회원_업데이트_http_request"><a class="link" href="#_회원_업데이트_http_request">HTTP request</a></h4>
@@ -1021,7 +1021,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_회원_삭제"><a class="link" href="#_회원_삭제">회원 삭제</a></h3>
 <div class="paragraph">
-<p><code>DELETE /member/:memberId</code></p>
+<p><code>DELETE /api/v1/member/:memberId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_회원_삭제_http_request"><a class="link" href="#_회원_삭제_http_request">HTTP request</a></h4>
@@ -1130,7 +1130,7 @@ Content-Length: 41
 <div class="sect2">
 <h3 id="_로그인"><a class="link" href="#_로그인">로그인</a></h3>
 <div class="paragraph">
-<p><code>POST /login</code></p>
+<p><code>POST /api/v1/login</code></p>
 </div>
 <div class="sect3">
 <h4 id="_로그인_http_request"><a class="link" href="#_로그인_http_request">HTTP request</a></h4>
@@ -1259,7 +1259,7 @@ Content-Length: 142
 <div class="sect2">
 <h3 id="_로그아웃"><a class="link" href="#_로그아웃">로그아웃</a></h3>
 <div class="paragraph">
-<p><code>POST /logout</code></p>
+<p><code>POST /api/v1/logout</code></p>
 </div>
 <div class="sect3">
 <h4 id="_로그아웃_http_request"><a class="link" href="#_로그아웃_http_request">HTTP request</a></h4>
@@ -1326,114 +1326,57 @@ Content-Length: 51
 <div class="sect2">
 <h3 id="_그룹_목록_조회"><a class="link" href="#_그룹_목록_조회">그룹 목록 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /groups</code></p>
+<p><code>GET /api/v1/groups</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_목록_조회_http_request"><a class="link" href="#_그룹_목록_조회_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/groups HTTP/1.1
-Content-Type: application/json
-Content-Length: 162
-Host: localhost:8080
-
-{
-  "page" : 0,
-  "size" : 10,
-  "memberId" : null,
-  "category" : "IT",
-  "search" : "검색어",
-  "studyIds" : [ 1, 2, 3 ],
-  "orderBy" : "CREATEDAT"
-}</code></pre>
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/groups?page=0&amp;size=10&amp;category=IT&amp;search=%EA%B2%80%EC%83%89%EC%96%B4&amp;studyIds=1%2C+2%2C+3%2C+4&amp;orderBy=CREATEDAT HTTP/1.1
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_그룹_목록_조회_request_fields"><a class="link" href="#_그룹_목록_조회_request_fields">Request fields</a></h4>
+<h4 id="_그룹_목록_조회_request_parameters"><a class="link" href="#_그룹_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">응답 데이터 개수</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 카테고리(Enum Type)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>search</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 이름 검색어</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyIds</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 아이디 목록</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>orderBy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CREATEDAT</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 정렬 순서(Enum Type 탭 참고)</p></td>
 </tr>
 </tbody>
@@ -1448,7 +1391,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 760
+Content-Length: 761
 
 {
   "code" : "200",
@@ -1458,7 +1401,7 @@ Content-Length: 760
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-11T19:04:31.3114637",
+    "createdAt" : "2023-04-18T21:59:49.0132116",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1467,7 +1410,7 @@ Content-Length: 760
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-11T19:04:31.312464",
+      "joinedAt" : "2023-04-18T21:59:49.0147172",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -1487,7 +1430,7 @@ Content-Length: 760
 </div>
 </div>
 <div class="sect3">
-<h4 id="_그룹_목록_조회_response_fields"><a class="link" href="#_그룹_목록_조회_response_fields">Response fields</a></h4>
+<h4 id="_그룹_목록_조회_response_fields-data"><a class="link" href="#_그룹_목록_조회_response_fields-data">Response fields-data</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1503,142 +1446,107 @@ Content-Length: 760
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">그룹 목록</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지의 원소 개수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalPages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 페이지 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hasNext</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">다음 페이지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hasPrevious</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이전 페이지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].headcount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>headcount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 제한 인원 수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].memberSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 현제 인원 수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 생성일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 설명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].category</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 카테고리</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].deleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deleted</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 삭제여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹원 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers[].groupMemberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].groupMemberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹원 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers[].groupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].groupId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers[].memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers[].username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers[].nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 닉네임</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers[].joinedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].joinedAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 그룹 가입일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].groupMembers[].role</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].role</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 그룹 권한</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].studies</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 스터디 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].studies[].studyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].studyId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].studies[].groupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].groupId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].studies[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].studies[].studyTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].studyTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">총 스터디 시간</p></td>
 </tr>
@@ -1649,7 +1557,7 @@ Content-Length: 760
 <div class="sect2">
 <h3 id="_그룹_단건_조회"><a class="link" href="#_그룹_단건_조회">그룹 단건 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /group/:groupId</code></p>
+<p><code>GET /api/v1/group/:groupId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_단건_조회_http_request"><a class="link" href="#_그룹_단건_조회_http_request">HTTP request</a></h4>
@@ -1701,7 +1609,7 @@ Content-Length: 655
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-11T19:04:31.3770646",
+    "createdAt" : "2023-04-18T21:59:49.0792857",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1710,7 +1618,7 @@ Content-Length: 655
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-11T19:04:31.3770646",
+      "joinedAt" : "2023-04-18T21:59:49.0792857",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -1725,7 +1633,7 @@ Content-Length: 655
 </div>
 </div>
 <div class="sect3">
-<h4 id="_그룹_단건_조회_response_fields"><a class="link" href="#_그룹_단건_조회_response_fields">Response fields</a></h4>
+<h4 id="_그룹_단건_조회_response_fields-data"><a class="link" href="#_그룹_단건_조회_response_fields-data">Response fields-data</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1741,117 +1649,107 @@ Content-Length: 655
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">그룹</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.headcount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>headcount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 제한 인원 수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 현제 인원 수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 생성일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 설명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.category</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 카테고리</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.deleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deleted</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 사제 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹원 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers[].groupMemberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].groupMemberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹원 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers[].groupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].groupId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers[].memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers[].username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers[].nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 닉네임</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers[].joinedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].joinedAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 그룹 가입일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.groupMembers[].role</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembers[].role</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 그룹 권한</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.studies</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 스터디 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.studies[].studyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].studyId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.studies[].groupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].groupId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.studies[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.studies[].studyTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studies[].studyTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">총 스터디 시간</p></td>
 </tr>
@@ -1862,7 +1760,7 @@ Content-Length: 655
 <div class="sect2">
 <h3 id="_그룹_생성"><a class="link" href="#_그룹_생성">그룹 생성</a></h3>
 <div class="paragraph">
-<p><code>POST /groups</code></p>
+<p><code>POST /api/v1/groups</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_생성_http_request"><a class="link" href="#_그룹_생성_http_request">HTTP request</a></h4>
@@ -1986,7 +1884,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_그룹_업데이트"><a class="link" href="#_그룹_업데이트">그룹 업데이트</a></h3>
 <div class="paragraph">
-<p><code>POST /group/:groupId</code></p>
+<p><code>POST /api/v1/group/:groupId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_업데이트_http_request"><a class="link" href="#_그룹_업데이트_http_request">HTTP request</a></h4>
@@ -2122,7 +2020,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_그룹_삭제"><a class="link" href="#_그룹_삭제">그룹 삭제</a></h3>
 <div class="paragraph">
-<p><code>DELETE /group/:groupId</code></p>
+<p><code>DELETE /api/v1/group/:groupId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_삭제_http_request"><a class="link" href="#_그룹_삭제_http_request">HTTP request</a></h4>
@@ -2206,7 +2104,7 @@ Content-Length: 45
 <div class="sect2">
 <h3 id="_그룹_가입"><a class="link" href="#_그룹_가입">그룹 가입</a></h3>
 <div class="paragraph">
-<p><code>POST /group/:groupId/join</code></p>
+<p><code>POST /api/v1/group/:groupId/join</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_가입_http_request"><a class="link" href="#_그룹_가입_http_request">HTTP request</a></h4>
@@ -2290,7 +2188,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_그룹_탈퇴"><a class="link" href="#_그룹_탈퇴">그룹 탈퇴</a></h3>
 <div class="paragraph">
-<p><code>POST /group/:groupId/quit</code></p>
+<p><code>POST /api/v1/group/:groupId/quit</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_탈퇴_http_request"><a class="link" href="#_그룹_탈퇴_http_request">HTTP request</a></h4>
@@ -2374,7 +2272,7 @@ Content-Length: 40
 <div class="sect2">
 <h3 id="_그룹_일괄_탈퇴"><a class="link" href="#_그룹_일괄_탈퇴">그룹 일괄 탈퇴</a></h3>
 <div class="paragraph">
-<p><code>POST /groups/quit</code></p>
+<p><code>POST /api/v1/groups/quit</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_일괄_탈퇴_http_request"><a class="link" href="#_그룹_일괄_탈퇴_http_request">HTTP request</a></h4>
@@ -2478,7 +2376,7 @@ Content-Length: 49
 <div class="sect2">
 <h3 id="_그룹_일괄_삭제"><a class="link" href="#_그룹_일괄_삭제">그룹 일괄 삭제</a></h3>
 <div class="paragraph">
-<p><code>POST /groups/delete</code></p>
+<p><code>POST /api/v1/groups/delete</code></p>
 </div>
 <div class="sect3">
 <h4 id="_그룹_일괄_삭제_http_request"><a class="link" href="#_그룹_일괄_삭제_http_request">HTTP request</a></h4>
@@ -2587,7 +2485,7 @@ Content-Length: 49
 <div class="sect2">
 <h3 id="_학습_생성"><a class="link" href="#_학습_생성">학습 생성</a></h3>
 <div class="paragraph">
-<p><code>POST /studies</code></p>
+<p><code>POST /api/v1/studies</code></p>
 </div>
 <div class="sect3">
 <h4 id="_학습_생성_http_request"><a class="link" href="#_학습_생성_http_request">HTTP request</a></h4>
@@ -2691,114 +2589,57 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_학습_목록_조회"><a class="link" href="#_학습_목록_조회">학습 목록 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /studies</code></p>
+<p><code>GET /api/v1/studies</code></p>
 </div>
 <div class="sect3">
 <h4 id="_학습_목록_조회_http_request"><a class="link" href="#_학습_목록_조회_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/studies HTTP/1.1
-Content-Type: application/json
-Content-Length: 140
-Host: localhost:8080
-
-{
-  "name" : "스터디명",
-  "memberId" : 1,
-  "groupId" : 1,
-  "date" : "2023-04-11",
-  "days" : 7,
-  "page" : 0,
-  "size" : 10
-}</code></pre>
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/studies?page=0&amp;size=10&amp;name=%EC%8A%A4%ED%84%B0%EB%94%94%EB%AA%85&amp;memberId=1&amp;groupId=1&amp;date=2023-04-06&amp;days=7 HTTP/1.1
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_학습_목록_조회_request_fields"><a class="link" href="#_학습_목록_조회_request_fields">Request fields</a></h4>
+<h4 id="_학습_목록_조회_request_parameters"><a class="link" href="#_학습_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디명</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>date</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 시작 날짜</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>days</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 일수(범위)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 </tbody>
@@ -2868,7 +2709,7 @@ Content-Length: 196
 <div class="sect2">
 <h3 id="_학습_티켓_발급"><a class="link" href="#_학습_티켓_발급">학습 티켓 발급</a></h3>
 <div class="paragraph">
-<p><code>POST /tickets</code></p>
+<p><code>POST /api/v1/tickets</code></p>
 </div>
 <div class="sect3">
 <h4 id="_학습_티켓_발급_http_request"><a class="link" href="#_학습_티켓_발급_http_request">HTTP request</a></h4>
@@ -2992,115 +2833,57 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_학습_티켓_목록_조회"><a class="link" href="#_학습_티켓_목록_조회">학습 티켓 목록 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /tickets</code></p>
+<p><code>GET /api/v1/tickets</code></p>
 </div>
 <div class="sect3">
 <h4 id="_학습_티켓_목록_조회_http_request"><a class="link" href="#_학습_티켓_목록_조회_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/tickets HTTP/1.1
-Content-Type: application/json
-Accept: application/json
-Content-Length: 130
-Host: localhost:8080
-
-{
-  "groupId" : 1,
-  "studyId" : 1,
-  "memberId" : 1,
-  "date" : "2023-04-11",
-  "days" : 1,
-  "page" : 0,
-  "size" : 30
-}</code></pre>
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/tickets?groupId=1&amp;studyId=1&amp;memberId=1&amp;date=2023-04-06&amp;days=1&amp;page=0&amp;size=10 HTTP/1.1
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_학습_티켓_목록_조회_request_fields"><a class="link" href="#_학습_티켓_목록_조회_request_fields">Request fields</a></h4>
+<h4 id="_학습_티켓_목록_조회_request_parameters"><a class="link" href="#_학습_티켓_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>date</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 시작 일자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>days</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 할 일수</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 </tbody>
@@ -3126,7 +2909,7 @@ Content-Length: 1007
       "ticketId" : 3,
       "status" : "STUDY",
       "activeTime" : 0,
-      "startTime" : "2023-04-11T19:04:35.1256265",
+      "startTime" : "2023-04-18T21:59:52.8363479",
       "expired" : false,
       "study" : {
         "studyId" : 1,
@@ -3137,8 +2920,8 @@ Content-Length: 1007
       "ticketId" : 1,
       "status" : "STUDY",
       "activeTime" : 3600,
-      "startTime" : "2023-04-11T19:04:35.1256265",
-      "endTime" : "2023-04-11T20:04:35.1256265",
+      "startTime" : "2023-04-18T21:59:52.8363479",
+      "endTime" : "2023-04-18T22:59:52.8363479",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -3148,8 +2931,8 @@ Content-Length: 1007
       "ticketId" : 2,
       "status" : "STUDY",
       "activeTime" : 500,
-      "startTime" : "2023-04-11T19:04:35.1256265",
-      "endTime" : "2023-04-11T19:12:55.1256265",
+      "startTime" : "2023-04-18T21:59:52.8363479",
+      "endTime" : "2023-04-18T22:08:12.8363479",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -3285,7 +3068,7 @@ Content-Length: 1007
 <div class="sect2">
 <h3 id="_학습_티켓_단건_조회"><a class="link" href="#_학습_티켓_단건_조회">학습 티켓 단건 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /ticket/:ticketId</code></p>
+<p><code>GET /api/v1/ticket/:ticketId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_학습_티켓_단건_조회_http_request"><a class="link" href="#_학습_티켓_단건_조회_http_request">HTTP request</a></h4>
@@ -3335,7 +3118,7 @@ Content-Length: 259
     "ticketId" : 1,
     "status" : "STUDY",
     "activeTime" : 0,
-    "startTime" : "2023-04-11T19:04:35.1516585",
+    "startTime" : "2023-04-18T21:59:52.8593871",
     "expired" : false,
     "study" : {
       "studyId" : 1,
@@ -3414,7 +3197,7 @@ Content-Length: 259
 <div class="sect2">
 <h3 id="_학습_티켓_만료"><a class="link" href="#_학습_티켓_만료">학습 티켓 만료</a></h3>
 <div class="paragraph">
-<p><code>PATCH /ticket/:ticketId</code></p>
+<p><code>PATCH /api/v1/ticket/:ticketId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_학습_티켓_만료_http_request"><a class="link" href="#_학습_티켓_만료_http_request">HTTP request</a></h4>
@@ -3503,94 +3286,49 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_공부_기록_목록_조회"><a class="link" href="#_공부_기록_목록_조회">공부 기록 목록 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /records</code></p>
+<p><code>GET /api/v1/records</code></p>
 </div>
 <div class="sect3">
 <h4 id="_공부_기록_목록_조회_http_request"><a class="link" href="#_공부_기록_목록_조회_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/records HTTP/1.1
-Content-Type: application/json
-Content-Length: 104
-Host: localhost:8080
-
-{
-  "studyId" : 1,
-  "groupId" : 1,
-  "memberId" : 1,
-  "startDate" : "2023-04-11",
-  "days" : 7
-}</code></pre>
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/records?startDate=2023-04-06&amp;days=7&amp;studyId=1&amp;groupId=1&amp;memberId=1 HTTP/1.1
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_공부_기록_목록_조회_request_fields"><a class="link" href="#_공부_기록_목록_조회_request_fields">Request fields</a></h4>
+<h4 id="_공부_기록_목록_조회_request_parameters"><a class="link" href="#_공부_기록_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>startDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">7일 전</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회 시작 일자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>days</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회 일 수</p></td>
 </tr>
 </tbody>
@@ -3614,9 +3352,9 @@ Content-Length: 333
     "studyName" : "스터디",
     "memberCount" : 1,
     "records" : [ {
-      "date" : "2023-04-11",
-      "startTime" : "2023-04-11T18:04:38.2224506",
-      "endTime" : "2023-04-11T20:04:38.2224506",
+      "date" : "2023-04-18",
+      "startTime" : "2023-04-18T20:59:56.0592516",
+      "endTime" : "2023-04-18T22:59:56.0592516",
       "studyTime" : 0,
       "memberCount" : 1
     } ]
@@ -3626,7 +3364,7 @@ Content-Length: 333
 </div>
 </div>
 <div class="sect3">
-<h4 id="_공부_기록_목록_조회_response_fields"><a class="link" href="#_공부_기록_목록_조회_response_fields">Response fields</a></h4>
+<h4 id="_공부_기록_목록_조회_response_fields-data"><a class="link" href="#_공부_기록_목록_조회_response_fields-data">Response fields-data</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3642,57 +3380,47 @@ Content-Length: 333
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">공부 기록 목록</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].studyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].studyName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].memberCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberCount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 진행 회원 수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].records</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>records</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">일자별 공부 기록 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].records[].date</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>records[].date</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">공부 기록 일자</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].records[].startTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>records[].startTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">제일 빠른 공부 시작 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].records[].endTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>records[].endTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">제일 마지막 공부 종료 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].records[].studyTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>records[].studyTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 일자의 총 공부 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].records[].memberCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>records[].memberCount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 일자의 스터디 진행 회원 수</p></td>
 </tr>
@@ -3708,114 +3436,57 @@ Content-Length: 333
 <div class="sect2">
 <h3 id="_게시글_목록_조회"><a class="link" href="#_게시글_목록_조회">게시글 목록 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /posts</code></p>
+<p><code>GET /api/v1/posts</code></p>
 </div>
 <div class="sect3">
 <h4 id="_게시글_목록_조회_http_request"><a class="link" href="#_게시글_목록_조회_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/posts HTTP/1.1
-Content-Type: application/json
-Content-Length: 148
-Host: localhost:8080
-
-{
-  "page" : 0,
-  "size" : 10,
-  "memberId" : null,
-  "groupId" : 1,
-  "search" : "검색어",
-  "category" : "CHAT",
-  "studyIds" : [ 1 ]
-}</code></pre>
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/posts?groupId=1&amp;search=%EA%B2%80%EC%83%89%EC%96%B4&amp;category=CHAT&amp;studyIds=1%2C+2%2C+3&amp;page=0&amp;size=10 HTTP/1.1
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_게시글_목록_조회_request_fields"><a class="link" href="#_게시글_목록_조회_request_fields">Request fields</a></h4>
+<h4 id="_게시글_목록_조회_request_parameters"><a class="link" href="#_게시글_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>search</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 제목 대상 검색어</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 카테고리(Enum Type 탭 참고)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyIds</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디 목록</p></td>
 </tr>
 </tbody>
@@ -3839,7 +3510,7 @@ Content-Length: 1239
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-11T19:04:33.7147622",
+    "createdAt" : "2023-04-18T21:59:51.4286918",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -3854,7 +3525,7 @@ Content-Length: 1239
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-11T19:04:33.7147622",
+      "createdAt" : "2023-04-18T21:59:51.4286918",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -3874,7 +3545,7 @@ Content-Length: 1239
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-11T19:04:33.7147622",
+      "createdAt" : "2023-04-18T21:59:51.4286918",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -4066,7 +3737,7 @@ Content-Length: 1239
 <div class="sect2">
 <h3 id="_게시글_단건_조회"><a class="link" href="#_게시글_단건_조회">게시글 단건 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /post/:postId</code></p>
+<p><code>GET /api/v1/post/:postId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_게시글_단건_조회_http_request"><a class="link" href="#_게시글_단건_조회_http_request">HTTP request</a></h4>
@@ -4117,7 +3788,7 @@ Content-Length: 1133
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-11T19:04:33.6467423",
+    "createdAt" : "2023-04-18T21:59:51.3671168",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -4132,7 +3803,7 @@ Content-Length: 1133
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-11T19:04:33.6467423",
+      "createdAt" : "2023-04-18T21:59:51.3671168",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -4152,7 +3823,7 @@ Content-Length: 1133
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-11T19:04:33.6467423",
+      "createdAt" : "2023-04-18T21:59:51.3671168",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -4339,7 +4010,7 @@ Content-Length: 1133
 <div class="sect2">
 <h3 id="_게시글_생성"><a class="link" href="#_게시글_생성">게시글 생성</a></h3>
 <div class="paragraph">
-<p><code>POST /posts</code></p>
+<p><code>POST /api/v1/posts</code></p>
 </div>
 <div class="sect3">
 <h4 id="_게시글_생성_http_request"><a class="link" href="#_게시글_생성_http_request">HTTP request</a></h4>
@@ -4483,7 +4154,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_게시글_업데이트"><a class="link" href="#_게시글_업데이트">게시글 업데이트</a></h3>
 <div class="paragraph">
-<p><code>PATCH /post/:postId</code></p>
+<p><code>PATCH /api/v1/post/:postId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_게시글_업데이트_http_request"><a class="link" href="#_게시글_업데이트_http_request">HTTP request</a></h4>
@@ -4639,7 +4310,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_게시글_삭제"><a class="link" href="#_게시글_삭제">게시글 삭제</a></h3>
 <div class="paragraph">
-<p><code>DELETE /post/:postId</code></p>
+<p><code>DELETE /api/v1/post/:postId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_게시글_삭제_http_request"><a class="link" href="#_게시글_삭제_http_request">HTTP request</a></h4>
@@ -4723,7 +4394,7 @@ Content-Length: 49
 <div class="sect2">
 <h3 id="_게시글_일괄_삭제"><a class="link" href="#_게시글_일괄_삭제">게시글 일괄 삭제</a></h3>
 <div class="paragraph">
-<p><code>POST /posts/delete</code></p>
+<p><code>POST /api/v1/posts/delete</code></p>
 </div>
 <div class="sect3">
 <h4 id="_게시글_일괄_삭제_http_request"><a class="link" href="#_게시글_일괄_삭제_http_request">HTTP request</a></h4>
@@ -4832,7 +4503,7 @@ Content-Length: 50
 <div class="sect2">
 <h3 id="_댓글_생성"><a class="link" href="#_댓글_생성">댓글 생성</a></h3>
 <div class="paragraph">
-<p><code>POST /comments</code></p>
+<p><code>POST /api/v1/comments</code></p>
 </div>
 <div class="sect3">
 <h4 id="_댓글_생성_http_request"><a class="link" href="#_댓글_생성_http_request">HTTP request</a></h4>
@@ -4946,7 +4617,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_댓글_목록_조회"><a class="link" href="#_댓글_목록_조회">댓글 목록 조회</a></h3>
 <div class="paragraph">
-<p><code>GET /comments</code></p>
+<p><code>GET /api/v1/comments</code></p>
 </div>
 <div class="sect3">
 <h4 id="_댓글_목록_조회_http_request"><a class="link" href="#_댓글_목록_조회_http_request">HTTP request</a></h4>
@@ -5012,7 +4683,7 @@ Content-Length: 430
       "nickname" : "member",
       "deleted" : false
     },
-    "createdAt" : "2023-04-11T19:04:30.4108106",
+    "createdAt" : "2023-04-18T21:59:48.1002275",
     "postId" : 1,
     "deleted" : false
   } ],
@@ -5093,7 +4764,7 @@ Content-Length: 430
 <div class="sect2">
 <h3 id="_댓글_업데이트"><a class="link" href="#_댓글_업데이트">댓글 업데이트</a></h3>
 <div class="paragraph">
-<p><code>UPDATE /comment/:commentId</code></p>
+<p><code>UPDATE /api/v1/comment/:commentId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_댓글_업데이트_http_request"><a class="link" href="#_댓글_업데이트_http_request">HTTP request</a></h4>
@@ -5197,7 +4868,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_댓글_삭제"><a class="link" href="#_댓글_삭제">댓글 삭제</a></h3>
 <div class="paragraph">
-<p><code>DELETE /comment/:commentId</code></p>
+<p><code>DELETE /api/v1/comment/:commentId</code></p>
 </div>
 <div class="sect3">
 <h4 id="_댓글_삭제_http_request"><a class="link" href="#_댓글_삭제_http_request">HTTP request</a></h4>
@@ -5281,7 +4952,7 @@ Content-Length: 37
 <div class="sect2">
 <h3 id="_댓글_일괄_삭제"><a class="link" href="#_댓글_일괄_삭제">댓글 일괄 삭제</a></h3>
 <div class="paragraph">
-<p><code>POST /comments/delete</code></p>
+<p><code>POST /api/v1/comments/delete</code></p>
 </div>
 <div class="sect3">
 <h4 id="_댓글_일괄_삭제_http_request"><a class="link" href="#_댓글_일괄_삭제_http_request">HTTP request</a></h4>
@@ -5508,7 +5179,7 @@ Content-Length: 53
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-04-11 19:02:05 +0900
+Last updated 2023-04-18 21:59:21 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

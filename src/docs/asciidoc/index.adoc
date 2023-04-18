@@ -15,181 +15,181 @@ operation::common-page-result[snippets='response-body,response-fields']
 == 1. 회원 API
 
 === 회원 생성
-`POST /members`
+`POST /api/v1/members`
 
 operation::member-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 회원 단건 조회
-`GET /member/:memberId`
+`GET /api/v1/member/:memberId`
 
 operation::member-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
 === 회원 업데이트
-`PATCH /member/:memberId`
+`PATCH /api/v1/member/:memberId`
 
 operation::member-update[snippets='http-request,request-fields,http-response,response-fields']
 
 === 회원 삭제
-`DELETE /member/:memberId`
+`DELETE /api/v1/member/:memberId`
 
 operation::member-duplicate-check[snippets='http-request,request-fields,http-response,response-fields']
 
 == 2. 로그인 API
 
 === 로그인
-`POST /login`
+`POST /api/v1/login`
 
 operation::login[snippets='http-request,request-fields,http-response,response-fields-data']
 
 === 로그아웃
-`POST /logout`
+`POST /api/v1/logout`
 
 operation::logout[snippets='http-request,http-response,response-fields']
 
 == 3. 그룹 API
 
 === 그룹 목록 조회
-`GET /groups`
+`GET /api/v1/groups`
 
-operation::groups-get[snippets='http-request,request-fields,http-response,response-fields']
+operation::groups-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 그룹 단건 조회
-`GET /group/:groupId`
+`GET /api/v1/group/:groupId`
 
-operation::group-get[snippets='http-request,path-parameters,http-response,response-fields']
+operation::group-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
 === 그룹 생성
-`POST /groups`
+`POST /api/v1/groups`
 
 operation::group-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 그룹 업데이트
-`POST /group/:groupId`
+`POST /api/v1/group/:groupId`
 
 operation::group-update[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === 그룹 삭제
-`DELETE /group/:groupId`
+`DELETE /api/v1/group/:groupId`
 
 operation::group-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
 === 그룹 가입
-`POST /group/:groupId/join`
+`POST /api/v1/group/:groupId/join`
 
 operation::group-join[snippets='http-request,path-parameters,http-response,response-fields']
 
 === 그룹 탈퇴
-`POST /group/:groupId/quit`
+`POST /api/v1/group/:groupId/quit`
 
 operation::group-quit[snippets='http-request,path-parameters,http-response,response-fields']
 
 === 그룹 일괄 탈퇴
-`POST /groups/quit`
+`POST /api/v1/groups/quit`
 
 operation::groups-quit[snippets='http-request,request-fields,http-response,response-fields']
 
 === 그룹 일괄 삭제
-`POST /groups/delete`
+`POST /api/v1/groups/delete`
 
 operation::groups-quit[snippets='http-request,request-fields,http-response,response-fields']
 
 == 4. 학습 API
 
 === 학습 생성
-`POST /studies`
+`POST /api/v1/studies`
 
 operation::study-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 학습 목록 조회
-`GET /studies`
+`GET /api/v1/studies`
 
-operation::studies-get[snippets='http-request,request-fields,http-response,response-fields-data']
+operation::studies-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 == 5. 학습 티켓 API
 
 === 학습 티켓 발급
-`POST /tickets`
+`POST /api/v1/tickets`
 
 operation::ticket-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 학습 티켓 목록 조회
-`GET /tickets`
+`GET /api/v1/tickets`
 
-operation::tickets-get[snippets='http-request,request-fields,http-response,response-fields-data']
+operation::tickets-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 학습 티켓 단건 조회
-`GET /ticket/:ticketId`
+`GET /api/v1/ticket/:ticketId`
 
 operation::ticket-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
 === 학습 티켓 만료
-`PATCH /ticket/:ticketId`
+`PATCH /api/v1/ticket/:ticketId`
 
 operation::ticket-expire[snippets='http-request,path-parameters,http-response,response-fields']
 
 == 6. 기록 API
 
 === 공부 기록 목록 조회
-`GET /records`
+`GET /api/v1/records`
 
-operation::ticket-records-get[snippets='http-request,request-fields,http-response,response-fields']
+operation::ticket-records-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 == 7. 게시글 API
 
 === 게시글 목록 조회
-`GET /posts`
+`GET /api/v1/posts`
 
-operation::posts-get[snippets='http-request,request-fields,http-response,response-fields-data']
+operation::posts-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 게시글 단건 조회
-`GET /post/:postId`
+`GET /api/v1/post/:postId`
 
 operation::post-get[snippets='http-request,path-parameters,http-response,response-fields-data']
 
 === 게시글 생성
-`POST /posts`
+`POST /api/v1/posts`
 
 operation::post-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 게시글 업데이트
-`PATCH /post/:postId`
+`PATCH /api/v1/post/:postId`
 
 operation::post-update[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === 게시글 삭제
-`DELETE /post/:postId`
+`DELETE /api/v1/post/:postId`
 
 operation::post-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
 === 게시글 일괄 삭제
-`POST /posts/delete`
+`POST /api/v1/posts/delete`
 
 operation::posts-delete[snippets='http-request,request-fields,http-response,response-fields']
 
 == 8. 댓글 API
 
 === 댓글 생성
-`POST /comments`
+`POST /api/v1/comments`
 
 operation::comment-create[snippets='http-request,request-fields,http-response,response-fields']
 
 === 댓글 목록 조회
-`GET /comments`
+`GET /api/v1/comments`
 
 operation::comments-get[snippets='http-request,request-parameters,http-response,response-fields-data']
 
 === 댓글 업데이트
-`UPDATE /comment/:commentId`
+`UPDATE /api/v1/comment/:commentId`
 
 operation::comment-update[snippets='http-request,request-fields,http-response,response-fields']
 
 === 댓글 삭제
-`DELETE /comment/:commentId`
+`DELETE /api/v1/comment/:commentId`
 
 operation::comment-delete[snippets='http-request,path-parameters,http-response,response-fields']
 
 === 댓글 일괄 삭제
-`POST /comments/delete`
+`POST /api/v1/comments/delete`
 
 operation::comments-delete[snippets='http-request,request-fields,http-response,response-fields']
 
