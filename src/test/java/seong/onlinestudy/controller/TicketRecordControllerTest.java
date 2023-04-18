@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.RecordDto;
@@ -31,6 +33,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
@@ -61,9 +65,12 @@ class TicketRecordControllerTest {
     @DisplayName("공부 기록 목록 조회")
     void getRecords() throws Exception {
         //given
-        RecordsGetRequest request = new RecordsGetRequest();
-        request.setStartDate(LocalDate.now()); request.setDays(7);
-        request.setStudyId(1L); request.setGroupId(1L); request.setMemberId(1L);
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("startDate", "2023-04-06");
+        request.add("days", "7");
+        request.add("studyId", "1");
+        request.add("groupId", "1");
+        request.add("memberId", "1");
 
         Member loginMember = MyUtils.createMember("member", "memberPassword");
         session.setAttribute(LOGIN_MEMBER, 1L);
@@ -77,8 +84,7 @@ class TicketRecordControllerTest {
         //when
         ResultActions resultActions = mvc.perform(get("/api/v1/records")
                 .session(session)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)));
+                .params(request));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -87,38 +93,34 @@ class TicketRecordControllerTest {
                         document("ticket-records-get",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                requestFields(
-                                        fieldWithPath("studyId").type(NUMBER)
-                                                .description("스터디 엔티티 아이디").optional(),
-                                        fieldWithPath("groupId").type(NUMBER)
-                                                .description("그룹 엔티티 아이디").optional(),
-                                        fieldWithPath("memberId").type(NUMBER)
-                                                .description("회원 엔티티 아이디").optional(),
-                                        fieldWithPath("startDate").type(STRING)
+                                requestParameters(
+                                        parameterWithName("studyId").description("스터디 엔티티 아이디").optional(),
+                                        parameterWithName("groupId").description("그룹 엔티티 아이디").optional(),
+                                        parameterWithName("memberId").description("회원 엔티티 아이디").optional(),
+                                        parameterWithName("startDate")
                                                 .attributes(getDateFormat()).attributes(getDefaultValue("7일 전"))
                                                 .description("조회 시작 일자"),
-                                        fieldWithPath("days").type(NUMBER)
+                                        parameterWithName("days")
                                                 .attributes(getDefaultValue("7"))
                                                 .description("조회 일 수")
                                 ),
                                 responseFields(
-                                        fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
-                                        fieldWithPath("data").type(ARRAY).description("공부 기록 목록"),
+                                        beneathPath("data").withSubsectionId("data"),
 
-                                        fieldWithPath("data[].studyId").type(NUMBER).description("스터디 엔티티 아이디"),
-                                        fieldWithPath("data[].studyName").type(STRING).description("스터디 이름"),
-                                        fieldWithPath("data[].memberCount").type(NUMBER).description("스터디 진행 회원 수"),
-                                        fieldWithPath("data[].records").type(ARRAY).description("일자별 공부 기록 목록"),
+                                        fieldWithPath("studyId").type(NUMBER).description("스터디 엔티티 아이디"),
+                                        fieldWithPath("studyName").type(STRING).description("스터디 이름"),
+                                        fieldWithPath("memberCount").type(NUMBER).description("스터디 진행 회원 수"),
+                                        fieldWithPath("records").type(ARRAY).description("일자별 공부 기록 목록"),
 
-                                        fieldWithPath("data[].records[].date").type(STRING)
+                                        fieldWithPath("records[].date").type(STRING)
                                                 .description("공부 기록 일자"),
-                                        fieldWithPath("data[].records[].startTime").type(STRING)
+                                        fieldWithPath("records[].startTime").type(STRING)
                                                 .description("제일 빠른 공부 시작 시간"),
-                                        fieldWithPath("data[].records[].endTime").type(STRING)
+                                        fieldWithPath("records[].endTime").type(STRING)
                                                 .description("제일 마지막 공부 종료 시간"),
-                                        fieldWithPath("data[].records[].studyTime").type(NUMBER)
+                                        fieldWithPath("records[].studyTime").type(NUMBER)
                                                 .description("해당 일자의 총 공부 시간"),
-                                        fieldWithPath("data[].records[].memberCount").type(NUMBER)
+                                        fieldWithPath("records[].memberCount").type(NUMBER)
                                                 .description("해당 일자의 스터디 진행 회원 수")
                                 )
                         ));
