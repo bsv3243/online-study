@@ -16,6 +16,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
@@ -36,6 +38,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
@@ -93,14 +97,14 @@ class StudyControllerTest {
     @Test
     void getStudies() throws Exception {
         //given
-        StudiesGetRequest request = new StudiesGetRequest();
-        request.setPage(0);
-        request.setSize(10);
-        request.setName("스터디명");
-        request.setMemberId(1L);
-        request.setGroupId(1L);
-        request.setDate(LocalDate.now());
-        request.setDays(7);
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("page", "0");
+        request.add("size", "10");
+        request.add("name", "스터디명");
+        request.add("memberId", "1");
+        request.add("groupId", "1");
+        request.add("date", "2023-04-06");
+        request.add("days", "7");
 
         StudyDto studyDto = new StudyDto();
         studyDto.setStudyId(1L); studyDto.setName("스터디명");
@@ -110,8 +114,7 @@ class StudyControllerTest {
 
         //when
         ResultActions resultActions = mvc.perform(get("/api/v1/studies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)));
+                .params(request));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -119,16 +122,16 @@ class StudyControllerTest {
                 .andDo(document("studies-get",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("name").type(STRING).description("스터디명").optional(),
-                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
-                                fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
-                                fieldWithPath("date").type(STRING).attributes(getDateFormat())
+                        requestParameters(
+                                parameterWithName("name").description("스터디명").optional(),
+                                parameterWithName("memberId").description("회원 엔티티 아이디").optional(),
+                                parameterWithName("groupId").description("그룹 엔티티 아이디").optional(),
+                                parameterWithName("date").attributes(getDateFormat())
                                         .description("검색 시작 날짜").optional(),
-                                fieldWithPath("days").type(NUMBER).description("검색 일수(범위)").optional(),
-                                fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0"))
+                                parameterWithName("days").description("검색 일수(범위)").optional(),
+                                parameterWithName("page").attributes(getDefaultValue("0"))
                                         .description("페이지 번호"),
-                                fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("10")).
+                                parameterWithName("size").attributes(getDefaultValue("10")).
                                         description("페이지 사이즈")
                         ),
                         responseFields(

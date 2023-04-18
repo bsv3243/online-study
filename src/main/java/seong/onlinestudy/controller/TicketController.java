@@ -45,7 +45,7 @@ public class TicketController {
         return new Result<>("201", ticketId);
     }
 
-    @PatchMapping("/ticket/{ticketId}")
+    @PatchMapping("/tickets/{ticketId}")
     public Result<Long> expiredTicket(@PathVariable("ticketId") Long ticketId,
                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Long loginMemberId) {
         if(loginMemberId == null) {
@@ -57,7 +57,7 @@ public class TicketController {
         return new Result<>("200", expiredTicketId);
     }
 
-    @GetMapping("/ticket/{ticketId}")
+    @GetMapping("/tickets/{ticketId}")
     public Result<TicketDto> getTicket(@PathVariable("ticketId") Long ticketId) {
         TicketDto ticket = ticketService.getTicket(ticketId);
 

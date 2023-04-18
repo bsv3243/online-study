@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.*;
@@ -36,8 +38,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,9 +68,13 @@ class PostControllerTest {
     @Test
     public void getPosts() throws Exception {
         //given
-        PostsGetRequest request = new PostsGetRequest();
-        request.setGroupId(1L); request.setSearch("검색어");
-        request.setCategory(PostCategory.CHAT); request.setStudyIds(List.of(1L));
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("groupId", "1");
+        request.add("search", "검색어");
+        request.add("category", "CHAT");
+        request.add("studyIds", "1, 2, 3");
+        request.add("page", "0");
+        request.add("size", "10");
 
         Member member = MyUtils.createMember("member", "member");
         setField(member, "id", 1L);
@@ -84,14 +89,13 @@ class PostControllerTest {
         PostStudyDto postStudyDto = createPostStudyDto();
         postDto.setPostStudies(List.of(postStudyDto));
 
-        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+        PageRequest pageRequest = PageRequest.of(0, 10);
 
         given(postService.getPosts(any())).willReturn(new PageImpl<>(List.of(postDto), pageRequest, 1L));
 
         //when
         ResultActions resultActions = mvc.perform(get("/api/v1/posts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)));
+                .params(request));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -99,14 +103,14 @@ class PostControllerTest {
                 .andDo(document("posts-get",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0")).description("페이지 번호"),
-                                fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("10")).description("페이지 사이즈"),
-                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
-                                fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
-                                fieldWithPath("search").type(STRING).description("게시글 제목 대상 검색어").optional(),
-                                fieldWithPath("category").type(STRING).description("게시글 카테고리(Enum Type 탭 참고)").optional(),
-                                fieldWithPath("studyIds").type(ARRAY).description("스터디 엔티티 아이디 목록").optional()
+                        requestParameters(
+                                parameterWithName("page").attributes(getDefaultValue("0")).description("페이지 번호"),
+                                parameterWithName("size").attributes(getDefaultValue("10")).description("페이지 사이즈"),
+                                parameterWithName("memberId").description("회원 엔티티 아이디").optional(),
+                                parameterWithName("groupId").description("그룹 엔티티 아이디").optional(),
+                                parameterWithName("search").description("게시글 제목 대상 검색어").optional(),
+                                parameterWithName("category").description("게시글 카테고리(Enum Type 탭 참고)").optional(),
+                                parameterWithName("studyIds").description("스터디 엔티티 아이디 목록").optional()
                         ),
                         responseFields(
                                 beneathPath("data").withSubsectionId("data"),
@@ -208,7 +212,7 @@ class PostControllerTest {
         given(postService.getPost(anyLong())).willReturn(postDto);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api/v1/post/{postId}", 1));
+        ResultActions resultActions = mvc.perform(get("/api/v1/posts/{postId}", 1));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -272,7 +276,7 @@ class PostControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions resultActions = mvc.perform(patch("/api/v1/post/{postId}", 1)
+        ResultActions resultActions = mvc.perform(patch("/api/v1/posts/{postId}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .session(session));
@@ -305,7 +309,7 @@ class PostControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions resultActions = mvc.perform(delete("/api/v1/post/{postId}", 1)
+        ResultActions resultActions = mvc.perform(delete("/api/v1/posts/{postId}", 1)
                 .session(session));
 
         //then

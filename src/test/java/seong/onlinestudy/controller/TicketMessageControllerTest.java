@@ -103,7 +103,7 @@ class TicketMessageControllerTest {
         em.clear();
 
         CustomStompFrameHandler<TicketDto> handler = new CustomStompFrameHandler<>(TicketDto.class);
-        this.stompSession.subscribe("/sub/group/" + group.getId(), handler);
+        this.stompSession.subscribe("/sub/groups/" + group.getId(), handler);
 
         //when
         Ticket findTicket = ticketRepository.findById(ticket.getId()).get();

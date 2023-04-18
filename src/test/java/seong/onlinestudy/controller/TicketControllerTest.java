@@ -15,6 +15,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
@@ -35,8 +37,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,9 +69,14 @@ class TicketControllerTest {
     @Test
     public void getTickets() throws Exception {
         //given
-        TicketGetRequest request = new TicketGetRequest();
-        request.setGroupId(1L); request.setStudyId(1L); request.setMemberId(1L);
-        request.setDate(LocalDate.now()); request.setDays(1);
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("groupId", "1");
+        request.add("studyId", "1");
+        request.add("memberId", "1");
+        request.add("date", "2023-04-06");
+        request.add("days", "1");
+        request.add("page", "0");
+        request.add("size", "10");
 
         Member member = createMember("member", "member");
         Study study = createStudy("스터디");
@@ -95,9 +101,7 @@ class TicketControllerTest {
 
         //when
         ResultActions resultActions = mvc.perform(get("/api/v1/tickets")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)));
+                .params(request));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -105,18 +109,18 @@ class TicketControllerTest {
                 .andDo(document("tickets-get",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디").optional(),
-                                fieldWithPath("studyId").type(NUMBER).description("스터디 엔티티 아이디").optional(),
-                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
-                                fieldWithPath("date").type(STRING)
+                        requestParameters(
+                                parameterWithName("groupId").description("그룹 엔티티 아이디").optional(),
+                                parameterWithName("studyId").description("스터디 엔티티 아이디").optional(),
+                                parameterWithName("memberId").description("회원 엔티티 아이디").optional(),
+                                parameterWithName("date")
                                         .attributes(getDateFormat()).attributes(getDefaultValue("오늘")).description("검색 시작 일자"),
-                                fieldWithPath("days").type(NUMBER)
+                                parameterWithName("days")
                                         .attributes(getDefaultValue("1")).description("검색 할 일수"),
-                                fieldWithPath("page").type(NUMBER)
+                                parameterWithName("page")
                                         .attributes(getDefaultValue("0")).description("페이지 번호"),
-                                fieldWithPath("size").type(NUMBER).
-                                        attributes(getDefaultValue("30")).description("페이지 사이즈")
+                                parameterWithName("size")
+                                        .attributes(getDefaultValue("30")).description("페이지 사이즈")
                         ),
                         responseFields(
                                 beneathPath("data").withSubsectionId("data"),
@@ -160,7 +164,7 @@ class TicketControllerTest {
         given(ticketService.getTicket(anyLong())).willReturn(testTicketDto);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api/v1/ticket/{ticketId}", 1));
+        ResultActions resultActions = mvc.perform(get("/api/v1/tickets/{ticketId}", 1));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -246,7 +250,7 @@ class TicketControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions resultActions = mvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/ticket/{ticketId}", 1L)
+        ResultActions resultActions = mvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/tickets/{ticketId}", 1L)
                 .session(session));
 
         //then

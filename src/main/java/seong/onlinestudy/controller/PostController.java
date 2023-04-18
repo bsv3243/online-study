@@ -45,14 +45,14 @@ public class PostController {
         return new Result<>("201", postId);
     }
 
-    @GetMapping("/post/{postId}")
+    @GetMapping("/posts/{postId}")
     public Result<PostDto> getPost(@PathVariable("postId") Long postId) {
         PostDto post = postService.getPost(postId);
 
         return new Result<>("200", post);
     }
 
-    @PatchMapping("/post/{postId}")
+    @PatchMapping("/posts/{postId}")
     public Result<Long> updatePost(@PathVariable("postId") Long postId,
                                    @RequestBody @Valid PostUpdateRequest request,
                                    @SessionAttribute(value = LOGIN_MEMBER, required = false) Long loginMemberId) {
@@ -64,7 +64,7 @@ public class PostController {
         return new Result<>("200", updatePostId);
     }
 
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping("/posts/{postId}")
     public Result<String> deletePost(@PathVariable("postId") Long postId,
                                    @SessionAttribute(value = LOGIN_MEMBER, required = false) Long loginMemberId) {
         if(loginMemberId == null) {

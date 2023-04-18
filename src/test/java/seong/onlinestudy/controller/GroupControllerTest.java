@@ -19,6 +19,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Group;
@@ -51,8 +53,7 @@ import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static seong.onlinestudy.MyUtils.createMember;
@@ -180,7 +181,7 @@ class GroupControllerTest {
         given(groupService.joinGroup(any(), any())).willReturn(1L);
 
         //when
-        ResultActions result = mvc.perform(post("/api/v1/group/{groupId}/join", 1L)
+        ResultActions result = mvc.perform(post("/api/v1/groups/{groupId}/join", 1L)
                 .session(session));
 
         //then
@@ -206,7 +207,7 @@ class GroupControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions result = mvc.perform(post("/api/v1/group/{groupId}/quit", 1L)
+        ResultActions result = mvc.perform(post("/api/v1/groups/{groupId}/quit", 1L)
                 .session(session));
 
         //then
@@ -227,10 +228,13 @@ class GroupControllerTest {
     @DisplayName("그룹 목록 조회")
     void getGroups() throws Exception {
         //given
-        GroupsGetRequest request = new GroupsGetRequest();
-        request.setPage(0); request.setSize(10); request.setCategory(IT);
-        request.setSearch("검색어"); request.setStudyIds(List.of(1L,2L,3L));
-        request.setOrderBy(OrderBy.CREATEDAT);
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("page", "0");
+        request.add("size", "10");
+        request.add("category", "IT");
+        request.add("search", "검색어");
+        request.add("studyIds", "1, 2, 3, 4");
+        request.add("orderBy", "CREATEDAT");
 
         Member member = createMember("member", "member");
         Group group = MyUtils.createGroup("group", 30, member);
@@ -250,8 +254,7 @@ class GroupControllerTest {
 
         //when
         ResultActions result = mvc.perform(get("/api/v1/groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)));
+                .params(request));
 
         //then
         result.andExpect(status().isOk())
@@ -259,47 +262,41 @@ class GroupControllerTest {
                 .andDo(document("groups-get",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("page").type(NUMBER).attributes(getDefaultValue("0")).
+                        requestParameters(
+                                parameterWithName("page").attributes(getDefaultValue("0")).
                                         description("페이지"),
-                                fieldWithPath("size").type(NUMBER).attributes(getDefaultValue("12"))
+                                parameterWithName("size").attributes(getDefaultValue("12"))
                                         .description("응답 데이터 개수"),
-                                fieldWithPath("memberId").type(NUMBER).description("회원 엔티티 아이디").optional(),
-                                fieldWithPath("category").type(STRING).description("그룹 카테고리(Enum Type)").optional(),
-                                fieldWithPath("search").type(STRING).description("그룹 이름 검색어").optional(),
-                                fieldWithPath("studyIds").type(JsonFieldType.ARRAY).description("스터디 아이디 목록").optional(),
-                                fieldWithPath("orderBy").type(STRING).attributes(getDefaultValue("CREATEDAT"))
+                                parameterWithName("memberId").description("회원 엔티티 아이디").optional(),
+                                parameterWithName("category").description("그룹 카테고리(Enum Type)").optional(),
+                                parameterWithName("search").description("그룹 이름 검색어").optional(),
+                                parameterWithName("studyIds").description("스터디 아이디 목록").optional(),
+                                parameterWithName("orderBy").attributes(getDefaultValue("CREATEDAT"))
                                         .description("그룹 정렬 순서(Enum Type 탭 참고)")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
-                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("그룹 목록"),
-                                fieldWithPath("number").type(NUMBER).description("현재 페이지 번호"),
-                                fieldWithPath("size").type(NUMBER).description("페이지의 원소 개수"),
-                                fieldWithPath("totalPages").type(NUMBER).description("총 페이지 수"),
-                                fieldWithPath("hasNext").type(BOOLEAN).description("다음 페이지 여부"),
-                                fieldWithPath("hasPrevious").type(BOOLEAN).description("이전 페이지 여부"),
-                                fieldWithPath("data[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
-                                fieldWithPath("data[].name").type(STRING).description("그룹 이름"),
-                                fieldWithPath("data[].headcount").type(NUMBER).description("그룹 제한 인원 수"),
-                                fieldWithPath("data[].memberSize").type(NUMBER).description("그룹 현제 인원 수"),
-                                fieldWithPath("data[].createdAt").type(STRING).description("그룹 생성일"),
-                                fieldWithPath("data[].description").type(STRING).description("그룹 설명"),
-                                fieldWithPath("data[].category").type(STRING).description("그룹 카테고리"),
-                                fieldWithPath("data[].deleted").type(BOOLEAN).description("그룹 삭제여부"),
-                                fieldWithPath("data[].groupMembers").type(JsonFieldType.ARRAY).description("그룹원 목록"),
-                                fieldWithPath("data[].groupMembers[].groupMemberId").type(NUMBER).description("그룹원 엔티티 아이디"),
-                                fieldWithPath("data[].groupMembers[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
-                                fieldWithPath("data[].groupMembers[].memberId").type(NUMBER).description("회원 엔티티 아이디"),
-                                fieldWithPath("data[].groupMembers[].username").type(STRING).description("회원 아이디"),
-                                fieldWithPath("data[].groupMembers[].nickname").type(STRING).description("회원 닉네임"),
-                                fieldWithPath("data[].groupMembers[].joinedAt").type(STRING).description("회원 그룹 가입일"),
-                                fieldWithPath("data[].groupMembers[].role").type(STRING).description("회원 그룹 권한"),
-                                fieldWithPath("data[].studies").type(JsonFieldType.ARRAY).description("그룹 스터디 목록"),
-                                fieldWithPath("data[].studies[].studyId").type(NUMBER).description("스터디 엔티티 아이디"),
-                                fieldWithPath("data[].studies[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
-                                fieldWithPath("data[].studies[].name").type(STRING).description("스터디 이름"),
-                                fieldWithPath("data[].studies[].studyTime").type(NUMBER).description("총 스터디 시간")
+                                beneathPath("data").withSubsectionId("data"),
+                                fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디"),
+                                fieldWithPath("name").type(STRING).description("그룹 이름"),
+                                fieldWithPath("headcount").type(NUMBER).description("그룹 제한 인원 수"),
+                                fieldWithPath("memberSize").type(NUMBER).description("그룹 현제 인원 수"),
+                                fieldWithPath("createdAt").type(STRING).description("그룹 생성일"),
+                                fieldWithPath("description").type(STRING).description("그룹 설명"),
+                                fieldWithPath("category").type(STRING).description("그룹 카테고리"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("그룹 삭제여부"),
+                                fieldWithPath("groupMembers").type(JsonFieldType.ARRAY).description("그룹원 목록"),
+                                fieldWithPath("groupMembers[].groupMemberId").type(NUMBER).description("그룹원 엔티티 아이디"),
+                                fieldWithPath("groupMembers[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
+                                fieldWithPath("groupMembers[].memberId").type(NUMBER).description("회원 엔티티 아이디"),
+                                fieldWithPath("groupMembers[].username").type(STRING).description("회원 아이디"),
+                                fieldWithPath("groupMembers[].nickname").type(STRING).description("회원 닉네임"),
+                                fieldWithPath("groupMembers[].joinedAt").type(STRING).description("회원 그룹 가입일"),
+                                fieldWithPath("groupMembers[].role").type(STRING).description("회원 그룹 권한"),
+                                fieldWithPath("studies").type(JsonFieldType.ARRAY).description("그룹 스터디 목록"),
+                                fieldWithPath("studies[].studyId").type(NUMBER).description("스터디 엔티티 아이디"),
+                                fieldWithPath("studies[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
+                                fieldWithPath("studies[].name").type(STRING).description("스터디 이름"),
+                                fieldWithPath("studies[].studyTime").type(NUMBER).description("총 스터디 시간")
                         )));
 
     }
@@ -321,7 +318,7 @@ class GroupControllerTest {
         given(groupService.getGroup(anyLong())).willReturn(groupDto);
 
         //when
-        ResultActions result = mvc.perform(get("/api/v1/group/{groupId}", 1L));
+        ResultActions result = mvc.perform(get("/api/v1/groups/{groupId}", 1L));
 
         //then
         result.andExpect(status().isOk())
@@ -333,29 +330,28 @@ class GroupControllerTest {
                                 parameterWithName("groupId").description("그룹 엔티티 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(STRING).description("HTTP 상태 코드"),
-                                fieldWithPath("data").type(OBJECT).description("그룹"),
-                                fieldWithPath("data.groupId").type(NUMBER).description("그룹 엔티티 아이디"),
-                                fieldWithPath("data.name").type(STRING).description("그룹 이름"),
-                                fieldWithPath("data.headcount").type(NUMBER).description("그룹 제한 인원 수"),
-                                fieldWithPath("data.memberSize").type(NUMBER).description("그룹 현제 인원 수"),
-                                fieldWithPath("data.createdAt").type(STRING).description("그룹 생성일"),
-                                fieldWithPath("data.description").type(STRING).description("그룹 설명"),
-                                fieldWithPath("data.category").type(STRING).description("그룹 카테고리"),
-                                fieldWithPath("data.deleted").type(BOOLEAN).description("그룹 사제 여부"),
-                                fieldWithPath("data.groupMembers").type(JsonFieldType.ARRAY).description("그룹원 목록"),
-                                fieldWithPath("data.groupMembers[].groupMemberId").type(NUMBER).description("그룹원 엔티티 아이디"),
-                                fieldWithPath("data.groupMembers[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
-                                fieldWithPath("data.groupMembers[].memberId").type(NUMBER).description("회원 엔티티 아이디"),
-                                fieldWithPath("data.groupMembers[].username").type(STRING).description("회원 아이디"),
-                                fieldWithPath("data.groupMembers[].nickname").type(STRING).description("회원 닉네임"),
-                                fieldWithPath("data.groupMembers[].joinedAt").type(STRING).description("회원 그룹 가입일"),
-                                fieldWithPath("data.groupMembers[].role").type(STRING).description("회원 그룹 권한"),
-                                fieldWithPath("data.studies").type(JsonFieldType.ARRAY).description("그룹 스터디 목록"),
-                                fieldWithPath("data.studies[].studyId").type(NUMBER).description("스터디 엔티티 아이디"),
-                                fieldWithPath("data.studies[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
-                                fieldWithPath("data.studies[].name").type(STRING).description("스터디 이름"),
-                                fieldWithPath("data.studies[].studyTime").type(NUMBER).description("총 스터디 시간")
+                                beneathPath("data").withSubsectionId("data"),
+                                fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디"),
+                                fieldWithPath("name").type(STRING).description("그룹 이름"),
+                                fieldWithPath("headcount").type(NUMBER).description("그룹 제한 인원 수"),
+                                fieldWithPath("memberSize").type(NUMBER).description("그룹 현제 인원 수"),
+                                fieldWithPath("createdAt").type(STRING).description("그룹 생성일"),
+                                fieldWithPath("description").type(STRING).description("그룹 설명"),
+                                fieldWithPath("category").type(STRING).description("그룹 카테고리"),
+                                fieldWithPath("deleted").type(BOOLEAN).description("그룹 사제 여부"),
+                                fieldWithPath("groupMembers").type(JsonFieldType.ARRAY).description("그룹원 목록"),
+                                fieldWithPath("groupMembers[].groupMemberId").type(NUMBER).description("그룹원 엔티티 아이디"),
+                                fieldWithPath("groupMembers[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
+                                fieldWithPath("groupMembers[].memberId").type(NUMBER).description("회원 엔티티 아이디"),
+                                fieldWithPath("groupMembers[].username").type(STRING).description("회원 아이디"),
+                                fieldWithPath("groupMembers[].nickname").type(STRING).description("회원 닉네임"),
+                                fieldWithPath("groupMembers[].joinedAt").type(STRING).description("회원 그룹 가입일"),
+                                fieldWithPath("groupMembers[].role").type(STRING).description("회원 그룹 권한"),
+                                fieldWithPath("studies").type(JsonFieldType.ARRAY).description("그룹 스터디 목록"),
+                                fieldWithPath("studies[].studyId").type(NUMBER).description("스터디 엔티티 아이디"),
+                                fieldWithPath("studies[].groupId").type(NUMBER).description("그룹 엔티티 아이디"),
+                                fieldWithPath("studies[].name").type(STRING).description("스터디 이름"),
+                                fieldWithPath("studies[].studyTime").type(NUMBER).description("총 스터디 시간")
                         )));
     }
 
@@ -368,7 +364,7 @@ class GroupControllerTest {
         session.setAttribute(LOGIN_MEMBER, 1L);
 
         //when
-        ResultActions result = mvc.perform(delete("/api/v1/group/{groupId}", 1L)
+        ResultActions result = mvc.perform(delete("/api/v1/groups/{groupId}", 1L)
                 .session(session));
 
         //then
@@ -398,7 +394,7 @@ class GroupControllerTest {
         request.setDescription("그룹 설명"); request.setHeadcount(30);
 
         //when
-        ResultActions result = mvc.perform(post("/api/v1/group/{groupId}", 1L)
+        ResultActions result = mvc.perform(post("/api/v1/groups/{groupId}", 1L)
                 .session(session)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)));
