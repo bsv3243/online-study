@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.178.0.10:3306/mydb
+    url: jdbc:mysql://10.178.0.11:3306/mydb
     username: root
     password: root123!
 
@@ -19,7 +19,6 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 300
-        format_sql: true
     show-sql: true
   mvc:
     pathmatch:
