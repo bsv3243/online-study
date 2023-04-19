@@ -36,7 +36,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
                         ticket.startTime.goe(startTime),
                         ticket.startTime.lt(endTime)
                 )
-                .orderBy(studyTicket.study.id.asc(), ticket.startTime.asc())
+                .orderBy(ticket.startTime.asc())
                 .fetch();
 
         return findTickets;
@@ -56,7 +56,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom, StudyTicket
                         ticket.startTime.goe(startTime),
                         ticket.startTime.lt(endTime)
                 )
-                .orderBy(studyTicket.study.id.asc(), ticket.startTime.asc())
+                .orderBy(ticket.startTime.asc())
                 .fetch();
 
         return findTickets;
