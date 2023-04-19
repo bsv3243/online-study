@@ -9,14 +9,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import seong.onlinestudy.MyUtils;
-import seong.onlinestudy.SessionConst;
-import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.request.login.LoginRequest;
 import seong.onlinestudy.service.LoginService;
@@ -30,7 +26,7 @@ import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.constant.SessionConst.LOGIN_MEMBER;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 
 @AutoConfigureRestDocs

@@ -2,8 +2,6 @@ package seong.onlinestudy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,20 +11,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import seong.onlinestudy.MyUtils;
-import seong.onlinestudy.docs.DocumentFormatGenerator;
-import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.StudyDto;
-import seong.onlinestudy.request.study.StudiesGetRequest;
 import seong.onlinestudy.request.study.StudyCreateRequest;
 import seong.onlinestudy.service.StudyService;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +34,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDateFormat;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 

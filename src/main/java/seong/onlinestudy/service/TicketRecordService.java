@@ -2,7 +2,7 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import seong.onlinestudy.TimeConst;
+import seong.onlinestudy.constant.TimeConst;
 import seong.onlinestudy.domain.StudyTicket;
 import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.exception.PermissionControlException;

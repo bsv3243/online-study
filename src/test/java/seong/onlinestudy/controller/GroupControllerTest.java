@@ -34,8 +34,6 @@ import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.group.GroupCreateRequest;
 import seong.onlinestudy.request.group.GroupUpdateRequest;
 import seong.onlinestudy.request.group.GroupsDeleteRequest;
-import seong.onlinestudy.request.group.GroupsGetRequest;
-import seong.onlinestudy.enumtype.OrderBy;
 import seong.onlinestudy.service.GroupService;
 
 import java.time.LocalDateTime;
@@ -57,7 +55,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static seong.onlinestudy.MyUtils.createMember;
-import static seong.onlinestudy.SessionConst.*;
+import static seong.onlinestudy.constant.SessionConst.*;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 import static seong.onlinestudy.enumtype.GroupCategory.IT;

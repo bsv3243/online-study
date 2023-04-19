@@ -1,4 +1,4 @@
-package seong.onlinestudy;
+package seong.onlinestudy.constant;
 
 public class SessionConst {
 

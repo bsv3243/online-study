@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import seong.onlinestudy.MyUtils;
-import seong.onlinestudy.docs.DocumentFormatGenerator;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
 import seong.onlinestudy.request.member.MemberCreateRequest;
@@ -34,7 +33,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.constant.SessionConst.LOGIN_MEMBER;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getConstraint;
 
 @AutoConfigureRestDocs

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seong.onlinestudy.TimeConst;
+import seong.onlinestudy.constant.TimeConst;
 import seong.onlinestudy.repository.*;
 import seong.onlinestudy.request.ticket.TicketGetRequest;
 import seong.onlinestudy.domain.*;

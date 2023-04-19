@@ -14,7 +14,7 @@ import seong.onlinestudy.service.TicketService;
 import javax.validation.Valid;
 import java.util.List;
 
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.constant.SessionConst.LOGIN_MEMBER;
 
 @RestController
 @RequiredArgsConstructor

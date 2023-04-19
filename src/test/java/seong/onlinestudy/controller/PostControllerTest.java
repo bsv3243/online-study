@@ -23,7 +23,6 @@ import seong.onlinestudy.enumtype.PostCategory;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.post.PostUpdateRequest;
 import seong.onlinestudy.request.post.PostsDeleteRequest;
-import seong.onlinestudy.request.post.PostsGetRequest;
 import seong.onlinestudy.service.PostService;
 
 import java.time.LocalDateTime;
@@ -42,7 +41,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.constant.SessionConst.LOGIN_MEMBER;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 @AutoConfigureRestDocs

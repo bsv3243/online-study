@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-import static seong.onlinestudy.SessionConst.*;
+import static seong.onlinestudy.constant.SessionConst.*;
 
 @RestController
 @RequiredArgsConstructor

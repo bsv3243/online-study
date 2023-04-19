@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seong.onlinestudy.TimeConst;
+import seong.onlinestudy.constant.TimeConst;
 import seong.onlinestudy.domain.Study;
 import seong.onlinestudy.dto.StudyDto;
 import seong.onlinestudy.exception.DuplicateElementException;

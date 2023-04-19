@@ -38,7 +38,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.MyUtils.createMember;
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.constant.SessionConst.LOGIN_MEMBER;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 
 

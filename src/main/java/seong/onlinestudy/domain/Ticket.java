@@ -1,7 +1,7 @@
 package seong.onlinestudy.domain;
 
 import lombok.Getter;
-import seong.onlinestudy.TimeConst;
+import seong.onlinestudy.constant.TimeConst;
 
 import javax.persistence.*;
 import java.time.LocalDate;

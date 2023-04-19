@@ -2,7 +2,7 @@ package seong.onlinestudy.request.record;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import seong.onlinestudy.TimeConst;
+import seong.onlinestudy.constant.TimeConst;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

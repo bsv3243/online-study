@@ -22,10 +22,8 @@ import seong.onlinestudy.dto.MemberTicketDto;
 import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.enumtype.TicketStatus;
 import seong.onlinestudy.request.ticket.TicketCreateRequest;
-import seong.onlinestudy.request.ticket.TicketGetRequest;
 import seong.onlinestudy.service.TicketService;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +40,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static seong.onlinestudy.MyUtils.*;
-import static seong.onlinestudy.SessionConst.LOGIN_MEMBER;
+import static seong.onlinestudy.constant.SessionConst.LOGIN_MEMBER;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDateFormat;
 import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 

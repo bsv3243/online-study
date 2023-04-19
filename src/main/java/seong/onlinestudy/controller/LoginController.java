@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import seong.onlinestudy.SessionConst;
+import seong.onlinestudy.constant.SessionConst;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
@@ -12,7 +12,6 @@ import seong.onlinestudy.request.login.LoginRequest;
 import seong.onlinestudy.service.LoginService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
