@@ -22,7 +22,7 @@ import seong.onlinestudy.repository.GroupRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.StudyRepository;
 import seong.onlinestudy.repository.TicketRepository;
-import seong.onlinestudy.websocket.TicketMessage;
+import seong.onlinestudy.controller.websocket.TicketMessage;
 
 import javax.persistence.EntityManager;
 import java.lang.reflect.Type;

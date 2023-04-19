@@ -1,4 +1,4 @@
-package seong.onlinestudy.websocket;
+package seong.onlinestudy.controller.websocket;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

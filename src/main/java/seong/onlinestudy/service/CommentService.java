@@ -14,7 +14,7 @@ import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.CommentRepository;
 import seong.onlinestudy.repository.MemberRepository;
 import seong.onlinestudy.repository.PostRepository;
-import seong.onlinestudy.request.CommentsGetRequest;
+import seong.onlinestudy.request.comment.CommentsGetRequest;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
 import seong.onlinestudy.request.comment.CommentsDeleteRequest;

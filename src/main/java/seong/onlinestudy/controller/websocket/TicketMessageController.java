@@ -1,4 +1,4 @@
-package seong.onlinestudy.controller;
+package seong.onlinestudy.controller.websocket;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import seong.onlinestudy.dto.TicketDto;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.service.TicketMessageService;
 import seong.onlinestudy.service.TicketService;
-import seong.onlinestudy.websocket.TicketMessage;
+import seong.onlinestudy.controller.websocket.TicketMessage;
 
 import java.util.NoSuchElementException;
 

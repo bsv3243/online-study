@@ -8,7 +8,7 @@ import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.dto.CommentDto;
 import seong.onlinestudy.exception.InvalidSessionException;
-import seong.onlinestudy.request.CommentsGetRequest;
+import seong.onlinestudy.request.comment.CommentsGetRequest;
 import seong.onlinestudy.request.comment.CommentCreateRequest;
 import seong.onlinestudy.request.comment.CommentUpdateRequest;
 import seong.onlinestudy.request.comment.CommentsDeleteRequest;
