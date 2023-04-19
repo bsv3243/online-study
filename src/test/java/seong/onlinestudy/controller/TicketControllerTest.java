@@ -231,7 +231,7 @@ class TicketControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("studyId").type(NUMBER).description("학습 엔티티 아이디"),
+                                fieldWithPath("studyId").type(NUMBER).description("학습 엔티티 아이디").optional(),
                                 fieldWithPath("groupId").type(NUMBER).description("그룹 엔티티 아이디"),
                                 fieldWithPath("status").type(STRING).description("티켓 상태")
                         ),

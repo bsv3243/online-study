@@ -38,9 +38,6 @@ public class TicketService {
         Member findMember = memberRepository.findById(loginMemberId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
 
-        Study findStudy = studyRepository.findById(request.getStudyId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 스터디입니다."));
-
         Group findGroup = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
 
@@ -51,6 +48,9 @@ public class TicketService {
 
         Ticket ticket;
         if(request.getStatus().equals(STUDY)) {
+            Study findStudy = studyRepository.findById(request.getStudyId())
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 스터디입니다."));
+
             ticket = StudyTicket.createStudyTicket(findMember, findGroup, findStudy);
         } else {
             ticket = RestTicket.createRestTicket(findMember, findGroup);
