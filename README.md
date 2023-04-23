@@ -27,7 +27,7 @@
     - http 접속시 https로 리다이렉트 되도록 설정했습니다.
 
 ## DB
-![온라인스터디DB(수정)](https://user-images.githubusercontent.com/48748265/231474247-4c115009-a513-4981-9cc7-db57eb3d085e.png)
+![온라인스터디DB(수정)](https://user-images.githubusercontent.com/48748265/233852756-9034111f-4f91-4a0e-8fb3-7c38c18e73ff.png)
 
 - ticket, study_ticket, rest_ticket 3개의 테이블이 있었으나, ticket 테이블 1개로 반정규화 하였습니다. 조인횟수를 줄이기 위해 JPA의 단일 테이블 전략을 사용하며 ticket 테이블의 ticket_status 컬럼에 의해 테이블이 구분됩니다.
 
