@@ -20,7 +20,7 @@ public class JdbcTicketRecordRepositoryImpl implements JdbcTicketRecordRepositor
 
     @Override
     public void insertTicketRecords(List<Ticket> tickets) {
-        String sql = "insert into Ticket_Record (expired_time, active_time, ticket_id) values (?, ?, ?)";
+        String sql = "insert into ticket_record (expired_time, active_time, ticket_id) values (?, ?, ?)";
         template.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
