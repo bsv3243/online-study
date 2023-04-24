@@ -11,9 +11,13 @@ import seong.onlinestudy.domain.*;
 import seong.onlinestudy.repository.*;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static seong.onlinestudy.MyUtils.createMember;
+import static seong.onlinestudy.MyUtils.createStudyTicket;
 
 @DataJpaTest
 class JdbcTicketRecordRepositoryCustomTest {
@@ -44,16 +48,28 @@ class JdbcTicketRecordRepositoryCustomTest {
         List<Study> studies = MyUtils.createStudies(2);
         studyRepository.saveAll(studies);
 
-        List<Ticket> studyTickets = MyUtils.createStudyTickets(members, groups, studies, false);
-        ticketRepository.saveAll(studyTickets);
+        List<Ticket> tickets = new ArrayList<>();
+        for(int i=0; i<members.size(); i++) {
+            Ticket studyTicket =
+                    createStudyTicket(members.get(i), groups.get(i % groups.size()), studies.get(i % studies.size()));
+            tickets.add(studyTicket);
+        }
+        ticketRepository.saveAll(tickets);
+        assertThat(tickets).allSatisfy(ticket -> {
+            assertThat(ticket.getTicketRecord()).isNull();
+        });
         em.flush();
+        em.clear();
 
         //when
-        ticketRecordRepository.insertTicketRecords(studyTickets);
+        ticketRecordRepository.insertTicketRecords(tickets);
 
         //then
-        List<TicketRecord> result = ticketRecordRepository.findAll();
-        Assertions.assertThat(result.size()).isGreaterThan(0);
+        tickets = ticketRepository.findAll();
+        assertThat(tickets).allSatisfy(ticket -> {
+            assertThat(ticket.getTicketRecord()).isNotNull();
+        });
+
     }
 
 }
