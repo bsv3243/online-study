@@ -7,7 +7,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 public interface DocumentFormatGenerator {
 
     static Attribute getDateFormat() {
-        return key("format").value("yyyy-MM-dd");
+        return key("constraint").value("yyyy-MM-dd");
     }
 
     static Attribute getDefaultValue(String value) {
