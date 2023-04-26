@@ -678,13 +678,12 @@ Host: localhost:8080
 <h4 id="_회원_생성_request_fields"><a class="link" href="#_회원_생성_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -692,7 +691,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -703,14 +701,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자만 가능. 6자 이상, 20자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2자 이상, 12자 이하</p></td>
@@ -721,7 +717,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 비밀번호</p></td>
 </tr>
@@ -729,7 +724,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>passwordCheck</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 비밀번호 확인</p></td>
@@ -911,13 +905,12 @@ Host: localhost:8080
 <h4 id="_회원_업데이트_request_fields"><a class="link" href="#_회원_업데이트_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -925,7 +918,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -936,14 +928,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2자 이상, 12자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">업데이틀 할 닉네임</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>passwordOld</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하</p></td>
@@ -954,14 +944,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">업데이트 할 비밀번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>passwordNewCheck</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자, 특수문자 포함. 6자 이상, 20자 이하</p></td>
@@ -1042,13 +1030,12 @@ Host: localhost:8080
 <h4 id="_회원_삭제_request_fields"><a class="link" href="#_회원_삭제_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -1056,7 +1043,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -1066,7 +1052,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 아이디</p></td>
@@ -1152,13 +1137,12 @@ Host: localhost:8080
 <h4 id="_로그인_request_fields"><a class="link" href="#_로그인_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -1166,7 +1150,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -1177,7 +1160,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자만 가능. 6자 이상, 20자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 아이디</p></td>
 </tr>
@@ -1185,7 +1167,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">영문, 숫자, 특수문자를 포함. 6자 이상, 20자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 비밀번호</p></td>
@@ -1341,42 +1322,69 @@ Host: localhost:8080</code></pre>
 <h4 id="_그룹_목록_조회_request_parameters"><a class="link" href="#_그룹_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">기본값</th>
+<th class="tableblock halign-left valign-top">제약조건</th>
+<th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">응답 데이터 개수</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 카테고리(Enum Type)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>search</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 이름 검색어</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyIds</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 아이디 목록</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>orderBy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CREATEDAT</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 정렬 순서(Enum Type 탭 참고)</p></td>
 </tr>
 </tbody>
@@ -1391,7 +1399,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 760
+Content-Length: 761
 
 {
   "code" : "200",
@@ -1401,7 +1409,7 @@ Content-Length: 760
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-18T22:23:56.900752",
+    "createdAt" : "2023-04-27T01:10:19.3887387",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1410,7 +1418,7 @@ Content-Length: 760
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-18T22:23:56.9017514",
+      "joinedAt" : "2023-04-27T01:10:19.3897384",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -1609,7 +1617,7 @@ Content-Length: 655
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-18T22:23:56.9721235",
+    "createdAt" : "2023-04-27T01:10:19.4537372",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1618,7 +1626,7 @@ Content-Length: 655
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-18T22:23:56.9721235",
+      "joinedAt" : "2023-04-27T01:10:19.4537372",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -1783,13 +1791,12 @@ Host: localhost:8080
 <h4 id="_그룹_생성_request_fields"><a class="link" href="#_그룹_생성_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -1797,7 +1804,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -1808,7 +1814,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2자 이상, 20자 이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 이름</p></td>
 </tr>
@@ -1817,7 +1822,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1이상, 30이하</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 인원수</p></td>
 </tr>
@@ -1825,7 +1829,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 카테고리(Enum Type)</p></td>
@@ -1928,13 +1931,12 @@ Host: localhost:8080
 <h4 id="_그룹_업데이트_request_fields"><a class="link" href="#_그룹_업데이트_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -1942,7 +1944,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -1953,14 +1954,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">최대 100자</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 설명</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>headcount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1이상, 30이하</p></td>
@@ -2293,13 +2292,12 @@ Host: localhost:8080
 <h4 id="_그룹_일괄_탈퇴_request_fields"><a class="link" href="#_그룹_일괄_탈퇴_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -2307,7 +2305,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -2317,7 +2314,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
@@ -2397,13 +2393,12 @@ Host: localhost:8080
 <h4 id="_그룹_일괄_삭제_request_fields"><a class="link" href="#_그룹_일괄_삭제_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -2411,7 +2406,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -2421,7 +2415,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
@@ -2506,13 +2499,12 @@ Host: localhost:8080
 <h4 id="_학습_생성_request_fields"><a class="link" href="#_학습_생성_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -2520,7 +2512,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -2530,7 +2521,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디명</p></td>
@@ -2604,42 +2594,69 @@ Host: localhost:8080</code></pre>
 <h4 id="_학습_목록_조회_request_parameters"><a class="link" href="#_학습_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">기본값</th>
+<th class="tableblock halign-left valign-top">제약조건</th>
+<th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디명</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>date</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 시작 날짜</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>days</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 일수(범위)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 </tbody>
@@ -2732,13 +2749,12 @@ Host: localhost:8080
 <h4 id="_학습_티켓_발급_request_fields"><a class="link" href="#_학습_티켓_발급_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -2746,7 +2762,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -2755,7 +2770,6 @@ Host: localhost:8080
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -2767,14 +2781,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">티켓 상태</p></td>
@@ -2848,42 +2860,69 @@ Host: localhost:8080</code></pre>
 <h4 id="_학습_티켓_목록_조회_request_parameters"><a class="link" href="#_학습_티켓_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">기본값</th>
+<th class="tableblock halign-left valign-top">제약조건</th>
+<th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>date</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 시작 일자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>days</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">검색 할 일수</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 </tbody>
@@ -2909,7 +2948,7 @@ Content-Length: 1007
       "ticketId" : 3,
       "status" : "STUDY",
       "activeTime" : 0,
-      "startTime" : "2023-04-18T22:24:00.8238691",
+      "startTime" : "2023-04-27T01:10:23.4942666",
       "expired" : false,
       "study" : {
         "studyId" : 1,
@@ -2920,8 +2959,8 @@ Content-Length: 1007
       "ticketId" : 1,
       "status" : "STUDY",
       "activeTime" : 3600,
-      "startTime" : "2023-04-18T22:24:00.8238691",
-      "endTime" : "2023-04-18T23:24:00.8238691",
+      "startTime" : "2023-04-27T01:10:23.4942666",
+      "endTime" : "2023-04-27T02:10:23.4942666",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -2931,8 +2970,8 @@ Content-Length: 1007
       "ticketId" : 2,
       "status" : "STUDY",
       "activeTime" : 500,
-      "startTime" : "2023-04-18T22:24:00.8238691",
-      "endTime" : "2023-04-18T22:32:20.8238691",
+      "startTime" : "2023-04-27T01:10:23.4942666",
+      "endTime" : "2023-04-27T01:18:43.4942666",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -3110,7 +3149,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 258
+Content-Length: 259
 
 {
   "code" : "200",
@@ -3118,7 +3157,7 @@ Content-Length: 258
     "ticketId" : 1,
     "status" : "STUDY",
     "activeTime" : 0,
-    "startTime" : "2023-04-18T22:24:00.850933",
+    "startTime" : "2023-04-27T01:10:23.5207513",
     "expired" : false,
     "study" : {
       "studyId" : 1,
@@ -3301,34 +3340,55 @@ Host: localhost:8080</code></pre>
 <h4 id="_공부_기록_목록_조회_request_parameters"><a class="link" href="#_공부_기록_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">기본값</th>
+<th class="tableblock halign-left valign-top">제약조건</th>
+<th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7일 전</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회 시작 일자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>days</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회 일 수</p></td>
 </tr>
 </tbody>
@@ -3352,9 +3412,9 @@ Content-Length: 333
     "studyName" : "스터디",
     "memberCount" : 1,
     "records" : [ {
-      "date" : "2023-04-18",
-      "startTime" : "2023-04-18T21:24:04.3189873",
-      "endTime" : "2023-04-18T23:24:04.3189873",
+      "date" : "2023-04-27",
+      "startTime" : "2023-04-27T00:10:26.9450747",
+      "endTime" : "2023-04-27T02:10:26.9450747",
       "studyTime" : 0,
       "memberCount" : 1
     } ]
@@ -3451,42 +3511,69 @@ Host: localhost:8080</code></pre>
 <h4 id="_게시글_목록_조회_request_parameters"><a class="link" href="#_게시글_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">기본값</th>
+<th class="tableblock halign-left valign-top">제약조건</th>
+<th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룹 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>search</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 제목 대상 검색어</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 카테고리(Enum Type 탭 참고)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyIds</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스터디 엔티티 아이디 목록</p></td>
 </tr>
 </tbody>
@@ -3510,7 +3597,7 @@ Content-Length: 1239
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-18T22:23:59.3574579",
+    "createdAt" : "2023-04-27T01:10:21.9621428",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -3525,7 +3612,7 @@ Content-Length: 1239
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-18T22:23:59.3574579",
+      "createdAt" : "2023-04-27T01:10:21.9621428",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -3545,7 +3632,7 @@ Content-Length: 1239
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-18T22:23:59.3574579",
+      "createdAt" : "2023-04-27T01:10:21.9621428",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -3788,7 +3875,7 @@ Content-Length: 1133
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-18T22:23:59.2918334",
+    "createdAt" : "2023-04-27T01:10:21.8809723",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -3803,7 +3890,7 @@ Content-Length: 1133
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-18T22:23:59.2918334",
+      "createdAt" : "2023-04-27T01:10:21.8809723",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -3823,7 +3910,7 @@ Content-Length: 1133
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-18T22:23:59.2918334",
+      "createdAt" : "2023-04-27T01:10:21.8809723",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -4035,13 +4122,12 @@ Host: localhost:8080
 <h4 id="_게시글_생성_request_fields"><a class="link" href="#_게시글_생성_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -4049,7 +4135,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -4061,14 +4146,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 제목</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 본문</p></td>
@@ -4079,13 +4162,11 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 카테고리</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyIds</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -4095,7 +4176,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 연관 그룹</p></td>
@@ -4200,13 +4280,12 @@ Host: localhost:8080
 <h4 id="_게시글_업데이트_request_fields"><a class="link" href="#_게시글_업데이트_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -4214,7 +4293,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -4226,13 +4304,11 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">업데이트할 제목</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -4244,13 +4320,11 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">업데이트할 카테고리(Enum Type)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>studyIds</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -4415,13 +4489,12 @@ Host: localhost:8080
 <h4 id="_게시글_일괄_삭제_request_fields"><a class="link" href="#_게시글_일괄_삭제_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -4429,7 +4502,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -4439,7 +4511,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
@@ -4525,13 +4596,12 @@ Host: localhost:8080
 <h4 id="_댓글_생성_request_fields"><a class="link" href="#_댓글_생성_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -4539,7 +4609,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -4551,14 +4620,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">댓글 내용</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>postId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 엔티티 아이디</p></td>
@@ -4632,30 +4699,48 @@ Host: localhost:8080</code></pre>
 <h4 id="_댓글_목록_조회_request_parameters"><a class="link" href="#_댓글_목록_조회_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">기본값</th>
+<th class="tableblock halign-left valign-top">제약조건</th>
+<th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>postId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 엔티티 아이디</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 </tbody>
@@ -4683,7 +4768,7 @@ Content-Length: 430
       "nickname" : "member",
       "deleted" : false
     },
-    "createdAt" : "2023-04-18T22:23:55.9239363",
+    "createdAt" : "2023-04-27T01:10:18.4603869",
     "postId" : 1,
     "deleted" : false
   } ],
@@ -4785,13 +4870,12 @@ Host: localhost:8080
 <h4 id="_댓글_업데이트_request_fields"><a class="link" href="#_댓글_업데이트_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -4799,7 +4883,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -4809,7 +4892,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">댓글 내용</p></td>
@@ -4973,13 +5055,12 @@ Host: localhost:8080
 <h4 id="_댓글_일괄_삭제_request_fields"><a class="link" href="#_댓글_일괄_삭제_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2858%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
 </colgroup>
 <thead>
 <tr>
@@ -4987,7 +5068,6 @@ Host: localhost:8080
 <th class="tableblock halign-left valign-top">타입</th>
 <th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">기본값</th>
-<th class="tableblock halign-left valign-top">양식</th>
 <th class="tableblock halign-left valign-top">제약조건</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
@@ -4997,7 +5077,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 엔티티 아이디</p></td>
@@ -5179,7 +5258,7 @@ Content-Length: 53
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-04-18 22:07:39 +0900
+Last updated 2023-04-18 22:28:39 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
