@@ -1,14 +1,13 @@
 |===
-|필드명|타입|필수값|기본값|제약조건|설명
+|필드명|필수값|기본값|제약조건|설명
 
-{{#fields}}
-|{{#tableCellContent}}`+{{path}}+`{{/tableCellContent}}
-|{{#tableCellContent}}`+{{type}}+`{{/tableCellContent}}
+{{#parameters}}
+|{{#tableCellContent}}`+{{name}}+`{{/tableCellContent}}
 |{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
 |{{#tableCellContent}}{{#defaultValue}}{{.}}{{/defaultValue}}{{/tableCellContent}}
 |{{#tableCellContent}}{{#constraint}}{{.}}{{/constraint}}{{/tableCellContent}}
 |{{#tableCellContent}}{{description}}{{/tableCellContent}}
 
-{{/fields}}
+{{/parameters}}
 
 |===
