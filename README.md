@@ -33,6 +33,8 @@
 
 ## 화면 구성
 ![프로토타입](https://user-images.githubusercontent.com/48748265/233851677-ae6a8334-8f2e-4af6-bc4e-e2d17dfd4619.jpg)
+아래 링크를 통해 화면구성을 위한 프론트엔드의 작업을 확인하실 수 있습니다. 화면 구성과 프론트, 백엔드 간의 통신을 확인하기 위한 프로토타입으로써 Vue.js를 이용하여 작업하였습니다.<br/>
+https://github.com/hseong3243/online-study-front/tree/develop
 
 ## 문제 및 해결방법
 - 그룹원들의 지속적인 상태 갱신
