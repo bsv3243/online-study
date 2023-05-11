@@ -1,18 +1,25 @@
 package seong.onlinestudy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.RecordDto;
@@ -26,6 +33,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -42,6 +50,7 @@ import static seong.onlinestudy.docs.DocumentFormatGenerator.getDefaultValue;
 @AutoConfigureRestDocs
 @WebMvcTest(TicketRecordController.class)
 @AutoConfigureMockMvc(addFilters = false)
+@ExtendWith(RestDocumentationExtension.class)
 class TicketRecordControllerTest {
 
     @Autowired
@@ -52,12 +61,20 @@ class TicketRecordControllerTest {
 
     MockHttpSession session;
 
+    @MockBean
+    TicketRecordService ticketRecordService;
+
     public TicketRecordControllerTest() {
         this.session = new MockHttpSession();
     }
 
-    @MockBean
-    TicketRecordService ticketRecordService;
+    @BeforeEach
+    void init(WebApplicationContext context, RestDocumentationContextProvider provider) {
+        mvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(documentationConfiguration(provider))
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .build();
+    }
 
     @Test
     @DisplayName("공부 기록 목록 조회")

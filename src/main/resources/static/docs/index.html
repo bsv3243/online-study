@@ -538,7 +538,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
   "code" : "200",
-  "data" : "�뜲�씠�꽣"
+  "data" : "데이터"
 }</code></pre>
 </div>
 </div>
@@ -581,7 +581,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
   "code" : "200",
-  "data" : "�뜲�씠�꽣",
+  "data" : "데이터",
   "number" : 0,
   "size" : 1,
   "totalPages" : 1,
@@ -661,7 +661,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 120
 Host: localhost:8080
 
@@ -739,7 +739,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -823,7 +823,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 142
 
 {
@@ -888,7 +888,7 @@ Content-Length: 142
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 146
 Host: localhost:8080
 
@@ -966,7 +966,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -1016,7 +1016,7 @@ Content-Length: 37
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/duplicate HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 29
 Host: localhost:8080
 
@@ -1067,7 +1067,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 41
 
 {
@@ -1122,7 +1122,7 @@ Content-Length: 41
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/login HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 59
 Host: localhost:8080
 
@@ -1182,7 +1182,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 142
 
 {
@@ -1259,7 +1259,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 51
 
 {
@@ -1398,7 +1398,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 761
 
 {
@@ -1409,7 +1409,7 @@ Content-Length: 761
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-27T01:10:19.3887387",
+    "createdAt" : "2023-05-11T11:24:17.0449756",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1418,7 +1418,7 @@ Content-Length: 761
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-27T01:10:19.3897384",
+      "joinedAt" : "2023-05-11T11:24:17.0459761",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -1606,7 +1606,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 655
 
 {
@@ -1617,7 +1617,7 @@ Content-Length: 655
     "headcount" : 30,
     "memberSize" : 1,
     "deleted" : false,
-    "createdAt" : "2023-04-27T01:10:19.4537372",
+    "createdAt" : "2023-05-11T11:24:17.0936168",
     "description" : "그룹 설명",
     "category" : "IT",
     "groupMembers" : [ {
@@ -1626,7 +1626,7 @@ Content-Length: 655
       "memberId" : 1,
       "username" : "회원 이름",
       "nickname" : "회원 닉네임",
-      "joinedAt" : "2023-04-27T01:10:19.4537372",
+      "joinedAt" : "2023-05-11T11:24:17.0936168",
       "role" : "MASTER"
     } ],
     "studies" : [ {
@@ -1775,7 +1775,7 @@ Content-Length: 655
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/groups HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 71
 Host: localhost:8080
 
@@ -1844,7 +1844,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -1894,7 +1894,7 @@ Content-Length: 37
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/groups/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 60
 Host: localhost:8080
 
@@ -1976,7 +1976,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -2060,7 +2060,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 45
 
 {
@@ -2144,7 +2144,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -2228,7 +2228,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 40
 
 {
@@ -2278,7 +2278,7 @@ Content-Length: 40
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/groups/quit HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 22
 Host: localhost:8080
 
@@ -2329,7 +2329,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 49
 
 {
@@ -2379,7 +2379,7 @@ Content-Length: 49
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/groups/quit HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 22
 Host: localhost:8080
 
@@ -2430,7 +2430,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 49
 
 {
@@ -2485,7 +2485,7 @@ Content-Length: 49
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/studies HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 28
 Host: localhost:8080
 
@@ -2536,7 +2536,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -2670,7 +2670,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 196
 
 {
@@ -2733,7 +2733,7 @@ Content-Length: 196
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/tickets HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 62
 Host: localhost:8080
 
@@ -2802,7 +2802,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -2936,7 +2936,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 1007
 
 {
@@ -2948,7 +2948,7 @@ Content-Length: 1007
       "ticketId" : 3,
       "status" : "STUDY",
       "activeTime" : 0,
-      "startTime" : "2023-04-27T01:10:23.4942666",
+      "startTime" : "2023-05-11T11:24:20.7106581",
       "expired" : false,
       "study" : {
         "studyId" : 1,
@@ -2959,8 +2959,8 @@ Content-Length: 1007
       "ticketId" : 1,
       "status" : "STUDY",
       "activeTime" : 3600,
-      "startTime" : "2023-04-27T01:10:23.4942666",
-      "endTime" : "2023-04-27T02:10:23.4942666",
+      "startTime" : "2023-05-11T11:24:20.7106581",
+      "endTime" : "2023-05-11T12:24:20.7106581",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -2970,8 +2970,8 @@ Content-Length: 1007
       "ticketId" : 2,
       "status" : "STUDY",
       "activeTime" : 500,
-      "startTime" : "2023-04-27T01:10:23.4942666",
-      "endTime" : "2023-04-27T01:18:43.4942666",
+      "startTime" : "2023-05-11T11:24:20.7106581",
+      "endTime" : "2023-05-11T11:32:40.7106581",
       "expired" : true,
       "study" : {
         "studyId" : 1,
@@ -3148,7 +3148,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 259
 
 {
@@ -3157,7 +3157,7 @@ Content-Length: 259
     "ticketId" : 1,
     "status" : "STUDY",
     "activeTime" : 0,
-    "startTime" : "2023-04-27T01:10:23.5207513",
+    "startTime" : "2023-05-11T11:24:20.7336589",
     "expired" : false,
     "study" : {
       "studyId" : 1,
@@ -3277,7 +3277,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -3402,7 +3402,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 333
 
 {
@@ -3412,9 +3412,9 @@ Content-Length: 333
     "studyName" : "스터디",
     "memberCount" : 1,
     "records" : [ {
-      "date" : "2023-04-27",
-      "startTime" : "2023-04-27T00:10:26.9450747",
-      "endTime" : "2023-04-27T02:10:26.9450747",
+      "date" : "2023-05-11",
+      "startTime" : "2023-05-11T10:24:23.6956237",
+      "endTime" : "2023-05-11T12:24:23.6956237",
       "studyTime" : 0,
       "memberCount" : 1
     } ]
@@ -3587,7 +3587,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 1239
 
 {
@@ -3597,7 +3597,7 @@ Content-Length: 1239
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-27T01:10:21.9621428",
+    "createdAt" : "2023-05-11T11:24:19.2952335",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -3612,7 +3612,7 @@ Content-Length: 1239
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-27T01:10:21.9621428",
+      "createdAt" : "2023-05-11T11:24:19.2952335",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -3632,7 +3632,7 @@ Content-Length: 1239
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-27T01:10:21.9621428",
+      "createdAt" : "2023-05-11T11:24:19.2952335",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -3865,7 +3865,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 1133
 
 {
@@ -3875,7 +3875,7 @@ Content-Length: 1133
     "title" : "제목",
     "content" : "내용",
     "category" : "CHAT",
-    "createdAt" : "2023-04-27T01:10:21.8809723",
+    "createdAt" : "2023-05-11T11:24:19.2367095",
     "viewCount" : 1,
     "deleted" : false,
     "member" : {
@@ -3890,7 +3890,7 @@ Content-Length: 1133
       "headcount" : 30,
       "memberSize" : 0,
       "deleted" : false,
-      "createdAt" : "2023-04-27T01:10:21.8809723",
+      "createdAt" : "2023-05-11T11:24:19.2367095",
       "description" : "그룹 설명",
       "category" : "IT",
       "groupMembers" : [ ],
@@ -3910,7 +3910,7 @@ Content-Length: 1133
         "nickname" : "member",
         "deleted" : false
       },
-      "createdAt" : "2023-04-27T01:10:21.8809723",
+      "createdAt" : "2023-05-11T11:24:19.2367095",
       "postId" : 1,
       "deleted" : false
     } ]
@@ -4104,7 +4104,7 @@ Content-Length: 1133
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/posts HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 119
 Host: localhost:8080
 
@@ -4191,7 +4191,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -4241,7 +4241,7 @@ Content-Length: 37
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/posts/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 127
 Host: localhost:8080
 
@@ -4341,7 +4341,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -4425,7 +4425,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 49
 
 {
@@ -4475,7 +4475,7 @@ Content-Length: 49
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/posts/delete HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 22
 Host: localhost:8080
 
@@ -4526,7 +4526,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 50
 
 {
@@ -4581,7 +4581,7 @@ Content-Length: 50
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/comments HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 52
 Host: localhost:8080
 
@@ -4641,7 +4641,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -4754,7 +4754,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 430
 
 {
@@ -4768,7 +4768,7 @@ Content-Length: 430
       "nickname" : "member",
       "deleted" : false
     },
-    "createdAt" : "2023-04-27T01:10:18.4603869",
+    "createdAt" : "2023-05-11T11:24:16.1754305",
     "postId" : 1,
     "deleted" : false
   } ],
@@ -4856,7 +4856,7 @@ Content-Length: 430
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/comments/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 35
 Host: localhost:8080
 
@@ -4907,7 +4907,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -4991,7 +4991,7 @@ Host: localhost:8080</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 37
 
 {
@@ -5041,7 +5041,7 @@ Content-Length: 37
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/comments/delete HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 22
 Host: localhost:8080
 
@@ -5092,7 +5092,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 53
 
 {
