@@ -8,12 +8,13 @@ import org.springframework.data.repository.query.Param;
 import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.GroupMemberDto;
+import seong.onlinestudy.repository.querydsl.MemberRepositoryCustom;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     Optional<Member> findByUsername(String username);
 
     /**

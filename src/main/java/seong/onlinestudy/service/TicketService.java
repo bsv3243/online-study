@@ -2,6 +2,7 @@ package seong.onlinestudy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,25 +104,21 @@ public class TicketService {
         LocalDateTime startTime = request.getDate().atStartOfDay().plusHours(TimeConst.DAY_START);
         LocalDateTime endTime = startTime.plusDays(request.getDays());
 
-        List<Member> members;
-        if(request.getGroupId() != null) {
-            Group findGroup = groupRepository.findGroupWithMembers(request.getGroupId())
-                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹입니다."));
+        //특정 회원, 특정 그룹을 지정한 경우
+        if(request.getMemberId() != null || request.getGroupId() != null) {
+            startTime = null;
+            endTime = null;
+        }
 
-            members = findGroup.getGroupMembers().stream()
-                    .map(GroupMember::getMember).collect(Collectors.toList());
-        }
-        else if(request.getMemberId() != null) {
-            Member findMember = memberRepository.findById(request.getMemberId())
-                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+        Page<Member> members = memberRepository.findMembersOrderByStudyTime(
+                request.getMemberId(),
+                request.getGroupId(),
+                startTime,
+                endTime,
+                pageRequest);
 
-            members = List.of(findMember);
-        }
-        else {
-            PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
-            members = memberRepository.findMembersOrderByStudyTime(startTime, endTime, pageRequest).getContent();
-        }
-        return members;
+        return members.getContent();
     }
 
     private List<MemberTicketDto> joinMembersAndTickets(List<Member> members, List<Ticket> tickets) {

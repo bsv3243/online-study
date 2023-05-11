@@ -151,7 +151,7 @@ class TicketServiceTest {
     public void getTickets_NoDataWithoutCondition() {
         //given
         PageImpl<Member> membersPage = new PageImpl<>(testMembers);
-        given(memberRepository.findMembersOrderByStudyTime(any(), any(), any())).willReturn(membersPage);
+        given(memberRepository.findMembersOrderByStudyTime(any(), any(), any(), any(), any())).willReturn(membersPage);
 
         //when
         TicketGetRequest request = new TicketGetRequest();
@@ -180,7 +180,9 @@ class TicketServiceTest {
         List<Ticket> tickets = new ArrayList<>();
 
         given(ticketRepository.findTickets(anyList(), any(), any(), any(), any())).willReturn(tickets);
-        given(memberRepository.findById(any())).willReturn(Optional.of(testMember));
+
+        PageImpl<Member> testMembers = new PageImpl<>(List.of(testMember));
+        given(memberRepository.findMembersOrderByStudyTime(any(), any(), any(), any(), any())).willReturn(testMembers);
 
         //when
         TicketGetRequest request = new TicketGetRequest();
@@ -212,7 +214,7 @@ class TicketServiceTest {
         PageRequest pageRequest = PageRequest.of(0, testMembers.size());
         PageImpl<Member> testMembersPage = new PageImpl<>(testMembers);
 
-        given(memberRepository.findMembersOrderByStudyTime(any(), any(), any())).willReturn(testMembersPage);
+        given(memberRepository.findMembersOrderByStudyTime(any(), any(), any(), any(), any())).willReturn(testMembersPage);
         given(ticketRepository.findTickets(anyList(), any(), any(), any(), any())).willReturn(tickets);
 
         //when
@@ -257,7 +259,8 @@ class TicketServiceTest {
             testActiveTickets.add(studyTicket);
         }
 
-        given(groupRepository.findGroupWithMembers(any())).willReturn(Optional.of(testGroup));
+        PageImpl<Member> testMembers = new PageImpl<>(testMembersInGroup);
+        given(memberRepository.findMembersOrderByStudyTime(any(), any(), any(), any(), any())).willReturn(testMembers);
         given(ticketRepository.findTickets(anyList(), any(), any(), any(), any())).willReturn(testTicketsInGroup);
 
         //when
