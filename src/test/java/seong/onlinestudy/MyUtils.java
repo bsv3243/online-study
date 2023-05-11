@@ -220,12 +220,12 @@ public class MyUtils {
 
         Map<Member, Ticket> memberActiveTicket = new HashMap<>();
         for(int i=0; i<members.size()*4; i++) {
-            Member targetMember = members.get(random.nextInt(members.size()));
+            Member targetMember = members.get(i%members.size());
 
             Ticket ticket = createStudyTicket(
                     targetMember,
-                    groups.get(random.nextInt(groups.size())),
-                    studies.get(random.nextInt(studies.size()))
+                    groups.get(i%groups.size()),
+                    studies.get(i%studies.size())
             );
 
             if(setId) {
