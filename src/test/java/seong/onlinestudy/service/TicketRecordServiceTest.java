@@ -71,7 +71,7 @@ class TicketRecordServiceTest {
         RecordsGetRequest request = new RecordsGetRequest();
         request.setStartDate(LocalDate.now());
         request.setDays(1);
-        List<StudyRecordDto> studyRecords = ticketRecordService.getRecords(request, members.get(0).getId());
+        List<StudyRecordDto> studyRecords = ticketRecordService.getRecords(request);
 
         //then
         assertThat(studyRecords.size()).isEqualTo(studies.size());
@@ -110,7 +110,7 @@ class TicketRecordServiceTest {
         //when
         RecordsGetRequest request = new RecordsGetRequest();
         request.setStudyId(studies.get(0).getId());
-        List<StudyRecordDto> records = ticketRecordService.getRecords(request, members.get(0).getId());
+        List<StudyRecordDto> records = ticketRecordService.getRecords(request);
 
         //then
         assertThat(records).allSatisfy(studyRecordDto -> {
@@ -145,7 +145,7 @@ class TicketRecordServiceTest {
         //when
         RecordsGetRequest request = new RecordsGetRequest();
         request.setStudyId(groups.get(0).getId());
-        List<StudyRecordDto> records = ticketRecordService.getRecords(request, members.get(0).getId());
+        List<StudyRecordDto> records = ticketRecordService.getRecords(request);
 
         //then
         List<Long> testTargetStudyIds = tickets.stream()
