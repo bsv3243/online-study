@@ -23,6 +23,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Member;
 import seong.onlinestudy.dto.MemberDto;
+import seong.onlinestudy.exception.InvalidSessionException;
 import seong.onlinestudy.request.member.MemberCreateRequest;
 import seong.onlinestudy.request.member.MemberDuplicateCheckRequest;
 import seong.onlinestudy.request.member.MemberUpdateRequest;
@@ -30,6 +31,7 @@ import seong.onlinestudy.service.MemberService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -133,6 +135,31 @@ class MemberControllerTest {
                 .andDo(print());
 
         //then
+    }
+
+    @Test
+    void updateMember_유효하지않은세션() throws Exception {
+        //given
+        Long testMemberId = 1L;
+        MemberUpdateRequest request = new MemberUpdateRequest();
+        request.setNickname("nickname");
+        request.setPasswordOld("passwordOld123!");
+        request.setPasswordNew("passwordNew123!");
+        request.setPasswordNewCheck("passwordNew123!");
+
+        given(memberService.updateMember(anyLong(), any())).willReturn(testMemberId);
+
+        //when
+        ResultActions result = mvc.perform(patch("/api/v1/members/{memberId}", testMemberId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)));
+
+        //then
+        result
+                .andExpect(status().isUnauthorized())
+                .andExpect(rs -> assertThat(rs.getResolvedException())
+                        .isInstanceOf(InvalidSessionException.class))
+                .andDo(print());
     }
 
     @Test

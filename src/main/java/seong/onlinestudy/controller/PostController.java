@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.argumentresolver.Login;
 import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.dto.PostDto;
@@ -36,10 +37,7 @@ public class PostController {
     @PostMapping("/posts")
     @ResponseStatus(HttpStatus.CREATED)
     public Result<Long> createPost(@RequestBody @Valid PostCreateRequest request,
-                                   @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
+                                   @Login Long memberId) {
         Long postId = postService.createPost(request, memberId);
 
         return new Result<>("201", postId);
@@ -55,33 +53,24 @@ public class PostController {
     @PatchMapping("/posts/{postId}")
     public Result<Long> updatePost(@PathVariable("postId") Long postId,
                                    @RequestBody @Valid PostUpdateRequest request,
-                                   @SessionAttribute(value = LOGIN_MEMBER, required = false) Long loginMemberId) {
-        if(loginMemberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-        Long updatePostId = postService.updatePost(postId, request, loginMemberId);
+                                   @Login Long memberId) {
+        Long updatePostId = postService.updatePost(postId, request, memberId);
 
         return new Result<>("200", updatePostId);
     }
 
     @DeleteMapping("/posts/{postId}")
     public Result<String> deletePost(@PathVariable("postId") Long postId,
-                                   @SessionAttribute(value = LOGIN_MEMBER, required = false) Long loginMemberId) {
-        if(loginMemberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-        postService.deletePost(postId, loginMemberId);
+                                   @Login Long memberId) {
+        postService.deletePost(postId, memberId);
 
         return new Result<>("200", "delete post");
     }
 
     @PostMapping("/posts/delete")
     public Result<String> deletePosts(@RequestBody @Valid PostsDeleteRequest request,
-                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Long loginMemberId) {
-        if(loginMemberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-        postService.deletePosts(request, loginMemberId);
+                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
+        postService.deletePosts(request, memberId);
 
         return new Result<>("200", "delete Posts");
     }

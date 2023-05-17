@@ -127,23 +127,18 @@ class GroupControllerTest {
         groupRequest.setHeadcount(30);
         groupRequest.setCategory(GroupCategory.ETC);
 
-        session.setAttribute(LOGIN_MEMBER, null);
-
         given(groupService.createGroup(any(), any())).willReturn(1L);
 
         //when
-        MvcResult mvcResult = mvc.perform(post("/api/v1/groups")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(groupRequest)))
-                .andExpect(rs -> assertThat(rs.getResolvedException())
-                        .isInstanceOf(InvalidSessionException.class))
-                .andDo(print())
-                .andReturn();
+        ResultActions result = mvc.perform(post("/api/v1/groups")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(groupRequest)));
 
         //then
-//        result
-//                .andExpect(rs -> assertThat(rs.getResolvedException())
-//                        .isInstanceOf(InvalidSessionException.class));
+        result
+                .andExpect(rs -> assertThat(rs.getResolvedException()).isInstanceOf(InvalidSessionException.class))
+                .andDo(print())
+                .andReturn();
     }
 
     @Test

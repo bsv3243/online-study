@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.argumentresolver.Login;
 import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.dto.GroupDto;
@@ -30,11 +31,7 @@ public class GroupController {
     @PostMapping("/groups")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Result<Long> createGroup(@RequestBody @Valid GroupCreateRequest createRequest,
-                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                    @Login Long memberId) {
         Long groupId = groupService.createGroup(createRequest, memberId);
 
         return new Result<>("201", groupId);
@@ -43,11 +40,7 @@ public class GroupController {
     @PostMapping("/groups/{groupId}/join")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Result<Long> joinGroup(@PathVariable Long groupId,
-                          @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                          @Login Long memberId) {
         Long joinedGroupId = groupService.joinGroup(groupId, memberId);
 
         return new Result<>("201", joinedGroupId);
@@ -55,11 +48,7 @@ public class GroupController {
 
     @PostMapping("/groups/{groupId}/quit")
     public Result<String> quitGroup(@PathVariable Long groupId,
-                                  @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                  @Login Long memberId) {
         groupService.quitGroup(groupId, memberId);
 
         return new Result<>("200", "ok");
@@ -81,10 +70,7 @@ public class GroupController {
 
     @DeleteMapping("/groups/{id}")
     public Result<String> deleteGroup(@PathVariable Long id,
-                                      @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
+                                      @Login Long memberId) {
         groupService.deleteGroup(id, memberId);
 
         return new Result<>("200", "deleted");
@@ -93,11 +79,7 @@ public class GroupController {
     @PostMapping("/groups/{id}")
     public Result<Long> updateGroup(@PathVariable Long id,
                                     @RequestBody @Valid GroupUpdateRequest request,
-                                    @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                    @Login Long memberId) {
         Long groupId = groupService.updateGroup(id, request, memberId);
 
         return new Result<>("200", groupId);
@@ -105,11 +87,7 @@ public class GroupController {
 
     @PostMapping("/groups/delete")
     public Result<String> deleteGroups(@RequestBody @Valid GroupsDeleteRequest request,
-                                       @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                       @Login Long memberId) {
         groupService.deleteGroups(request, memberId);
 
         return new Result<>("200", "delete groups");
@@ -117,11 +95,7 @@ public class GroupController {
 
     @PostMapping("/groups/quit")
     public Result<String> quitGroups(@RequestBody @Valid GroupsDeleteRequest request,
-                                     @SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId) {
-        if(memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                     @Login Long memberId) {
         groupService.quitGroups(request, memberId);
 
         return new Result<>("200", "quit groups");
