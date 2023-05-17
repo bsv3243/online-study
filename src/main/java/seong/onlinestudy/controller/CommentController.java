@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import seong.onlinestudy.argumentresolver.Login;
 import seong.onlinestudy.controller.response.PageResult;
 import seong.onlinestudy.controller.response.Result;
 import seong.onlinestudy.dto.CommentDto;
@@ -30,11 +31,7 @@ public class CommentController {
     @PostMapping("/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public Result<Long> createComment(@RequestBody @Valid CommentCreateRequest request,
-                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
-        if (memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                      @Login Long memberId) {
         Long commentId = commentService.createComment(request, memberId);
 
         return new Result<>("201", commentId);
@@ -49,11 +46,7 @@ public class CommentController {
 
     @PatchMapping("/comments/{commentId}")
     public Result<Long> updateComment(@PathVariable("commentId") Long commentId, @RequestBody @Valid CommentUpdateRequest request,
-                                      @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
-        if (memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                      @Login Long memberId) {
         Long updateCommentId = commentService.updateComment(commentId, request, memberId);
 
         return new Result<>("200", updateCommentId);
@@ -61,11 +54,7 @@ public class CommentController {
 
     @DeleteMapping("/comments/{commentId}")
     public Result<Long> deleteComment(@PathVariable("commentId") Long commentId,
-                                        @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
-        if (memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                        @Login Long memberId) {
         Long deleteCommentId = commentService.deleteComment(commentId, memberId);
 
         return new Result<>("200", deleteCommentId);
@@ -73,11 +62,7 @@ public class CommentController {
 
     @PostMapping("/comments/delete")
     public Result<String> deleteComments(@RequestBody @Valid CommentsDeleteRequest request,
-                                         @SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
-        if (memberId == null) {
-            throw new InvalidSessionException("세션 정보가 유효하지 않습니다.");
-        }
-
+                                         @Login Long memberId) {
         commentService.deleteComments(request, memberId);
 
         return new Result<>("200", "delete comments");
