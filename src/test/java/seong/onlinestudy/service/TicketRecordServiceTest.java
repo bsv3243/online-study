@@ -88,6 +88,10 @@ class TicketRecordServiceTest {
 
         assertThat(studyRecordDtos).allSatisfy(studyRecordDto -> {
             RecordDto recordDto = studyRecordDto.getRecords().get(request.getDays()-1);
+
+            LocalDate recordDtoDate = recordDto.getDate();
+            assertThat(recordDtoDate).isEqualTo(request.getStartDate());
+
             if (studyRecordDto.getStudyName().equals(studyA.getName())) {
                 assertThat(recordDto.getStudyTime()).isEqualTo(ticketPublishCount.get(studyA) * members.size() * 3600);
 
@@ -149,9 +153,14 @@ class TicketRecordServiceTest {
 
         assertThat(studyRecordDtos).allSatisfy(studyRecordDto -> {
             assertThat(studyRecordDto.getMemberCount()).isEqualTo(members.size());
+            assertThat(studyRecordDto.getRecords().size()).isEqualTo(request.getDays());
 
             assertThat(studyRecordDto.getRecords()).allSatisfy(recordDto -> {
-                if(recordDto.getDate().equals(LocalDate.now())) {  //현재 테스트 데이터는 LocalDate.now()만 이용하였음
+                LocalDate recordDtoDate = recordDto.getDate();
+                assertThat(recordDtoDate).isAfterOrEqualTo(request.getStartDate());
+                assertThat(recordDtoDate).isBeforeOrEqualTo(request.getStartDate().plusDays(request.getDays()));
+
+                if(recordDto.getDate().equals(LocalDate.now())) {  //현재 테스트 데이터의 date 는 LocalDate.now()만 이용하였음
                     if (studyRecordDto.getStudyName().equals(studyA.getName())) {
                         assertThat(recordDto.getStudyTime())
                                 .isEqualTo(ticketPublishCount.get(studyA) * members.size() * 3600);
