@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import seong.onlinestudy.constant.SessionConst;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.repository.GroupRepository;
@@ -130,7 +131,7 @@ public class TicketRecordApiTest {
 
         //when
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("LOGIN_MEMBER", members.get(0));
+        session.setAttribute(SessionConst.LOGIN_MEMBER, members.get(0).getId());
         ResultActions resultActions = mvc.perform(get("/api/v1/records")
                 .params(request)
                 .session(session));
