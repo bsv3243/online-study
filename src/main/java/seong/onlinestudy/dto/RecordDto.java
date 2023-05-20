@@ -25,13 +25,21 @@ public class RecordDto {
     @JsonIgnore
     private Set<Member> memberCounter = new HashSet<>();
 
-    public void compareStartAndEndTime(Ticket ticket) {
-        if(startTime.isAfter(ticket.getStartTime())) {
-            startTime = ticket.getStartTime();
+    public void changeFirstStartTimeAndLastEndTime(Ticket ticket) {
+        if(isFirstInput()) {
+            setStartAndEndTime(ticket);
+        } else {
+            if (startTime.isAfter(ticket.getStartTime())) {
+                startTime = ticket.getStartTime();
+            }
+            if (ticket.isExpired() && endTime.isBefore(ticket.getTicketRecord().getExpiredTime())) {
+                endTime = ticket.getTicketRecord().getExpiredTime();
+            }
         }
-        if(ticket.isExpired() && endTime.isBefore(ticket.getTicketRecord().getExpiredTime())) {
-            endTime = ticket.getTicketRecord().getExpiredTime();
-        }
+    }
+
+    private boolean isFirstInput() {
+        return startTime == null && endTime == null;
     }
 
     public void setStartAndEndTime(Ticket ticket) {
@@ -66,6 +74,7 @@ public class RecordDto {
         RecordDto recordDto = new RecordDto();
         recordDto.date = date;
         recordDto.memberCount = 0;
+        recordDto.studyTime = 0;
         return recordDto;
     }
 
