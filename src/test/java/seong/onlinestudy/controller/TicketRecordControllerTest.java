@@ -94,7 +94,7 @@ class TicketRecordControllerTest {
 
         StudyRecordDto studyRecord = createStudyRecordDto(record);
 
-        given(ticketRecordService.getRecords(any(), any())).willReturn(List.of(studyRecord));
+        given(ticketRecordService.getRecords(any())).willReturn(List.of(studyRecord));
 
         //when
         ResultActions resultActions = mvc.perform(get("/api/v1/records")

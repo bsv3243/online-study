@@ -11,6 +11,7 @@ import seong.onlinestudy.request.member.MemberCreateRequest;
 import seong.onlinestudy.request.post.PostCreateRequest;
 import seong.onlinestudy.request.study.StudyCreateRequest;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -215,6 +216,7 @@ public class MyUtils {
         }
     }
 
+
     public static List<Ticket> createStudyTickets(List<Member> members, List<Group> groups, List<Study> studies, boolean setId) {
         List<Ticket> tickets = new ArrayList<>();
 
@@ -258,32 +260,6 @@ public class MyUtils {
         }
         return tickets;
     }
-
-    public static List<Ticket> createStudyTickets(TicketStatus status, List<Member> members, List<Group> groups,
-                                                  List<Study> studies, boolean setId) {
-        List<Ticket> tickets = new ArrayList<>();
-        for(int i=0; i<members.size(); i++) {
-            Ticket ticket = createStudyTicket(members.get(i), groups.get(i % groups.size()), studies.get(i % studies.size()));
-            tickets.add(ticket);
-            setField(ticket, "id", (long)i);
-        }
-        return tickets;
-    }
-
-    public static List<Ticket> createEndTickets(List<Member> members, List<Group> groups, List<Study> studies, long studyTime) {
-        List<Ticket> tickets = new ArrayList<>();
-        for(int i=0; i<members.size(); i++) {
-            Ticket ticket = createStudyTicket(members.get(i), groups.get(i % groups.size()), studies.get(i % studies.size()));
-            tickets.add(ticket);
-        }
-        for (Ticket ticket : tickets) {
-            setField(ticket, "expired", true);
-            setField(ticket.getTicketRecord(), "expiredTime", ticket.getStartTime().plusSeconds(studyTime));
-            setField(ticket.getTicketRecord(), "activeTime", studyTime);
-        }
-        return tickets;
-    }
-
 
     public static void expireTickets(List<Ticket> tickets) {
         for (Ticket ticket : tickets) {

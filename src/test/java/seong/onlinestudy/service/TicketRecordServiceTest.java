@@ -1,22 +1,24 @@
 package seong.onlinestudy.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.RecordDto;
 import seong.onlinestudy.dto.StudyRecordDto;
 import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.repository.TicketRepository;
 import seong.onlinestudy.request.record.RecordsGetRequest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,129 +36,156 @@ class TicketRecordServiceTest {
     @Mock
     TicketRepository ticketRepository;
 
-    List<Member> members;
-    List<Group> groups;
-    List<Study> studies;
-
-    List<Ticket> tickets;
-    List<StudyTicket> studyTickets;
-
-    @BeforeEach
-    void init() {
-        members = createMembers(50, true);
-        groups = createGroups(members, 10, true);
-        studies = createStudies(10, true);
-
-        joinMembersToGroups(members, groups);
-
-        tickets = createStudyTickets(members, groups, studies, true);
-        studyTickets = tickets.stream().map(ticket -> (StudyTicket) ticket).collect(Collectors.toList());
-
-        for (StudyTicket studyTicket : studyTickets) {
-            if(studyTicket.isExpired()) {
-                setField(studyTicket.getTicketRecord(), "activeTime", 1000L);
-                setField(studyTicket.getTicketRecord(), "expiredTime", studyTicket.getStartTime().plusSeconds(1000));
-            }
+    @Test
+    public void getRecords_day1() {
+        //given
+        List<Member> members = createMembers(5);
+        Group group = createGroup("group", 30, members.get(0));
+        for(int i=1; i<members.size(); i++) {
+            group.addGroupMember(GroupMember.createGroupMember(members.get(i), GroupRole.USER));
         }
-    }
+        Study studyA = createStudy("studyA");
+        Study studyB = createStudy("studyB");
+        List<Study> studies = List.of(studyA, studyB);
 
-    @Test
-    @DisplayName("공부 기록 목록 조회_조건 없음")
-    @Disabled("로컬 빌드시 통과, 젠킨스 빌드시 통과하지 못함. 수정 필요")
-    void getRecords_조건없음() {
-        //given
-        given(ticketRepository.findStudyTickets((Long)isNull(), any(), any(), any(), any())).willReturn(studyTickets);
+        Map<Study, Long> ticketPublishCount = new HashMap<>();
+        ticketPublishCount.put(studyA, 3L);
+        ticketPublishCount.put(studyB, 2L);
 
-        //when
-        RecordsGetRequest request = new RecordsGetRequest();
-        request.setStartDate(LocalDate.now());
-        request.setDays(1);
-        List<StudyRecordDto> studyRecords = ticketRecordService.getRecords(request, members.get(0).getId());
-
-        //then
-        assertThat(studyRecords.size()).isEqualTo(studies.size());
-        assertThat(studyRecords).allSatisfy(studyRecordDto -> {
-            long testStudyTime = getTargetStudyTime(studyTickets, studyRecordDto.getStudyId());
-
-            assertThat(studyRecordDto.getMemberCount()).isGreaterThan(0);
-            assertThat(studyRecordDto.getRecords()).allSatisfy(recordDto -> {
-                assertThat(recordDto.getStudyTime()).isEqualTo(testStudyTime);
-            });
-        });
-    }
-
-    private long getTargetStudyTime(List<StudyTicket> studyTickets, Long studyId) {
-        List<StudyTicket> targetTestStudyTickets = studyTickets.stream()
-                .filter(studyTicket -> studyTicket.getStudy().getId().equals(studyId))
-                .collect(Collectors.toList());
-
-        long testStudyTime = 0;
-        for (StudyTicket targetTestStudyTicket : targetTestStudyTickets) {
-            if(targetTestStudyTicket.isExpired()) {
-                testStudyTime += targetTestStudyTicket.getTicketRecord().getActiveTime();
-            }
-        }
-        return testStudyTime;
-    }
-
-    @Test
-    @DisplayName("공부 기록 목록 조회_스터디 조건")
-    void getRecords_스터디조건() {
-        //given
-
-        given(ticketRepository.findStudyTickets((Long) isNull(), any(), any(), any(), any()))
-                .willReturn(studyTickets);
-
-        //when
-        RecordsGetRequest request = new RecordsGetRequest();
-        request.setStudyId(studies.get(0).getId());
-        List<StudyRecordDto> records = ticketRecordService.getRecords(request, members.get(0).getId());
-
-        //then
-        assertThat(records).allSatisfy(studyRecordDto -> {
-            assertThat(studyRecordDto.getStudyId()).isNotNull();
-            assertThat(studyRecordDto.getStudyName()).isNotNull();
-            assertThat(studyRecordDto.getMemberCount()).isGreaterThan(0);
-        });
-    }
-
-    @Test
-    @DisplayName("공부 기록 목록 조회_그룹 조건")
-    void getRecords_그룹조건() {
-        //given
-        List<Member> members = createMembers(50, true);
-        List<Group> groups = createGroups(members, 10, true);
-        List<Study> studies = createStudies(10, true);
         List<StudyTicket> tickets = new ArrayList<>();
+        for (Member member : members) {
+            LocalDateTime startTime = LocalDateTime.now().minusHours(5);
+            for(int i=0; i<ticketPublishCount.get(studyA); i++) {
+                StudyTicket studyTicket = createExpiredStudyTicket(member, group, studyA, startTime.plusHours(1), 1);
 
-        for(int i=groups.size(); i<members.size(); i++) {
-            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
-        }
-        for(int i=0; i<50; i++) {
-            Ticket ticket = createStudyTicket(members.get(i),
-                    groups.get(i % groups.size()), studies.get(i % studies.size()));
-            setField(ticket, "id", (long) i);
-            tickets.add((StudyTicket) ticket);
+                tickets.add(studyTicket);
+            }
+
+            for(int i=0; i<ticketPublishCount.get(studyB); i++) {
+                StudyTicket studyTicket = createExpiredStudyTicket(member, group, studyB, startTime.plusHours(1), 1);
+
+                tickets.add(studyTicket);
+            }
         }
 
-        given(ticketRepository.findStudyTickets((Long)isNull(), any(), any(), any(), any()))
+        given(ticketRepository.findStudyTickets(any(), any(), any(), any(), any()))
                 .willReturn(tickets);
 
         //when
         RecordsGetRequest request = new RecordsGetRequest();
-        request.setStudyId(groups.get(0).getId());
-        List<StudyRecordDto> records = ticketRecordService.getRecords(request, members.get(0).getId());
+        request.setDays(1);
+        request.setStartDate(LocalDate.now());
+
+        List<StudyRecordDto> studyRecordDtos = ticketRecordService.getRecords(request);
 
         //then
-        List<Long> testTargetStudyIds = tickets.stream()
-                .map(studyTicket -> studyTicket.getStudy().getId())
-                .distinct()
-                .collect(Collectors.toList());
+        assertThat(studyRecordDtos.size()).isEqualTo(2);
 
-        List<Long> findStudyIds = records.stream()
-                .map(StudyRecordDto::getStudyId)
+        List<String> studyNames = studyRecordDtos.stream()
+                .map(StudyRecordDto::getStudyName)
                 .collect(Collectors.toList());
+        assertThat(studyNames).containsExactlyInAnyOrderElementsOf(List.of(studyA.getName(), studyB.getName()));
 
-        assertThat(findStudyIds).containsAnyElementsOf(testTargetStudyIds);
+        assertThat(studyRecordDtos).allSatisfy(studyRecordDto -> {
+            RecordDto recordDto = studyRecordDto.getRecords().get(request.getDays()-1);
+
+            LocalDate recordDtoDate = recordDto.getDate();
+            assertThat(recordDtoDate).isEqualTo(request.getStartDate());
+
+            if (studyRecordDto.getStudyName().equals(studyA.getName())) {
+                assertThat(recordDto.getStudyTime()).isEqualTo(ticketPublishCount.get(studyA) * members.size() * 3600);
+
+            } else if (studyRecordDto.getStudyName().equals(studyB.getName())) {
+                assertThat(recordDto.getStudyTime()).isEqualTo(ticketPublishCount.get(studyB) * members.size() * 3600);
+            }
+        });
+    }
+
+    @Test
+    public void getRecords_day7() {
+        //given
+        List<Member> members = createMembers(5);
+        Group group = createGroup("group", 30, members.get(0));
+        for(int i=1; i<members.size(); i++) {
+            group.addGroupMember(GroupMember.createGroupMember(members.get(i), GroupRole.USER));
+        }
+        Study studyA = createStudy("studyA");
+        Study studyB = createStudy("studyB");
+        List<Study> studies = List.of(studyA, studyB);
+
+        Map<Study, Long> ticketPublishCount = new HashMap<>();
+        ticketPublishCount.put(studyA, 3L);
+        ticketPublishCount.put(studyB, 2L);
+
+        List<StudyTicket> tickets = new ArrayList<>();
+        for (Member member : members) {
+            LocalDateTime startTime = LocalDateTime.now().minusHours(5);
+            for(int i=0; i<ticketPublishCount.get(studyA); i++) {
+                StudyTicket studyTicket = createExpiredStudyTicket(member, group, studyA, startTime.plusHours(1), 1);
+
+                tickets.add(studyTicket);
+            }
+
+            for(int i=0; i<ticketPublishCount.get(studyB); i++) {
+                StudyTicket studyTicket = createExpiredStudyTicket(member, group, studyB, startTime.plusHours(1), 1);
+
+                tickets.add(studyTicket);
+            }
+        }
+
+        given(ticketRepository.findStudyTickets(any(), any(), any(), any(), any()))
+                .willReturn(tickets);
+
+        //when
+        RecordsGetRequest request = new RecordsGetRequest();
+        request.setDays(7);
+        request.setStartDate(LocalDate.now().minusDays(6));
+
+        List<StudyRecordDto> studyRecordDtos = ticketRecordService.getRecords(request);
+
+        //then
+        assertThat(studyRecordDtos.size()).isEqualTo(2);
+
+        List<String> studyNames = studyRecordDtos.stream()
+                .map(StudyRecordDto::getStudyName)
+                .collect(Collectors.toList());
+        assertThat(studyNames).containsExactlyInAnyOrderElementsOf(List.of(studyA.getName(), studyB.getName()));
+
+        assertThat(studyRecordDtos).allSatisfy(studyRecordDto -> {
+            assertThat(studyRecordDto.getMemberCount()).isEqualTo(members.size());
+            assertThat(studyRecordDto.getRecords().size()).isEqualTo(request.getDays());
+
+            assertThat(studyRecordDto.getRecords()).allSatisfy(recordDto -> {
+                LocalDate recordDtoDate = recordDto.getDate();
+                assertThat(recordDtoDate).isAfterOrEqualTo(request.getStartDate());
+                assertThat(recordDtoDate).isBeforeOrEqualTo(request.getStartDate().plusDays(request.getDays()));
+
+                if(recordDto.getDate().equals(LocalDate.now())) {  //현재 테스트 데이터의 date 는 LocalDate.now()만 이용하였음
+                    if (studyRecordDto.getStudyName().equals(studyA.getName())) {
+                        assertThat(recordDto.getStudyTime())
+                                .isEqualTo(ticketPublishCount.get(studyA) * members.size() * 3600);
+
+                    } else if (studyRecordDto.getStudyName().equals(studyB.getName())) {
+                        assertThat(recordDto.getStudyTime())
+                                .isEqualTo(ticketPublishCount.get(studyB) * members.size() * 3600);
+                    }
+                } else {
+                    assertThat(recordDto.getStartTime()).isNull();
+                    assertThat(recordDto.getEndTime()).isNull();
+                    assertThat(recordDto.getStudyTime()).isEqualTo(0);
+                    assertThat(recordDto.getMemberCount()).isEqualTo(0);
+                }
+            });
+        });
+
+    }
+
+    private StudyTicket createExpiredStudyTicket(Member member, Group group, Study studyA, LocalDateTime startTime, int hour) {
+        StudyTicket studyTicket = (StudyTicket) StudyTicket.createStudyTicket(member, group, studyA);
+        studyTicket.expireAndCreateRecord();
+        ReflectionTestUtils.setField(studyTicket, "startTime", startTime);
+        ReflectionTestUtils.setField(studyTicket.getTicketRecord(), "expiredTime", startTime.plusHours(hour));
+        ReflectionTestUtils.setField(studyTicket.getTicketRecord(), "activeTime", hour*3600);
+        return studyTicket;
     }
 }
