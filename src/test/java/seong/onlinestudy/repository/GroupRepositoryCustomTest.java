@@ -10,11 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
+import seong.onlinestudy.dto.GroupDto;
 import seong.onlinestudy.enumtype.GroupCategory;
+import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.enumtype.OrderBy;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -184,5 +187,70 @@ class GroupRepositoryCustomTest {
                 .map(GroupMember::getGroup).collect(Collectors.toList());
 
         assertThat(findGroups).containsExactlyInAnyOrderElementsOf(testGroups);
+    }
+
+    @Test
+    public void findGroupsAndMapToGroupDto_조건없음() {
+        //given
+        ticketRepository.deleteAll();
+        studyRepository.deleteAll();
+        groupRepository.deleteAll();
+        memberRepository.deleteAll();
+
+        List<Member> members = createMembers(20);
+        Group testGroupA = createGroup("groupA", 30, members.get(0));
+        Group testGroupB = createGroup("groupB", 30, members.get(10));
+        List<Group> groups = List.of(testGroupA, testGroupB);
+
+        for(int i=1; i<10; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            testGroupA.addGroupMember(groupMember);
+        }
+        for(int i=11; i<20; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            testGroupB.addGroupMember(groupMember);
+        }
+
+        List<Study> studies = createStudies(3);
+
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(List.of(testGroupA, testGroupB));
+        studyRepository.saveAll(studies);
+
+        List<Ticket> tickets = new ArrayList<>();
+        LocalDateTime startTime = LocalDateTime.now();
+        for(int i=0; i<30; i++) {
+            Member member = members.get(i % members.size());
+            StudyTicket ticket = createStudyTicketRecord(member, testGroupA, studies.get(i % studies.size()), startTime, 1);
+            tickets.add(ticket);
+
+            startTime = startTime.plusMinutes(i);
+        }
+        for(int i=0; i<5; i++) {
+            Member member = members.get(i % members.size());
+            StudyTicket ticket = createStudyTicketRecord(member, testGroupA, studies.get(i % studies.size()), startTime, 1);
+            tickets.add(ticket);
+
+            startTime = startTime.plusMinutes(i);
+        }
+        ticketRepository.saveAll(tickets);
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<GroupDto> groupDtosWithPage = groupRepository.findGroupsAndMapToGroupDto(
+                null,
+                null,
+                null,
+                null,
+                OrderBy.CREATEDAT,
+                pageRequest);
+
+        //then
+        List<GroupDto> groupDtos = groupDtosWithPage.getContent();
+        assertThat(groupDtos.size()).isEqualTo(groups.size());
+        assertThat(groupDtos).allSatisfy(groupDto -> {
+            assertThat(groupDto.getMemberSize()).isEqualTo(10);
+        });
+
     }
 }
