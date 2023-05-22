@@ -180,6 +180,20 @@ public class StudyRepositoryCustomTest {
         });
     }
 
+    @Test
+    public void findGroupStudiesInGroupIds() {
+        //given
+        Group testGroup = groups.get(0);
+
+        //when
+        List<GroupStudyDto> findGroupStudyDtos = studyRepository.findGroupStudiesInGroupIds(List.of(testGroup.getId()));
+
+        //then
+        assertThat(findGroupStudyDtos).allSatisfy(groupStudyDto -> {
+            assertThat(groupStudyDto.getGroupId()).isEqualTo(testGroup.getId());
+        });
+    }
+
     private List<Study> getStudiesInGroup(Group testGroup) {
         List<Ticket> testStudyTickets = testGroup.getTickets().stream().filter(ticket -> {
             return ticket instanceof StudyTicket;

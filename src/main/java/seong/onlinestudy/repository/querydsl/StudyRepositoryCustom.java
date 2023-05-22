@@ -13,5 +13,7 @@ public interface StudyRepositoryCustom {
 
     List<GroupStudyDto> findStudiesInGroups(List<Group> groups);
 
+    List<GroupStudyDto> findGroupStudiesInGroupIds(List<Long> groupIds);
+
     Page<Study> findStudies(Long memberId, Long groupId, String search, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 }
