@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.Group;
 import seong.onlinestudy.domain.GroupMember;
+import seong.onlinestudy.dto.GroupMemberDto;
 import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.domain.Member;
 
@@ -88,5 +89,36 @@ class GroupMemberRepositoryTest {
 
             assertThat(findMemberIds).doesNotContain(testMember.getId());
         });
+    }
+
+    @Test
+    public void findGroupMastersInGroupIds() {
+        //given
+        List<Member> members = createMembers(10);
+        List<Group> groups = createGroups(members, 2);
+        for(int i=2; i<6; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            groups.get(0).addGroupMember(groupMember);
+        }
+        for(int i=6; i<10; i++) {
+            GroupMember groupMember = GroupMember.createGroupMember(members.get(i), GroupRole.USER);
+            groups.get(1).addGroupMember(groupMember);
+        }
+        memberRepository.saveAll(members);
+        groupRepository.saveAll(groups);
+
+        //when
+        List<Long> groupIds = groups.stream().map(Group::getId).collect(Collectors.toList());
+        List<GroupMemberDto> groupMasters = groupMemberRepository.findGroupMastersInGroupIds(groupIds);
+
+        //then
+        List<Long> masterMemberIds = groupMasters.stream()
+                .map(GroupMemberDto::getMemberId)
+                .collect(Collectors.toList());
+        List<Long> testMemberIds = members.subList(0, 2).stream()
+                .map(Member::getId)
+                .collect(Collectors.toList());
+        assertThat(masterMemberIds).containsExactlyInAnyOrderElementsOf(testMemberIds);
+
     }
 }
