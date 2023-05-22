@@ -80,28 +80,35 @@ public class GroupService {
                 .findGroupMastersInGroupIds(groupIds);
 
         groupDtos.map(groupDto -> {
-            Iterator<GroupStudyDto> studyIter = groupStudies.iterator();
-            while (studyIter.hasNext()) {
-                GroupStudyDto study = studyIter.next();
-                if (study.getGroupId().equals(groupDto.getGroupId())) {
-                    groupDto.getStudies().add(study);
-                    studyIter.remove();
-                }
-            }
-
-            Iterator<GroupMemberDto> memberIter = groupMemberDtosRoleIsMaster.iterator();
-            while (memberIter.hasNext()) {
-                GroupMemberDto member = memberIter.next();
-                if (member.getGroupId().equals(groupDto.getGroupId())) {
-                    groupDto.getGroupMembers().add(member);
-                    memberIter.remove();
-                }
-            }
+            addMatchedStudiesToGroup(groupDto, groupStudies);
+            setMatchedMasterToGroup(groupDto, groupMemberDtosRoleIsMaster);
 
             return groupDto;
         });
 
         return groupDtos;
+    }
+
+    private void addMatchedStudiesToGroup(GroupDto groupDto, List<GroupStudyDto> groupStudies) {
+        Iterator<GroupStudyDto> studyIter = groupStudies.iterator();
+        while (studyIter.hasNext()) {
+            GroupStudyDto study = studyIter.next();
+            if (study.getGroupId().equals(groupDto.getGroupId())) {
+                groupDto.getStudies().add(study);
+                studyIter.remove();
+            }
+        }
+    }
+
+    private void setMatchedMasterToGroup(GroupDto groupDto, List<GroupMemberDto> groupMasters) {
+        Iterator<GroupMemberDto> memberIter = groupMasters.iterator();
+        while (memberIter.hasNext()) {
+            GroupMemberDto member = memberIter.next();
+            if (member.getGroupId().equals(groupDto.getGroupId())) {
+                groupDto.getGroupMembers().add(member);
+                memberIter.remove();
+            }
+        }
     }
 
     public GroupDto getGroup(Long id) {
