@@ -13,7 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import seong.onlinestudy.MyUtils;
 import seong.onlinestudy.domain.*;
 import seong.onlinestudy.dto.GroupDto;
+import seong.onlinestudy.dto.GroupMemberDto;
 import seong.onlinestudy.dto.GroupStudyDto;
+import seong.onlinestudy.enumtype.GroupCategory;
 import seong.onlinestudy.enumtype.GroupRole;
 import seong.onlinestudy.exception.PermissionControlException;
 import seong.onlinestudy.repository.GroupMemberRepository;
@@ -25,6 +27,8 @@ import seong.onlinestudy.request.group.GroupUpdateRequest;
 import seong.onlinestudy.request.group.GroupsGetRequest;
 import seong.onlinestudy.request.member.MemberCreateRequest;
 
+import java.sql.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -145,50 +149,54 @@ class GroupServiceTest {
     @DisplayName("그룹 조회")
     void 그룹조회() {
         //given
-
-
         GroupsGetRequest request = new GroupsGetRequest();
         request.setPage(0); request.setSize(10);
 
-        List<Member> testMembers = createMembers(20, true);
-        List<Group> testGroups = createGroups(testMembers, 3, true);
+        GroupDto groupA = new GroupDto(1L, "groupA", 30, 10, false,
+                LocalDateTime.now(), "", GroupCategory.IT);
+        GroupDto groupB = new GroupDto(2L, "groupB", 30, 5, false,
+                LocalDateTime.now(), "", GroupCategory.IT);
+        List<GroupDto> testGroups = new ArrayList<>(List.of(groupA, groupB));
 
-        List<GroupMember> testGroupMasters = testGroups.stream()
-                .map(group -> group.getGroupMembers().get(0))
-                .collect(Collectors.toList());
+        Member memberA = createMember("memberA", "member123!");
+        Member memberB = createMember("memberB", "member123!");
+        List<Member> testMembers = new ArrayList<>(List.of(memberA, memberB));
 
-        joinMembersToGroups(testMembers, testGroups);
+        GroupMemberDto groupMasterA = new GroupMemberDto(1L, groupA.getGroupId(), 1L,
+                memberA.getUsername(), memberA.getNickname(), LocalDateTime.now(), GroupRole.MASTER);
+        GroupMemberDto groupMasterB = new GroupMemberDto(2L, groupB.getGroupId(), 2L,
+                memberB.getUsername(), memberB.getNickname(), LocalDateTime.now(), GroupRole.MASTER);
+        List<GroupMemberDto> testGroupMasters = new ArrayList<>(List.of(groupMasterA, groupMasterB));
 
+        GroupStudyDto studyA = new GroupStudyDto(1L, groupA.getGroupId(), "studyA", 1000);
+        GroupStudyDto studyB = new GroupStudyDto(2L, groupB.getGroupId(), "studyB", 1000);
+        List<GroupStudyDto> testGroupStudies = new ArrayList<>(List.of(studyA, studyB));
 
-        List<Study> testStudies = createStudies(4, true);
-        List<GroupStudyDto> testGroupStudyDtos = getGroupStudyDtosRandomOwn(testGroups, testStudies);
+        PageImpl<GroupDto> testGroupsWtihPage = new PageImpl<>(testGroups, PageRequest.of(0, 5), 2);
 
-        PageImpl<Group> testGroupsWtihPage = new PageImpl<>(testGroups, PageRequest.of(0, 5), 3);
-
-        given(groupRepository.findGroups(any(), any(), any(), any(), any(), any()))
+        given(groupRepository.findGroupsAndMapToGroupDto(any(), any(), any(), any(), any(), any()))
                 .willReturn(testGroupsWtihPage);
-        given(studyRepository.findStudiesInGroups(any()))
-                .willReturn(testGroupStudyDtos);
-        given(groupMemberRepository.findGroupMasters(any())).willReturn(testGroupMasters);
-
+        given(studyRepository.findGroupStudiesInGroupIds(any()))
+                .willReturn(testGroupStudies);
+        given(groupMemberRepository.findGroupMastersInGroupIds(any()))
+                .willReturn(testGroupMasters);
 
         //when
         Page<GroupDto> findGroupsWithPage = groupService.getGroups(request);
 
         //then
-        List<GroupDto> groupDtos = findGroupsWithPage.getContent();
-        assertThat(groupDtos.size()).isEqualTo(testGroups.size());
-        assertThat(groupDtos).allSatisfy(groupDto -> {
-            Group testTargetGroup = getTestTargetGroup(testGroups, groupDto);
+        List<GroupDto> targetGroups = findGroupsWithPage.getContent();
+        assertThat(targetGroups.size()).isEqualTo(testGroups.size());
+        assertThat(targetGroups).allSatisfy(groupDto -> {
+            if(groupDto.getGroupId().equals(groupA.getGroupId())) {
+                assertThat(groupDto.getGroupMembers()).containsExactlyInAnyOrderElementsOf(List.of(groupMasterA));
+                assertThat(groupDto.getStudies()).containsExactlyInAnyOrderElementsOf(List.of(studyA));
 
-            assertThat(testTargetGroup).isNotNull();
-            assertThat(groupDto.getGroupMembers()).allSatisfy(groupMemberDto -> {
-                assertThat(groupMemberDto.getRole()).isEqualTo(GroupRole.MASTER);
-            });
-            assertThat(groupDto.getStudies().size()).isGreaterThan(0);
-            assertThat(groupDto.getStudies()).allSatisfy(groupStudyDto -> {
-                assertThat(groupStudyDto.getGroupId()).isEqualTo(groupDto.getGroupId());
-            });
+            } else if(groupDto.getGroupId().equals(groupB.getGroupId())) {
+                assertThat(groupDto.getGroupMembers()).containsExactlyInAnyOrderElementsOf(List.of(groupMasterB));
+                assertThat(groupDto.getStudies()).containsExactlyInAnyOrderElementsOf(List.of(studyB));
+
+            }
         });
     }
 

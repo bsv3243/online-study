@@ -65,34 +65,34 @@ public class GroupService {
 
     public Page<GroupDto> getGroups(GroupsGetRequest request) {
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
-        Page<Group> groups = groupRepository.findGroups(
+        Page<GroupDto> groupDtos = groupRepository.findGroupsAndMapToGroupDto(
                 request.getMemberId(), request.getCategory(),
                 request.getSearch(), request.getStudyIds(),
-                request.getOrderBy(), pageRequest);
+                request.getOrderBy(), pageRequest
+        );
 
-        List<GroupStudyDto> groupStudies = studyRepository.findStudiesInGroups(groups.getContent());
+        List<Long> groupIds = groupDtos.map(GroupDto::getGroupId).toList();
 
-        List<GroupMember> groupMasters = groupMemberRepository.findGroupMasters(groups.getContent());
-        List<GroupMemberDto> groupMemberDtos = groupMasters.stream()
-                .map(GroupMemberDto::from).collect(Collectors.toList());
+        List<GroupStudyDto> groupStudies = studyRepository
+                .findGroupStudiesInGroupIds(groupIds);
 
-        Page<GroupDto> groupDtos = groups.map(group -> {
-            GroupDto groupDto = GroupDto.from(group);
-            groupDto.setMemberSize(group.getGroupMembers().size());
+        List<GroupMemberDto> groupMemberDtosRoleIsMaster = groupMemberRepository
+                .findGroupMastersInGroupIds(groupIds);
 
+        groupDtos.map(groupDto -> {
             Iterator<GroupStudyDto> studyIter = groupStudies.iterator();
-            while(studyIter.hasNext()) {
+            while (studyIter.hasNext()) {
                 GroupStudyDto study = studyIter.next();
-                if(study.getGroupId().equals(group.getId())) {
+                if (study.getGroupId().equals(groupDto.getGroupId())) {
                     groupDto.getStudies().add(study);
                     studyIter.remove();
                 }
             }
 
-            Iterator<GroupMemberDto> memberIter = groupMemberDtos.iterator();
-            while(memberIter.hasNext()) {
+            Iterator<GroupMemberDto> memberIter = groupMemberDtosRoleIsMaster.iterator();
+            while (memberIter.hasNext()) {
                 GroupMemberDto member = memberIter.next();
-                if (member.getGroupId().equals(group.getId())) {
+                if (member.getGroupId().equals(groupDto.getGroupId())) {
                     groupDto.getGroupMembers().add(member);
                     memberIter.remove();
                 }
