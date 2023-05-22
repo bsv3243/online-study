@@ -49,6 +49,25 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
     }
 
     @Override
+    public List<GroupStudyDto> findGroupStudiesInGroupIds(List<Long> groupIds) {
+        return query
+                .select(Projections.constructor(GroupStudyDto.class,
+                        study.id,
+                        group.id,
+                        study.name,
+                        studyTicket.ticketRecord.activeTime.sum().as("studyTime")
+                ))
+                .from(study)
+                .join(study.studyTickets, studyTicket)
+                .join(studyTicket.ticketRecord, ticketRecord)
+                .join(studyTicket.group, group)
+                .where(group.id.in(groupIds))
+                .groupBy(group.id, study.id)
+                .orderBy(ticketRecord.activeTime.sum().desc())
+                .fetch();
+    }
+
+    @Override
     public Page<Study> findStudies(Long memberId, Long groupId, String search, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
         List<Study> result = query
                 .selectFrom(study)
